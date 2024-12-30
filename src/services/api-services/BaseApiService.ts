@@ -190,8 +190,10 @@ export class BaseApiService {
       return response?.data as T;
     } catch (error: any) {
       if (error.response && error.response.data) {
+        // eslint-disable-next-line no-console
         console.log(error.response.data);
       } else {
+        // eslint-disable-next-line no-console
         console.log(error);
       }
       throw error;
