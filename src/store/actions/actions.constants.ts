@@ -7,4 +7,6 @@ export enum AuthActionType {
   FETCH_ME = 'auth/fetch/me',
   FETCH_ME_COMPLETED = 'auth/fetch/me/completed',
   FETCH_ME_ERROR = 'auth/fetch/me/error',
+
+  LOGOUT = 'store/logout',
 }

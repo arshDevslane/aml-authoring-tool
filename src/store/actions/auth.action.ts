@@ -33,3 +33,7 @@ export const authFetchMeErrorAction = (message: string) => ({
   type: AuthActionType.FETCH_ME_ERROR,
   payload: message,
 });
+
+export const authLogoutAction = () => ({
+  type: AuthActionType.LOGOUT,
+});
