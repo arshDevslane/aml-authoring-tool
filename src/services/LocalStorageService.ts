@@ -1,4 +1,8 @@
+import { decodeToken } from 'react-jwt';
+import { DecodedToken } from '@/types/interfaces';
+
 export const AUTH_TOKEN = 'auth_token';
+export const PREV_LINK = 'prev_link';
 
 export class LocalStorageService {
   private static _instance: LocalStorageService;
@@ -59,6 +63,19 @@ export class LocalStorageService {
 
   removeAuthToken(): void {
     this.removeLocalStorageValue(AUTH_TOKEN);
+  }
+
+  getTokenExpiry() {
+    const userToken = localStorage?.getItem(AUTH_TOKEN);
+    if (userToken) {
+      const decodedToken: DecodedToken = decodeToken(userToken)!;
+      if (decodedToken && decodedToken.exp) {
+        const expirationTimestamp = decodedToken.exp;
+
+        return new Date(expirationTimestamp * 1000);
+      }
+    }
+    return null;
   }
 }
 
