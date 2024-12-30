@@ -26,8 +26,7 @@ const App: React.FC = () => (
     <ErrorBoundary
       FallbackComponent={ErrorFallbackComponent}
       onError={(error, info) => {
-        // Sentry.captureException(error); // Capture the error in Sentry
-        errorBoundaryHelper(error, info); // Your custom error handler
+        errorBoundaryHelper(error, info); // custom error handler
       }}
     >
       <Suspense fallback='Loading...'>
