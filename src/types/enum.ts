@@ -1,4 +1,4 @@
 export enum RouteKey {
   LOGIN = 'login',
-  DASHBOARD = 'dashboard',
+  APP = 'app',
 }

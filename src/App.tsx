@@ -4,8 +4,6 @@ import store from '@/store';
 import { ErrorBoundary } from 'react-error-boundary';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-// import UnauthenticatedRouteHOC from './HOC/UnauthenticatedRoute';
-// import Login from './views/login/Login';
 import 'react-toastify/dist/ReactToastify.css';
 import NavigationHandler from '@/shared-resources/NavigationHandler';
 import { errorBoundaryHelper } from '@/utils/helpers/errorBoundary.helper';
@@ -13,8 +11,10 @@ import Dashboard404Component from '@/utils/helpers/components/Dashboard404Compon
 import ErrorFallbackComponent from '@/utils/helpers/components/ErrorFallbackComponent';
 import RouteWrapper from '@/RouteWrapper';
 import Layout from '@/layout/layout';
+import UnauthenticatedRouteHOC from './HOC/UnauthenticatedRoute';
 import AuthenticatedRouteHOC from './HOC/AuthenticatedRoute';
 import { LAYOUT_ROUTES } from './routes';
+import LoginPage from './views/login/LoginPage';
 
 const App: React.FC = () => (
   <Provider store={store}>
@@ -47,7 +47,7 @@ const App: React.FC = () => (
                   ))}
                   <Route
                     path='/login'
-                    // Component={UnauthenticatedRouteHOC(Login)}
+                    Component={UnauthenticatedRouteHOC(LoginPage)}
                   />
                   <Route path='*' Component={Dashboard404Component} />
                 </Route>

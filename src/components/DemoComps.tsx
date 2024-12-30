@@ -1,10 +1,10 @@
 import { getSelectionColumn, useTable } from '@/hooks/useTable';
 import { ColumnDef, RowSelectionState } from '@tanstack/react-table';
 import React, { useMemo, useState } from 'react';
-import { tableStringFilter } from './TableComponent/Filters/StringFilter';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import TableComponent from './TableComponent/TableComponent';
+import { Button } from '@/shared-resources/ui/button';
+import { Input } from '@/shared-resources/ui/input';
+import { tableStringFilter } from '@/shared-resources/TableComponent/Filters/StringFilter';
+import TableComponent from '@/shared-resources/TableComponent/TableComponent';
 
 type Fruit = {
   identifier: string;

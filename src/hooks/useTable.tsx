@@ -1,5 +1,4 @@
 import React from 'react';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
   ColumnDef,
   getCoreRowModel,
@@ -10,6 +9,7 @@ import {
   TableOptions,
   useReactTable,
 } from '@tanstack/react-table';
+import { Checkbox } from '@/shared-resources/ui/checkbox';
 
 export function getSelectionColumn<T>() {
   return {

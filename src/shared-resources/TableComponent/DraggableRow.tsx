@@ -3,7 +3,7 @@ import { flexRender, Row } from '@tanstack/react-table';
 import React, { CSSProperties } from 'react';
 import { CSS } from '@dnd-kit/utilities';
 import { useSortable } from '@dnd-kit/sortable';
-import { TableCell, TableRow } from '../ui/table';
+import { TableCell, TableRow } from '@/shared-resources/ui/table';
 
 type DraggableRowProps<T> = { row: Row<T> };
 
