@@ -1,9 +1,9 @@
 /* eslint-disable react/function-component-definition */
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { ColumnFilterComponentProps } from '@tanstack/react-table';
 import { Search } from 'lucide-react';
 import React, { FC, useState } from 'react';
+import { Input } from '@/shared-resources/ui/input';
+import { Button } from '@/shared-resources/ui/button';
 
 const StringFilter: FC<ColumnFilterComponentProps> = ({
   filterValue,

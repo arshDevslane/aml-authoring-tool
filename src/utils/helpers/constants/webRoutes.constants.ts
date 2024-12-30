@@ -2,7 +2,7 @@ export const webRoutes: any = {
   auth: {
     login: () => '/login',
   },
-  dashboard: {
+  app: {
     root: () => '/app',
   },
 };

@@ -6,7 +6,7 @@ const Dashboard404Component: React.FC = () => {
   const navigate = useNavigate();
 
   const onGoBack = () => {
-    navigate(webRoutes.dashboard.root());
+    navigate(webRoutes.app.root());
   };
 
   return (

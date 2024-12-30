@@ -3,7 +3,6 @@
 /* eslint-disable react/function-component-definition */
 import React, { useState } from 'react';
 import { flexRender } from '@tanstack/react-table';
-import { TableComponentProps } from '@/components/TableComponent/types/TableComponent.types';
 import { ChevronDown, ChevronUp, Filter } from 'lucide-react';
 // import { PopoverArrow, PopoverContent, PopoverTrigger } from '@radix-ui/react-popover';
 import { cn, isValueEmpty } from '@/lib/utils';
@@ -18,9 +17,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../ui/table';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+} from '@/shared-resources/ui/table';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/shared-resources/ui/popover';
 import DraggableRow from './DraggableRow';
+import { TableComponentProps } from './types/TableComponent.types';
 
 export default function TableSkeleton<T, S extends Record<string, any>>({
   tableInstance,

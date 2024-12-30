@@ -1,7 +1,6 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/function-component-definition */
 import React from 'react';
-import { TableComponentProps } from '@/components/TableComponent/types/TableComponent.types';
 import {
   closestCenter,
   DndContext,
@@ -13,6 +12,7 @@ import {
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import TableSkeleton from './TableSkeleton';
 import AmlPagination from '../AmlPagination/AmlPagination';
+import { TableComponentProps } from './types/TableComponent.types';
 
 export default function TableComponent<T, S extends Record<string, any>>(
   props: TableComponentProps<T, S>

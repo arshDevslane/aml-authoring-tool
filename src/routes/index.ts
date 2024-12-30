@@ -1,3 +1,3 @@
-import { appRoutes } from './appRoutes';
+import { dashboardRoutes } from './dashboardRoutes';
 
-export const LAYOUT_ROUTES = [...appRoutes];
+export const LAYOUT_ROUTES = [...dashboardRoutes];
