@@ -15,6 +15,7 @@ const useEscapeKeyDetector = <P extends HTMLElement>(handler: () => void) => {
       // Unbind the event listener on clean up
       document.removeEventListener('keydown', handleEscapeKey);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return ref;
