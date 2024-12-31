@@ -36,7 +36,7 @@ export default function TableComponent<T, S extends Record<string, any>>(
         <TableSkeleton {...props} />
         {!props.noPagination && (
           <AmlPagination
-            currentPage={props.currentPage}
+            currentPage={props.searchFilters.page_no}
             totalPages={props.totalPages}
             onPageChange={(pageNo: number) =>
               props.setSearchFilters((p) => ({ ...p, page_no: pageNo }))

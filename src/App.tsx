@@ -15,6 +15,7 @@ import UnauthenticatedRouteHOC from './HOC/UnauthenticatedRoute';
 import AuthenticatedRouteHOC from './HOC/AuthenticatedRoute';
 import { LAYOUT_ROUTES } from './routes';
 import LoginPage from './views/login/LoginPage';
+import DemoComps from './shared-resources/DemoComps';
 
 const App: React.FC = () => (
   <Provider store={store}>
@@ -48,6 +49,10 @@ const App: React.FC = () => (
                   <Route
                     path='/login'
                     Component={UnauthenticatedRouteHOC(LoginPage)}
+                  />
+                  <Route
+                    path='/comps'
+                    Component={UnauthenticatedRouteHOC(DemoComps)}
                   />
                   <Route path='*' Component={Dashboard404Component} />
                 </Route>

@@ -3,10 +3,9 @@ import { Table } from '@tanstack/react-table';
 
 type TableComponentNoPaginationProps<S extends Record<string, any>> =
   | {
-      noPagination?: false;
+      noPagination?: never;
       totalCount: number;
       totalPages: number;
-      currentPage: number;
       searchFilters: S & { page_no: number };
       setSearchFilters: React.Dispatch<
         React.SetStateAction<S & { page_no: number }>
@@ -16,7 +15,6 @@ type TableComponentNoPaginationProps<S extends Record<string, any>> =
       noPagination: true;
       totalCount?: never;
       totalPages?: never;
-      currentPage?: never;
       searchFilters: S;
       setSearchFilters: React.Dispatch<React.SetStateAction<S>>;
     };
