@@ -92,7 +92,7 @@ const LoginPage: React.FC = () => {
             <div className='flex justify-center'>
               <Button
                 type='submit'
-                className='w-full py-3 text-lg font-medium text-white bg-gray-700 rounded-lg shadow-md hover:bg-gray-800 focus:ring-4 focus:ring-gray-400 transition-transform transform hover:scale-105'
+                className='w-full py-3 text-lg font-medium text-white bg-gray-700 rounded-lg shadow-md hover:bg-appPrimary focus:ring-4 focus:ring-gray-400 transition-transform transform hover:scale-105'
               >
                 Login
               </Button>

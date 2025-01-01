@@ -14,8 +14,14 @@ module.exports = {
       },
       keyframes: {
         fadeInDown: {
-          '0%': { opacity: 0, transform: 'translateY(-20px)' },
-          '100%': { opacity: 1, transform: 'translateY(0)' },
+          '0%': {
+            opacity: 0,
+            transform: 'translateY(-20px)',
+          },
+          '100%': {
+            opacity: 1,
+            transform: 'translateY(0)',
+          },
         },
       },
       colors: {
@@ -63,6 +69,17 @@ module.exports = {
           4: 'hsl(var(--chart-4))',
           5: 'hsl(var(--chart-5))',
         },
+        sidebar: {
+          DEFAULT: 'hsl(var(--sidebar-background))',
+          foreground: 'hsl(var(--sidebar-foreground))',
+          primary: 'hsl(var(--sidebar-primary))',
+          'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+          accent: 'hsl(var(--sidebar-accent))',
+          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+          border: 'hsl(var(--sidebar-border))',
+          ring: 'hsl(var(--sidebar-ring))',
+        },
+        appPrimary: '#1F2937',
       },
     },
   },

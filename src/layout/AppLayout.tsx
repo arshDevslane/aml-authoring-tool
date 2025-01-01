@@ -1,17 +1,18 @@
 import AppRoutes from '@/routes/AppRoutes/appRoutes';
-import Sidebar from '@/shared-resources/Sidebar/sidebar';
+import { AppSidebar } from '@/shared-resources/appSidebar/appSidebar';
+import { SidebarProvider } from '@/shared-resources/ui/sidebar';
 import React from 'react';
 
 const AppLayout: React.FC = () => (
-  <div className='flex min-h-screen'>
+  <SidebarProvider>
     {/* Sidebar */}
-    <Sidebar />
+    <AppSidebar />
 
     {/* Main Content */}
-    <div className='flex-1 p-6'>
+    <main className='flex-1 p-6'>
       <AppRoutes />
-    </div>
-  </div>
+    </main>
+  </SidebarProvider>
 );
 
 export default AppLayout;
