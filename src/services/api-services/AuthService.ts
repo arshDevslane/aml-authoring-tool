@@ -10,11 +10,22 @@ class AuthService {
     email: string;
     password: string;
   }): Promise<{ user: User; token: string }> {
-    return baseApiService.post('/login', data, { extras: { useAuth: false } });
+    return baseApiService.post(
+      '/api/v1/auth/login',
+      'api.user.auth.login',
+      data,
+      {
+        extras: { useAuth: false },
+      }
+    );
   }
 
   async fetchMe(): Promise<{ user: User }> {
-    return baseApiService.get('/me');
+    return baseApiService.get('/api/v1/auth/me');
+  }
+
+  async logout() {
+    return baseApiService.post('/api/v1/auth/logout', 'api.user.auth.logout');
   }
 }
 

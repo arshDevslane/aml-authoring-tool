@@ -1,8 +1,13 @@
+import { AuthContext } from '@/context/AuthContext';
+import { isAuthenticatedSelector } from '@/store/selectors/auth.selector';
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { Button } from '../ui/button';
 
 const Sidebar: React.FC = () => {
   const [isCollapsed, setCollapsed] = useState(false);
+  const isAuthenticated = useSelector(isAuthenticatedSelector);
 
   return (
     <div
@@ -43,6 +48,11 @@ const Sidebar: React.FC = () => {
           <span className={isCollapsed ? 'hidden' : ''}>Question Sets</span>
         </NavLink>
       </nav>
+      {isAuthenticated && (
+        <AuthContext.Consumer>
+          {({ onLogout }) => <Button onClick={onLogout}>Logout</Button>}
+        </AuthContext.Consumer>
+      )}
     </div>
   );
 };

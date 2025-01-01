@@ -4,23 +4,28 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { Button } from '@/shared-resources/ui/button';
 import { Input } from '@/shared-resources/ui/input';
+import { useDispatch } from 'react-redux';
+import { authLoginAction } from '@/store/actions/auth.action';
 
 const LoginPage: React.FC = () => {
+  const dispatch = useDispatch();
+
   const formik = useFormik({
     initialValues: {
-      username: '',
+      email: '',
       password: '',
     },
     validationSchema: yup.object().shape({
-      username: yup.string().required('Username is required'),
+      email: yup.string().required('email is required'),
       password: yup.string().required('Password is required'),
     }),
-    onSubmit: (values) => {
+
+    onSubmit: (values: { email: string; password: string }) => {
       const loginValues = {
         password: values.password,
-        username: values.username,
+        email: values.email,
       };
-      console.info(loginValues, 'login');
+      dispatch(authLoginAction(loginValues));
     },
   });
 
@@ -36,25 +41,25 @@ const LoginPage: React.FC = () => {
         </p>
         <form onSubmit={formik.handleSubmit}>
           <div className='space-y-6'>
-            {/* Username */}
+            {/* email */}
             <div>
               <label
-                htmlFor='username'
+                htmlFor='email'
                 className='block text-sm font-medium text-gray-700'
               >
-                Username
+                Email
               </label>
               <Input
-                id='username'
-                name='username'
-                value={formik.values.username}
+                id='email'
+                name='email'
+                value={formik.values.email}
                 className='block w-full h-12 px-4 mt-2 border border-gray-300 rounded-lg shadow-sm text-gray-700 focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-all'
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
               />
-              {formik.touched.username && formik.errors.username && (
+              {formik.touched.email && formik.errors.email && (
                 <div className='text-red-500 text-sm mt-1'>
-                  {formik.errors.username}
+                  {formik.errors.email}
                 </div>
               )}
             </div>

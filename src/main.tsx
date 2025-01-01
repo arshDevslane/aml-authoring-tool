@@ -6,7 +6,7 @@ import App from './App';
 
 if (ENV_CONFIG.APP_ENV !== 'development') {
   // eslint-disable-next-line no-console
-  console.log = () => {};
+  // console.log = () => {};
 }
 
 const root = createRoot(document.querySelector('#root')!);

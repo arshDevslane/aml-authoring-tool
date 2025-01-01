@@ -1,7 +1,10 @@
 import React, { useEffect, useMemo } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { isAuthLoadingSelector } from '@/store/selectors/auth.selector';
+import {
+  isAuthenticatedSelector,
+  isAuthLoadingSelector,
+} from '@/store/selectors/auth.selector';
 import { webRoutes } from '@/utils/helpers/constants/webRoutes.constants';
 import { authLogoutAction } from '@/store/actions/auth.action';
 import { AuthContext } from '@/context/AuthContext';
@@ -13,10 +16,12 @@ const Layout: React.FC = () => {
   const dispatch = useDispatch();
 
   const isUserLoading = useSelector(isAuthLoadingSelector);
-
+  const isAuthenticated = useSelector(isAuthenticatedSelector);
   useEffect(() => {
-    if (location.pathname === '/' && !isUserLoading) {
+    if (location.pathname === '/' && !isUserLoading && !isAuthenticated) {
       navigate(webRoutes.auth.login());
+    } else if (location.pathname === '/' && !isUserLoading && isAuthenticated) {
+      navigate('/app');
     }
   }, [location, isUserLoading]);
 

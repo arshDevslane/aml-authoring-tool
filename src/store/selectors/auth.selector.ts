@@ -6,7 +6,7 @@ const authState = (state: AppState) => state.auth;
 
 export const isAuthenticatedSelector = createSelector(
   [authState],
-  (state: AuthState) => Boolean(state.userID)
+  (state: AuthState) => Boolean(state.user)
 );
 
 export const isAuthLoadingSelector = createSelector(

@@ -19,11 +19,7 @@ import DemoComps from './shared-resources/DemoComps';
 
 const App: React.FC = () => (
   <Provider store={store}>
-    <ToastContainer
-      hideProgressBar
-      pauseOnFocusLoss={false}
-      toastClassName='relative flex p-2 min-h-10 rounded-md justify-between overflow-hidden cursor-pointer font-medium'
-    />
+    <ToastContainer hideProgressBar pauseOnFocusLoss={false} />
     <ErrorBoundary
       FallbackComponent={ErrorFallbackComponent}
       onError={(error, info) => {

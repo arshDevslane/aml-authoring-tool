@@ -1,14 +1,17 @@
 import produce from 'immer';
 import { Reducer } from 'redux';
 import { AuthActionType } from '@/store/actions/actions.constants';
+import { User } from '@/models/entities/User';
 
 export interface AuthState {
-  userID?: number;
+  user?: User;
   loading?: boolean;
   error?: string;
 }
 
-const initialState: AuthState = {};
+const initialState: AuthState = {
+  loading: false,
+};
 
 export const authReducer: Reducer<AuthState> = (
   // eslint-disable-next-line @typescript-eslint/default-param-last
@@ -24,7 +27,7 @@ export const authReducer: Reducer<AuthState> = (
       }
       case AuthActionType.LOGIN_COMPLETED:
       case AuthActionType.FETCH_ME_COMPLETED: {
-        draft.userID = action.payload.id;
+        draft.user = action.payload;
         draft.loading = false;
         draft.error = undefined;
         break;
