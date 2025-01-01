@@ -12,7 +12,6 @@ import ErrorFallbackComponent from '@/utils/helpers/components/ErrorFallbackComp
 import RouteWrapper from '@/RouteWrapper';
 import Layout from '@/layout/layout';
 import UnauthenticatedRouteHOC from './HOC/UnauthenticatedRoute';
-import AuthenticatedRouteHOC from './HOC/AuthenticatedRoute';
 import { LAYOUT_ROUTES } from './routes';
 import LoginPage from './views/login/LoginPage';
 import DemoComps from './shared-resources/DemoComps';
@@ -42,7 +41,7 @@ const App: React.FC = () => (
                       key={route.key}
                       Component={
                         route.component &&
-                        AuthenticatedRouteHOC(route.component)
+                        UnauthenticatedRouteHOC(route.component)
                       }
                     />
                   ))}
