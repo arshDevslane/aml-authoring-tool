@@ -1,9 +1,10 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/interactive-supports-focus */
 import React from 'react';
 import { ChevronUp, FileText, Layers, User2 } from 'lucide-react';
-
 import { NavLink, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { AuthContext } from '@/context/AuthContext';
+import { loggedInUserSelector } from '@/store/selectors/auth.selector';
 import {
   Sidebar,
   SidebarContent,
@@ -39,6 +40,7 @@ const items = [
 
 export const AppSidebar = () => {
   const location = useLocation();
+  const user = useSelector(loggedInUserSelector);
 
   const isActive = (link: string) => location.pathname === link;
   return (
@@ -74,7 +76,7 @@ export const AppSidebar = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton>
-                  <User2 /> Username
+                  <User2 /> {user?.first_name}
                   <ChevronUp className='ml-auto' />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>

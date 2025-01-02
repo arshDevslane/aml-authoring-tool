@@ -18,3 +18,8 @@ export const authErrorSelector = createSelector(
   [authState],
   (state: AuthState) => state.error
 );
+
+export const loggedInUserSelector = createSelector(
+  [authState],
+  (state: AuthState) => state.user
+);
