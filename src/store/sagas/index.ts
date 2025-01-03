@@ -4,6 +4,8 @@ import questionSetSaga from './questionSet.saga';
 import repositorySaga from './repository.saga';
 import { boardSaga } from './board.saga';
 import { classSaga } from './class.saga';
+import { skillSaga } from './skill.saga';
+import { subSkillSaga } from './subSkill.saga';
 
 export default function* rootSaga() {
   yield all([
@@ -12,5 +14,7 @@ export default function* rootSaga() {
     fork(repositorySaga),
     fork(boardSaga),
     fork(classSaga),
+    fork(skillSaga),
+    fork(subSkillSaga),
   ]);
 }

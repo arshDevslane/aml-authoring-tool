@@ -41,3 +41,17 @@ export enum ClassActionType {
   GET_LIST_COMPLETED = 'class/getList/completed',
   GET_LIST_ERROR = 'class/getList/error',
 }
+
+// skills
+export enum SkillActionType {
+  GET_LIST = 'skill/getList',
+  GET_LIST_COMPLETED = 'skill/getList/completed',
+  GET_LIST_ERROR = 'skill/getList/error',
+}
+
+// subskills
+export enum SubskillActionType {
+  GET_LIST = 'subskill/getList',
+  GET_LIST_COMPLETED = 'subskill/getList/completed',
+  GET_LIST_ERROR = 'subskill/getList/error',
+}

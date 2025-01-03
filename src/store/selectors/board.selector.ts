@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { AppState } from '../reducers';
-import { BoardState } from '../reducers/boardReducer';
+import { BoardState } from '../reducers/board.reducer';
 
 const boardState = (state: AppState) => state.board;
 
