@@ -20,3 +20,13 @@ export enum QuestionSetActionType {
   DELETE_QUESTION_SET = 'questionSet/delete',
   DELETE_QUESTION_SET_COMPLETED = 'questionSet/delete/completed',
 }
+
+// questions
+export enum QuestionsActionType {
+  GET_LIST = 'questions/getList',
+  GET_LIST_COMPLETED = 'questions/getList/completed',
+  GET_LIST_ERROR = 'questions/getList/error',
+
+  DELETE_QUESTION = 'question/delete',
+  DELETE_QUESTION_COMPLETED = 'question/delete/completed',
+}
