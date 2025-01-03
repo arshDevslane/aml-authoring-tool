@@ -1,0 +1,66 @@
+/* eslint-disable no-case-declarations */
+import produce from 'immer';
+import { CacheAPIResponse } from '@/lib/utils';
+import { Class } from '@/models/entities/Class';
+import { ClassActionPayloadType } from '../actions/class.action';
+import { ClassActionType } from '../actions/actions.constants';
+
+export type ClassState = ClassActionPayloadType & {
+  cachedData: CacheAPIResponse;
+  entries: Record<string, Class>;
+  isLoading: boolean;
+  latestCount: number;
+  error?: string;
+};
+
+const initialState: ClassState = {
+  isLoading: false,
+  filters: {
+    searchQuery: '',
+    page_no: 1,
+  },
+  latestCount: 0,
+  cachedData: {},
+  entries: {},
+};
+
+export const classReducer = (
+  // eslint-disable-next-line @typescript-eslint/default-param-last
+  state: ClassState = initialState,
+  action: any
+) =>
+  produce(state, (draft: ClassState) => {
+    switch (action.type) {
+      case ClassActionType.GET_LIST:
+        draft.isLoading = true;
+        draft.filters = action.payload.filters;
+        break;
+      case ClassActionType.GET_LIST_COMPLETED:
+        draft.isLoading = false;
+
+        const filterKey = JSON.stringify(state.filters);
+        const classMap = action.payload.classes.reduce(
+          (acc: any, classItem: Class) => ({
+            ...acc,
+            [classItem.identifier]: classItem,
+          }),
+          {} as Record<string, Class>
+        );
+
+        draft.entries = { ...state.entries, ...classMap };
+        draft.cachedData[filterKey] = {
+          result: action.payload.classes.map(
+            (classItem: Class) => classItem.identifier
+          ),
+          totalCount: action.payload.totalCount,
+        };
+        draft.latestCount = action.payload.totalCount;
+        break;
+      case ClassActionType.GET_LIST_ERROR:
+        draft.isLoading = false;
+        draft.error = action.payload;
+        break;
+      default:
+        break;
+    }
+  });

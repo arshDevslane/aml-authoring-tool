@@ -4,11 +4,17 @@ import { userReducer } from './user.reducer';
 import { navigationReducer } from './NavigationReducer';
 import { AuthActionType } from '../actions/actions.constants';
 import { questionSetReducer } from './questionSet.reducer';
+import { repositoryReducer } from './repository.reducer';
+import { boardReducer } from './boardReducer';
+import { classReducer } from './class.reducer';
 
 const appReducer = combineReducers({
   auth: authReducer,
   user: userReducer,
   questionSet: questionSetReducer,
+  repository: repositoryReducer,
+  board: boardReducer,
+  class: classReducer,
   navigationReducer,
 });
 

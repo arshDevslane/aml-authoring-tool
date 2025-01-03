@@ -20,3 +20,24 @@ export enum QuestionSetActionType {
   DELETE_QUESTION_SET = 'questionSet/delete',
   DELETE_QUESTION_SET_COMPLETED = 'questionSet/delete/completed',
 }
+
+// repositories
+export enum RepositoryActionType {
+  GET_LIST = 'repository/getList',
+  GET_LIST_COMPLETED = 'repository/getList/completed',
+  GET_LIST_ERROR = 'repository/getList/error',
+}
+
+// boards
+export enum BoardActionType {
+  GET_LIST = 'board/getList',
+  GET_LIST_COMPLETED = 'board/getList/completed',
+  GET_LIST_ERROR = 'board/getList/error',
+}
+
+// classes
+export enum ClassActionType {
+  GET_LIST = 'class/getList',
+  GET_LIST_COMPLETED = 'class/getList/completed',
+  GET_LIST_ERROR = 'class/getList/error',
+}
