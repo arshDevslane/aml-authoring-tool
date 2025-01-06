@@ -22,7 +22,7 @@ type SelectProps<T> = {
   value: T;
   renderValue?: (value: T) => React.ReactNode;
   placeholder?: string;
-  list: {
+  options: {
     value: string | number;
     label: string;
   }[];
@@ -34,7 +34,7 @@ export const Select = <T extends string | number | (string | number)[]>({
   value,
   renderValue,
   placeholder,
-  list,
+  options,
   multiple,
 }: SelectProps<T>) => {
   const [open, setOpen] = React.useState(false);
@@ -95,7 +95,7 @@ export const Select = <T extends string | number | (string | number)[]>({
           <CommandEmpty>No item found.</CommandEmpty>
           <CommandGroup>
             <CommandList>
-              {list.map((listItem) => (
+              {options.map((listItem) => (
                 <CommandItem
                   key={listItem.value}
                   value={listItem.label.toString()}
