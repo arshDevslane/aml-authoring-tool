@@ -31,14 +31,14 @@ function* getListQuestionSetSaga(data: QuestionSetSagaPayloadType): any {
       );
 
     if (cachedData?.result) {
-      const entries: AppState['questionSet']['entries'] = yield select(
-        (state: AppState) => state.questionSet.entries
+      const entities: AppState['questionSet']['entities'] = yield select(
+        (state: AppState) => state.questionSet.entities
       );
 
       yield put(
         getListQuestionSetCompletedAction({
           questionSets: cachedData.result
-            .map((id) => entries[id])
+            .map((id) => entities[id])
             .filter(Boolean),
           totalCount: cachedData.totalCount,
         })

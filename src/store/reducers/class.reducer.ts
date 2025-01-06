@@ -7,7 +7,7 @@ import { ClassActionType } from '../actions/actions.constants';
 
 export type ClassState = ClassActionPayloadType & {
   cachedData: CacheAPIResponse;
-  entries: Record<string, Class>;
+  entities: Record<string, Class>;
   isLoading: boolean;
   latestCount: number;
   error?: string;
@@ -16,12 +16,12 @@ export type ClassState = ClassActionPayloadType & {
 const initialState: ClassState = {
   isLoading: false,
   filters: {
-    searchQuery: '',
+    search_query: '',
     page_no: 1,
   },
   latestCount: 0,
   cachedData: {},
-  entries: {},
+  entities: {},
 };
 
 export const classReducer = (
@@ -47,7 +47,7 @@ export const classReducer = (
           {} as Record<string, Class>
         );
 
-        draft.entries = { ...state.entries, ...classMap };
+        draft.entities = { ...state.entities, ...classMap };
         draft.cachedData[filterKey] = {
           result: action.payload.classes.map(
             (classItem: Class) => classItem.identifier

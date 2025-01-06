@@ -23,12 +23,12 @@ function* getListClassSaga(data: ClassSagaPayloadType): any {
     );
 
     if (cachedData?.result) {
-      const entries: AppState['class']['entries'] = yield select(
-        (state: AppState) => state.class.entries
+      const entities: AppState['class']['entities'] = yield select(
+        (state: AppState) => state.class.entities
       );
       yield put(
         getListClassCompletedAction({
-          classes: cachedData.result.map((id) => entries[id]).filter(Boolean),
+          classes: cachedData.result.map((id) => entities[id]).filter(Boolean),
           totalCount: cachedData.totalCount,
         })
       );

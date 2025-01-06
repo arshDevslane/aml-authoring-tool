@@ -2,7 +2,7 @@ import { BoardActionType } from './actions.constants';
 
 export type BoardActionPayloadType = {
   filters: Partial<{
-    searchQuery: string;
+    search_query: string;
     page_no: number;
   }>;
 };

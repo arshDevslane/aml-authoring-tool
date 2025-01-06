@@ -9,7 +9,7 @@ export type QuestionSetState = QuestionSetActionPayloadType & {
   isLoading: boolean;
   error?: string;
   latestCount: number;
-  entries: Record<string, QuestionSet>;
+  entities: Record<string, QuestionSet>;
   cachedData: CacheAPIResponse;
 };
 
@@ -26,7 +26,7 @@ const initialState: QuestionSetState = {
     sub_skill_id: '',
     page_no: 1,
   },
-  entries: {},
+  entities: {},
   latestCount: 0,
   cachedData: {},
 };
@@ -54,7 +54,7 @@ export const questionSetReducer = (
           {} as Record<string, QuestionSet>
         );
 
-        draft.entries = { ...state.entries, ...questionSetMap };
+        draft.entities = { ...state.entities, ...questionSetMap };
         draft.cachedData[filterKey] = {
           result: action.payload.questionSets.map(
             (questionSet: QuestionSet) => questionSet.identifier
@@ -69,7 +69,7 @@ export const questionSetReducer = (
         break;
 
       case QuestionSetActionType.DELETE_QUESTION_SET_COMPLETED:
-        draft.entries = {};
+        draft.entities = {};
         draft.cachedData = {};
         break;
       default:

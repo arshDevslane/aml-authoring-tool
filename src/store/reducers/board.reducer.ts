@@ -7,7 +7,7 @@ import { BoardActionPayloadType } from '../actions/board.action';
 
 export type BoardState = BoardActionPayloadType & {
   cachedData: CacheAPIResponse;
-  entries: Record<string, Board>;
+  entities: Record<string, Board>;
   isLoading: boolean;
   latestCount: number;
   error?: string;
@@ -16,12 +16,12 @@ export type BoardState = BoardActionPayloadType & {
 const initialState: BoardState = {
   isLoading: false,
   filters: {
-    searchQuery: '',
+    search_query: '',
     page_no: 1,
   },
   latestCount: 0,
   cachedData: {},
-  entries: {},
+  entities: {},
 };
 
 export const boardReducer = (
@@ -47,7 +47,7 @@ export const boardReducer = (
           {} as Record<string, Board>
         );
 
-        draft.entries = { ...state.entries, ...boardMap };
+        draft.entities = { ...state.entities, ...boardMap };
         draft.cachedData[filterKey] = {
           result: action.payload.boards.map((board: Board) => board.identifier),
           totalCount: action.payload.totalCount,

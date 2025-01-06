@@ -7,7 +7,7 @@ import { RepositoryActionPayloadType } from '../actions/repository.action';
 
 export type RepositoryState = RepositoryActionPayloadType & {
   cachedData: CacheAPIResponse;
-  entries: Record<string, Repository>;
+  entities: Record<string, Repository>;
   isLoading: boolean;
   latestCount: number;
   error?: string;
@@ -16,14 +16,14 @@ export type RepositoryState = RepositoryActionPayloadType & {
 const initialState: RepositoryState = {
   isLoading: false,
   filters: {
-    searchQuery: '',
+    search_query: '',
     status: '',
     is_active: null,
     page_no: 1,
   },
   latestCount: 0,
   cachedData: {},
-  entries: {},
+  entities: {},
 };
 
 export const repositoryReducer = (
@@ -49,7 +49,7 @@ export const repositoryReducer = (
           {} as Record<string, Repository>
         );
 
-        draft.entries = { ...state.entries, ...repositoryMap };
+        draft.entities = { ...state.entities, ...repositoryMap };
         draft.cachedData[filterKey] = {
           result: action.payload.repositories.map(
             (repository: Repository) => repository.identifier

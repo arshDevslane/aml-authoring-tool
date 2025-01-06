@@ -7,7 +7,7 @@ class SubskillService {
   }
 
   async getList(data: {
-    searchQuery?: string;
+    search_query?: string;
     limit?: number;
     offset?: number;
   }): Promise<{

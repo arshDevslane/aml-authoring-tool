@@ -7,7 +7,7 @@ class RepositoryService {
   }
 
   async getList(data: {
-    searchQuery?: string;
+    search_query?: string;
     status?: string;
     is_active?: boolean;
     limit?: number;

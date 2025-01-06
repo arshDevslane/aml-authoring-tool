@@ -3,7 +3,7 @@ import { RepositoryActionType } from './actions.constants';
 
 export type RepositoryActionPayloadType = {
   filters: Partial<{
-    searchQuery: string;
+    search_query: string;
     status: string;
     is_active: boolean | null;
     page_no: number;

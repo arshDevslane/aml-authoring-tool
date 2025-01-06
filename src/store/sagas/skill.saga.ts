@@ -23,12 +23,12 @@ function* getListSkillSaga(data: SkillSagaPayloadType): any {
     );
 
     if (cachedData?.result) {
-      const entries: AppState['skill']['entries'] = yield select(
-        (state: AppState) => state.skill.entries
+      const entities: AppState['skill']['entities'] = yield select(
+        (state: AppState) => state.skill.entities
       );
       yield put(
         getListSkillCompletedAction({
-          skills: cachedData.result.map((id) => entries[id]).filter(Boolean),
+          skills: cachedData.result.map((id) => entities[id]).filter(Boolean),
           totalCount: cachedData.totalCount,
         })
       );

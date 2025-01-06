@@ -2,7 +2,7 @@ import { ClassActionType } from './actions.constants';
 
 export type ClassActionPayloadType = {
   filters: Partial<{
-    searchQuery: string;
+    search_query: string;
     page_no: number;
   }>;
 };

@@ -2,7 +2,7 @@ import { SkillActionType } from './actions.constants';
 
 export type SkillActionPayloadType = {
   filters: Partial<{
-    searchQuery: string;
+    search_query: string;
     skill_type: string;
     page_no: number;
   }>;

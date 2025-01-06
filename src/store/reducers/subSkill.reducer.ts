@@ -7,7 +7,7 @@ import { SubskillActionType } from '../actions/actions.constants';
 
 export type SubSkillState = SubskillActionPayloadType & {
   cachedData: CacheAPIResponse;
-  entries: Record<string, Subskill>;
+  entities: Record<string, Subskill>;
   isLoading: boolean;
   latestCount: number;
   error?: string;
@@ -16,12 +16,12 @@ export type SubSkillState = SubskillActionPayloadType & {
 const initialState: SubSkillState = {
   isLoading: false,
   filters: {
-    searchQuery: '',
+    search_query: '',
     page_no: 1,
   },
   latestCount: 0,
   cachedData: {},
-  entries: {},
+  entities: {},
 };
 
 export const subSkillReducer = (
@@ -47,7 +47,7 @@ export const subSkillReducer = (
           {} as Record<string, Subskill>
         );
 
-        draft.entries = { ...state.entries, ...subSkillMap };
+        draft.entities = { ...state.entities, ...subSkillMap };
         draft.cachedData[filterKey] = {
           result: action.payload.subSkills.map(
             (subSkill: Subskill) => subSkill.identifier

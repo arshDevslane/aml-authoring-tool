@@ -12,7 +12,7 @@ export const getSubSkills = (state: SubSkillState) => {
   };
 
   return {
-    result: resultIDs.map((id) => state.entries[id]).filter(Boolean),
+    result: resultIDs.map((id) => state.entities[id]).filter(Boolean),
     totalCount,
   };
 };

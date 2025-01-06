@@ -2,7 +2,7 @@ import { SubskillActionType } from './actions.constants';
 
 export type SubskillActionPayloadType = {
   filters: Partial<{
-    searchQuery: string;
+    search_query: string;
     page_no: number;
   }>;
 };

@@ -7,7 +7,7 @@ import { SkillActionPayloadType } from '../actions/skill.action';
 
 export type SkillState = SkillActionPayloadType & {
   cachedData: CacheAPIResponse;
-  entries: Record<string, Skill>;
+  entities: Record<string, Skill>;
   isLoading: boolean;
   latestCount: number;
   error?: string;
@@ -16,13 +16,13 @@ export type SkillState = SkillActionPayloadType & {
 const initialState: SkillState = {
   isLoading: false,
   filters: {
-    searchQuery: '',
+    search_query: '',
     skill_type: '',
     page_no: 1,
   },
   latestCount: 0,
   cachedData: {},
-  entries: {},
+  entities: {},
 };
 
 export const skillReducer = (
@@ -48,7 +48,7 @@ export const skillReducer = (
           {} as Record<string, Skill>
         );
 
-        draft.entries = { ...state.entries, ...skillMap };
+        draft.entities = { ...state.entities, ...skillMap };
         draft.cachedData[filterKey] = {
           result: action.payload.skills.map((skill: Skill) => skill.identifier),
           totalCount: action.payload.totalCount,

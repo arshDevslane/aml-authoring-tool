@@ -23,12 +23,14 @@ function* getListSubSkillSaga(data: SubskillSagaPayload): any {
     );
 
     if (cachedData?.result) {
-      const entries: AppState['subSkill']['entries'] = yield select(
-        (state: AppState) => state.subSkill.entries
+      const entities: AppState['subSkill']['entities'] = yield select(
+        (state: AppState) => state.subSkill.entities
       );
       yield put(
         getListSubSkillCompletedAction({
-          subSkills: cachedData.result.map((id) => entries[id]).filter(Boolean),
+          subSkills: cachedData.result
+            .map((id) => entities[id])
+            .filter(Boolean),
           totalCount: cachedData.totalCount,
         })
       );

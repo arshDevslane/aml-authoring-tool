@@ -23,12 +23,12 @@ function* getListBoardSaga(data: BoardSagaPayloadType): any {
     );
 
     if (cachedData?.result) {
-      const entries: AppState['board']['entries'] = yield select(
-        (state: AppState) => state.board.entries
+      const entities: AppState['board']['entities'] = yield select(
+        (state: AppState) => state.board.entities
       );
       yield put(
         getListBoardCompletedAction({
-          boards: cachedData.result.map((id) => entries[id]).filter(Boolean),
+          boards: cachedData.result.map((id) => entities[id]).filter(Boolean),
           totalCount: cachedData.totalCount,
         })
       );

@@ -18,13 +18,13 @@ function* getListRepositorySaga(data: any): any {
       );
 
     if (cachedData?.result) {
-      const entries: AppState['repository']['entries'] = yield select(
-        (state: AppState) => state.repository.entries
+      const entities: AppState['repository']['entities'] = yield select(
+        (state: AppState) => state.repository.entities
       );
       yield put(
         getListRepositoryCompletedAction({
           repositories: cachedData.result
-            .map((id) => entries[id])
+            .map((id) => entities[id])
             .filter(Boolean),
           totalCount: cachedData.totalCount,
         })
