@@ -1,5 +1,6 @@
 import React from 'react';
 import { SupportedLanguagesLabel } from '@/models/enums/SupportedLanguages.enum';
+import { cn } from '@/lib/utils';
 import FormikInput from '../FormikInput/FormikInput';
 
 type Props = {
@@ -9,7 +10,12 @@ type Props = {
 };
 
 const MultiLangFormikInput = ({ name, label, supportedLanguages }: Props) => (
-  <div className='flex flex-col w-full mb-3 items-start'>
+  <div
+    className={cn(
+      'flex flex-col w-full mb-3 items-start',
+      !supportedLanguages.length && 'hidden'
+    )}
+  >
     {supportedLanguages.map((lang, index) => (
       <FormikInput
         key={lang}

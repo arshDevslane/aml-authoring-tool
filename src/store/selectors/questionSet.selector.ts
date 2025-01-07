@@ -33,3 +33,8 @@ export const filtersQuestionSetsSelector = createSelector(
   [selectQuestionSetState],
   (state: QuestionSetState) => state.filters
 );
+
+export const allQuestionSetsSelector = createSelector(
+  [selectQuestionSetState],
+  (state: QuestionSetState) => state.entities
+);

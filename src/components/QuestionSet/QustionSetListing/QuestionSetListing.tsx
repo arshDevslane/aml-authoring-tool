@@ -13,9 +13,12 @@ import {
   questionSetsSelector,
 } from '@/store/selectors/questionSet.selector';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { Circle, Pencil, Trash } from 'lucide-react';
+import { Circle, Info, Pencil, PlusCircle, Trash } from 'lucide-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import QuestionSetDetails from './QuestionSetDetails/QuestionSetDetails';
 
 const coloredDot = (info: CellContext<QuestionSet, unknown>) => (
   <div className='flex items-center justify-center'>
@@ -116,7 +119,19 @@ const QuestionSetListing = () => {
         header: 'Actions',
         // eslint-disable-next-line react/no-unstable-nested-components
         cell: ({ row }) => (
-          <div className='flex gap-5 ml-6 items-center'>
+          <div className='flex gap-5 ml-12 items-center'>
+            <AmlTooltip tooltip='Details'>
+              <Info
+                className='h-5 w-5 hover:fill-slate-400 cursor-pointer'
+                onClick={() =>
+                  setOpenDialog({
+                    dialog: DialogTypes.DETAILS,
+                    open: true,
+                    questionSetId: row.id,
+                  })
+                }
+              />
+            </AmlTooltip>
             <AmlTooltip tooltip='Edit'>
               <Pencil
                 className='h-5 w-5 hover:fill-slate-400 cursor-pointer'
@@ -157,31 +172,66 @@ const QuestionSetListing = () => {
   });
 
   return (
-    <div className='flex-1 flex flex-col'>
-      <TableComponent
-        disableDrag
-        isLoading={isQuestionSetLoading}
-        tableInstance={tableInstance}
-        searchFilters={searchFilters}
-        setSearchFilters={setSearchFilters}
-        totalCount={totalCount}
-      />
-      <AmlDialog
-        open={openDialog.open && openDialog.dialog === DialogTypes.DELETE}
-        onOpenChange={() =>
-          setOpenDialog({ dialog: null, open: false, questionSetId: null })
-        }
-        title='Are you sure you want to delete this question set?'
-        description='This action cannot be undone. This will permanently delete your question set.'
-        onPrimaryButtonClick={() => {
-          dispatch(deleteQuestionSetAction(openDialog.questionSetId!));
-          setOpenDialog({ dialog: null, open: false, questionSetId: null });
-        }}
-        onSecondaryButtonClick={() => {
-          setOpenDialog({ dialog: null, open: false, questionSetId: null });
-        }}
-      />
-    </div>
+    <>
+      <div className='flex items-center gap-6 mb-4'>
+        <h1 className='text-2xl font-bold'>Question Sets</h1>
+        <Button
+          onClick={() =>
+            setOpenDialog({
+              dialog: DialogTypes.DETAILS,
+              open: true,
+              questionSetId: null,
+            })
+          }
+        >
+          <PlusCircle /> New
+        </Button>
+      </div>
+      <div className='flex-1 flex flex-col'>
+        <TableComponent
+          disableDrag
+          isLoading={isQuestionSetLoading}
+          tableInstance={tableInstance}
+          searchFilters={searchFilters}
+          setSearchFilters={setSearchFilters}
+          totalCount={totalCount}
+        />
+        <AmlDialog
+          open={openDialog.open && openDialog.dialog === DialogTypes.DELETE}
+          onOpenChange={() =>
+            setOpenDialog({ dialog: null, open: false, questionSetId: null })
+          }
+          title='Are you sure you want to delete this question set?'
+          description='This action cannot be undone. This will permanently delete your question set.'
+          onPrimaryButtonClick={() => {
+            dispatch(deleteQuestionSetAction(openDialog.questionSetId!));
+            setOpenDialog({ dialog: null, open: false, questionSetId: null });
+          }}
+          onSecondaryButtonClick={() => {
+            setOpenDialog({ dialog: null, open: false, questionSetId: null });
+          }}
+        />
+        <Dialog
+          open={openDialog.open && openDialog.dialog === DialogTypes.DETAILS}
+          onOpenChange={() =>
+            setOpenDialog({ dialog: null, open: false, questionSetId: null })
+          }
+        >
+          <DialogContent className='max-w-[80%] max-h-[95%] overflow-y-auto'>
+            <QuestionSetDetails
+              questionSetId={openDialog.questionSetId}
+              onClose={() =>
+                setOpenDialog({
+                  dialog: null,
+                  open: false,
+                  questionSetId: null,
+                })
+              }
+            />
+          </DialogContent>
+        </Dialog>
+      </div>
+    </>
   );
 };
 

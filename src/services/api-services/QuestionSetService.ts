@@ -43,6 +43,10 @@ class QuestionSetService {
       { id }
     );
   }
+
+  async getById(id: string) {
+    return baseApiService.get(`/api/v1/question-set/read/${id}`);
+  }
 }
 
 export const questionSetService = QuestionSetService.getInstance();
