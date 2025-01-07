@@ -16,11 +16,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import * as _ from 'lodash';
 
 type SelectProps<T> = {
   onChange: (value: T) => void;
   value: T;
-  renderValue?: (value: T) => React.ReactNode;
+  renderValue?: (value?: T) => React.ReactNode;
   placeholder?: string;
   options: {
     value: string | number;
@@ -64,6 +65,17 @@ export const Select = <T extends string | number | (string | number)[]>({
     return value === val;
   };
 
+  const validatedValues = React.useMemo(() => {
+    if (Array.isArray(value)) {
+      return _.intersectionBy(value, options, 'value').map(
+        (option) => option.value
+      ) as (string | number)[];
+    }
+
+    return options.find((option) => option.value === value)?.value;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -75,8 +87,10 @@ export const Select = <T extends string | number | (string | number)[]>({
           className='border-input flex justify-between max-w-full'
         >
           <p className='truncate max-w-full'>
-            {renderValue?.(value) ??
-              (Array.isArray(value) ? value.join(', ') : value)}
+            {renderValue?.(validatedValues as T) ??
+              (Array.isArray(validatedValues)
+                ? validatedValues.join(', ')
+                : validatedValues)}
           </p>
           <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
         </Button>
