@@ -51,7 +51,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
         </p>
       )}
       <div className='mt-2'>
-        {value.length > 0 &&
+        {value?.length > 0 &&
           value.map((file) => (
             <div
               className='font-semibold py-1 px-3 rounded-md border-2 my-1 bg-primary/30 border-input'

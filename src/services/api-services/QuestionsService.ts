@@ -45,5 +45,32 @@ class QuestionsService {
       { id }
     );
   }
+
+  async getById(id: string) {
+    return baseApiService.get(`/api/v1/question/read/${id}`);
+  }
+
+  async createQuestion(data: any) {
+    return baseApiService.post(
+      `api/v1/question/create`,
+      'api.question.create',
+      data
+    );
+  }
+
+  async updateQuestion(data: any) {
+    return baseApiService.post(
+      `api/v1/question/update/${data.id}`,
+      'api.question.update',
+      data.question
+    );
+  }
+
+  async publish(questionId: string) {
+    return baseApiService.post(
+      `/api/v1/question/publish/${questionId}`,
+      'api.question.publish'
+    );
+  }
 }
 export const questionsService = QuestionsService.getInstance();

@@ -33,3 +33,8 @@ export const allQuestionsSelector = createSelector(
   [questionsState],
   (state: QuestionsState) => state.entities
 );
+
+export const isPublishingSelector = createSelector(
+  [questionsState],
+  (state: QuestionsState) => state.isPublishing
+);

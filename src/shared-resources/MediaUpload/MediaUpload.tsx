@@ -61,7 +61,7 @@ const MediaUpload = ({
   }, [isGeneratingPresignedUrls, isUploadInProgress]);
 
   useEffect(() => {
-    if (isUploadInProgress || uploadError || value.length === 0) return;
+    if (isUploadInProgress || uploadError || value?.length === 0) return;
 
     setUploadClicked(false);
     onUploadComplete(
@@ -92,7 +92,7 @@ const MediaUpload = ({
             isGeneratingPresignedUrls ||
             isUploadInProgress ||
             Boolean(uploadError) ||
-            Object.keys(presignedUrls).length === value.length
+            Object.keys(presignedUrls).length === value?.length
           }
         >
           Upload

@@ -42,6 +42,22 @@ export enum QuestionsActionType {
 
   DELETE_QUESTION = 'question/delete',
   DELETE_QUESTION_COMPLETED = 'question/delete/completed',
+
+  GET_QUESTION = 'question/get',
+  GET_QUESTION_COMPLETED = 'question/get/completed',
+  GET_QUESTION_ERROR = 'question/get/error',
+
+  CREATE_QUESTION = 'create/question',
+  CREATE_QUESTION_COMPLETED = 'create/question/completed',
+  CREATE_QUESTION_ERROR = 'create/question/error',
+
+  UPDATE_QUESTION = 'update/question',
+  UPDATE_QUESTION_COMPLETED = 'update/question/completed',
+  UPDATE_QUESTION_ERROR = 'update/question/error',
+
+  PUBLISH_QUESTION = 'question/publish',
+  PUBLISH_QUESTION_COMPLETED = 'question/publish/completed',
+  PUBLISH_QUESTION_ERROR = 'question/publish/error',
 }
 
 // repositories

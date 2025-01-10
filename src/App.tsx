@@ -15,6 +15,7 @@ import UnauthenticatedRouteHOC from './HOC/UnauthenticatedRoute';
 import AuthenticatedRouteHOC from './HOC/AuthenticatedRoute';
 import { LAYOUT_ROUTES } from './routes';
 import LoginPage from './views/login/LoginPage';
+import Loader from './components/Loader/Loader';
 
 const App: React.FC = () => (
   <Provider store={store}>
@@ -25,7 +26,7 @@ const App: React.FC = () => (
         errorBoundaryHelper(error, info); // custom error handler
       }}
     >
-      <Suspense fallback='Loading...'>
+      <Suspense fallback={<Loader />}>
         <BrowserRouter>
           <NavigationHandler>
             <RouteWrapper>

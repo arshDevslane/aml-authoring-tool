@@ -1,5 +1,4 @@
 import produce from 'immer';
-import { QuestionType } from '@/models/enums/QuestionType.enum';
 import { Question } from '@/models/entities/Question';
 import { CacheAPIResponse } from '@/lib/utils';
 import { QuestionsActionType } from '../actions/actions.constants';
@@ -11,6 +10,7 @@ export type QuestionsState = QuestionsActionPayloadType & {
   entities: Record<string, Question>;
   cachedData: CacheAPIResponse;
   latestCount: number;
+  isPublishing: boolean;
 };
 const initialState: QuestionsState = {
   isLoading: false,
@@ -18,21 +18,9 @@ const initialState: QuestionsState = {
   cachedData: {},
   latestCount: 0,
   filters: {
-    question_type: [
-      QuestionType.GRID_1,
-      QuestionType.GRID_2,
-      QuestionType.FIB,
-      QuestionType.MCQ,
-    ],
-    repository_id: '',
-    board_id: '',
-    class_id: '',
-    l1_skill_id: '',
-    l2_skill_id: '',
-    l3_skill_id: '',
-    sub_skill_id: '',
     page_no: 1,
   },
+  isPublishing: false,
 };
 export const questionsReducer = (
   // eslint-disable-next-line @typescript-eslint/default-param-last
@@ -76,6 +64,33 @@ export const questionsReducer = (
       case QuestionsActionType.DELETE_QUESTION_COMPLETED: {
         draft.entities = {};
         draft.cachedData = {};
+        break;
+      }
+      case QuestionsActionType.GET_QUESTION: {
+        draft.isLoading = true;
+        break;
+      }
+      case QuestionsActionType.GET_QUESTION_COMPLETED: {
+        draft.isLoading = false;
+        draft.entities = {
+          ...state.entities,
+          [action.payload.question.identifier]: action.payload.question,
+        };
+        break;
+      }
+      case QuestionsActionType.PUBLISH_QUESTION: {
+        draft.isPublishing = true;
+        break;
+      }
+      case QuestionsActionType.PUBLISH_QUESTION_COMPLETED: {
+        draft.isPublishing = false;
+        break;
+      }
+      case QuestionsActionType.GET_QUESTION_ERROR:
+      case QuestionsActionType.PUBLISH_QUESTION_ERROR: {
+        draft.isLoading = false;
+        draft.isPublishing = false;
+        draft.error = action.payload;
         break;
       }
       default:

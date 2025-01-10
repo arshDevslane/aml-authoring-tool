@@ -12,6 +12,7 @@ import {
   isAuthenticatedSelector,
   isAuthLoadingSelector,
 } from '@/store/selectors/auth.selector';
+import Loader from '@/components/Loader/Loader';
 
 const AuthenticatedRouteHOC = <P extends object>(
   Component: React.ComponentType<P>
@@ -43,7 +44,7 @@ const AuthenticatedRouteHOC = <P extends object>(
       return (
         <div className='flex items-center justify-center w-screen h-screen'>
           {/* <Spinner size='lg' /> */}
-          Loading...
+          <Loader />
         </div>
       );
     }

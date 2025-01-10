@@ -1,17 +1,17 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTable } from '@/hooks/useTable';
 import TableComponent from '@/shared-resources/TableComponent/TableComponent';
 import { ColumnDef } from '@tanstack/react-table';
-import { Pencil, Trash } from 'lucide-react';
+import { Loader2, Pencil, Send, Trash } from 'lucide-react';
 
 import { Question } from '@/models/entities/Question';
 import {
   deleteQuestionAction,
-  getListQuestionsAction,
+  publishQuestionAction,
 } from '@/store/actions/question.action';
 import {
-  filtersQuestionsSelector,
   isLoadingQuestionsSelector,
+  isPublishingSelector,
   questionsSelector,
 } from '@/store/selectors/questions.selector';
 import {
@@ -22,16 +22,26 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import AmlTooltip from '@/shared-resources/AmlTooltip/AmlTooltip';
 import AmlDialog from '@/shared-resources/AmlDialog/AmlDialog';
+import { useNavigate } from 'react-router-dom';
 
 enum DialogTypes {
   DELETE = 'delete',
   DETAILS = 'details',
 }
-const QuestionsListing = () => {
-  const filters = useSelector(filtersQuestionsSelector);
+
+interface QuestionsListingProps {
+  searchFilters?: any;
+  setSearchFilters?: any;
+}
+const QuestionsListing: React.FC<QuestionsListingProps> = ({
+  searchFilters,
+  setSearchFilters,
+}) => {
+  const navigate = useNavigate();
   const isQuestionsLoading = useSelector(isLoadingQuestionsSelector);
+  const isPublishing = useSelector(isPublishingSelector);
+  const [publishingId, setPublishingId] = useState<string>();
   const { result: questions, totalCount } = useSelector(questionsSelector);
-  const [searchFilters, setSearchFilters] = useState(filters);
   const [openDialog, setOpenDialog] = useState<{
     dialog: DialogTypes | null;
     open: boolean;
@@ -42,14 +52,16 @@ const QuestionsListing = () => {
     questionId: null,
   });
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(
-      getListQuestionsAction({
-        filters: searchFilters,
-      })
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchFilters]);
+
+  const navigateToEditQuestion = (id: string) => {
+    navigate(id);
+  };
+
+  const publishQuestion = (id: string) => {
+    setPublishingId(id);
+    dispatch(publishQuestionAction(id));
+  };
+
   const columns: ColumnDef<Question>[] = useMemo(
     () => [
       {
@@ -108,17 +120,22 @@ const QuestionsListing = () => {
         header: 'Actions',
         // eslint-disable-next-line react/no-unstable-nested-components
         cell: ({ row }) => (
-          <div className='flex gap-5 ml-6 items-center'>
+          <div className='flex gap-5 ml-6 items-center justify-end'>
+            {row.original.status === 'draft' &&
+              (isPublishing && row.id === publishingId ? (
+                <Loader2 className='animate-spin' />
+              ) : (
+                <AmlTooltip tooltip='Publish'>
+                  <Send
+                    className='h-5 w-5 hover:fill-slate-400 cursor-pointer'
+                    onClick={() => publishQuestion(row.id)}
+                  />
+                </AmlTooltip>
+              ))}
             <AmlTooltip tooltip='Edit'>
               <Pencil
                 className='h-5 w-5 hover:fill-slate-400 cursor-pointer'
-                onClick={() =>
-                  setOpenDialog({
-                    dialog: DialogTypes.DETAILS,
-                    open: true,
-                    questionId: row.id,
-                  })
-                }
+                onClick={() => navigateToEditQuestion(row.id)}
               />
             </AmlTooltip>
             <AmlTooltip tooltip='Delete'>
@@ -138,7 +155,7 @@ const QuestionsListing = () => {
         ),
       },
     ],
-    []
+    [isPublishing]
   );
   const tableInstance = useTable({
     columns,

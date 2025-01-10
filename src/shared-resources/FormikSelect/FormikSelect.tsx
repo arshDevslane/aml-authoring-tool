@@ -20,7 +20,7 @@ const FormikSelect: React.FC<FormikSelectProps> = (props) => {
   return (
     <div
       className={cn(
-        'flex flex-1 overflow-hidden flex-col gap-1 mb-2',
+        'flex flex-1 flex-col gap-1 mb-2 relative',
         Boolean(touched && error) && '[&_button]:!border-red-500'
       )}
     >
@@ -31,7 +31,7 @@ const FormikSelect: React.FC<FormikSelectProps> = (props) => {
       )}
       <Select value={value} onChange={(v) => setValue(v)} {...props} />
       <ErrorMessage
-        className='text-red-500 mt-2 text-sm'
+        className='absolute text-red-500 text-xs mt-1 top-full left-0 w-full'
         name={name}
         component='p'
       />

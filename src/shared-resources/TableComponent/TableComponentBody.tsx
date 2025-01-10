@@ -4,6 +4,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import React from 'react';
+import Loader from '@/components/Loader/Loader';
 import DraggableRow from './DraggableRow';
 
 type TableComponentBodyProps = {
@@ -24,7 +25,7 @@ const TableComponentBody = ({
       <TableRow className='border-none'>
         <TableCell colSpan={columnsLength}>
           <div className='flex items-center justify-center h-full'>
-            Loading...
+            <Loader />
           </div>
         </TableCell>
       </TableRow>

@@ -11,6 +11,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { PaginationLimit } from '@/enums/tableEnums';
 import * as _ from 'lodash';
+import Loader from '@/components/Loader/Loader';
 
 type InfiniteSelectProps = {
   onChange: (value: any) => void;
@@ -263,7 +264,7 @@ export const InfiniteSelect = ({
                 {isLoading && (
                   <p className='hover:bg-blue-50/80 flex cursor-default gap-2 select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0'>
                     <Check className={cn('mr-2 h-4 w-4 opacity-0')} />
-                    Loading...
+                    <Loader />
                   </p>
                 )}
               </div>

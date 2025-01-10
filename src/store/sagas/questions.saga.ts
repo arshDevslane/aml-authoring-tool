@@ -4,14 +4,23 @@ import { PaginationLimit } from '@/enums/tableEnums';
 import { questionsService } from '@/services/api-services/QuestionsService';
 import { toastService } from '@/services/ToastService';
 import {
+  createQuestionCompletedAction,
+  createQuestionErrorAction,
   deleteQuestionCompletedAction,
   getListQuestionsAction,
   getListQuestionsCompletedAction,
   getListQuestionsErrorAction,
+  getQuestionAction,
+  getQuestionCompletedAction,
+  getQuestionErrorAction,
+  publishQuestionCompletedAction,
   QuestionsActionPayloadType,
+  updateQuestionCompletedAction,
+  updateQuestionErrorAction,
 } from '../actions/question.action';
 import { QuestionsActionType } from '../actions/actions.constants';
 import { AppState } from '../reducers';
+import { navigateTo } from '../actions/navigation.action';
 
 interface QuestionsSagaPayloadType extends SagaPayloadType {
   payload: QuestionsActionPayloadType;
@@ -85,10 +94,109 @@ function* deleteQuestionSaga(data: DeleteQuestionSagaPayloadType): any {
   }
 }
 
+function* getQuestionSaga(data: any): any {
+  try {
+    const { id } = data.payload;
+    const response: Awaited<ReturnType<typeof questionsService.getById>> =
+      yield call(questionsService.getById, id);
+    yield put(
+      getQuestionCompletedAction({
+        question: response.result,
+      })
+    );
+  } catch (e: any) {
+    yield put(
+      getQuestionErrorAction((e?.errors && e.errors[0]?.message) || e?.message)
+    );
+  }
+}
+
+function* createQuestionSaga(data: any): any {
+  try {
+    const { question } = data;
+    const filters: QuestionsActionPayloadType['filters'] = yield select(
+      (state: AppState) => state.questions.filters
+    );
+    const response: Awaited<
+      ReturnType<typeof questionsService.createQuestion>
+    > = yield call(questionsService.createQuestion, question);
+    yield put(
+      createQuestionCompletedAction({
+        question: response.result,
+      })
+    );
+    toastService.showSuccess('Question created successfully');
+    yield put(navigateTo('/app/questions'));
+    yield put(
+      getListQuestionsAction({
+        filters,
+      })
+    );
+  } catch (e: any) {
+    yield put(
+      createQuestionErrorAction(
+        (e?.errors && e.errors[0]?.message) || e?.message
+      )
+    );
+  }
+}
+
+function* updateQuestionSaga(data: any): any {
+  try {
+    const { question, id } = data.payload;
+
+    const response: Awaited<
+      ReturnType<typeof questionsService.updateQuestion>
+    > = yield call(questionsService.updateQuestion, { question, id });
+    yield put(
+      updateQuestionCompletedAction({
+        question: response.result,
+      })
+    );
+    toastService.showSuccess('Question updated successfully');
+    yield put(navigateTo('/app/questions'));
+    yield put(
+      getQuestionAction({
+        id,
+      })
+    );
+  } catch (e: any) {
+    yield put(
+      updateQuestionErrorAction(
+        (e?.errors && e.errors[0]?.message) || e?.message
+      )
+    );
+  }
+}
+
+function* publishQuestionSaga(data: DeleteQuestionSagaPayloadType): any {
+  try {
+    const response = yield call(
+      questionsService.publish,
+      data.payload?.questionId
+    );
+    yield put(publishQuestionCompletedAction(response));
+
+    toastService.showSuccess('Question published successfully');
+
+    yield put(
+      getQuestionAction({
+        id: data.payload?.questionId,
+      })
+    );
+  } catch (e: any) {
+    toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
+  }
+}
+
 function* questionsSaga() {
   yield all([
     takeLatest(QuestionsActionType.GET_LIST, getListQuestionsSaga),
     takeLatest(QuestionsActionType.DELETE_QUESTION, deleteQuestionSaga),
+    takeLatest(QuestionsActionType.GET_QUESTION, getQuestionSaga),
+    takeLatest(QuestionsActionType.CREATE_QUESTION, createQuestionSaga),
+    takeLatest(QuestionsActionType.UPDATE_QUESTION, updateQuestionSaga),
+    takeLatest(QuestionsActionType.PUBLISH_QUESTION, publishQuestionSaga),
   ]);
 }
 export default questionsSaga;

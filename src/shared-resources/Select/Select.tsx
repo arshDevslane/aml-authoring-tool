@@ -85,7 +85,7 @@ export const Select = <T extends string | number | (string | number)[]>({
           variant='outline'
           role='combobox'
           aria-expanded={open}
-          className='border-input flex justify-between max-w-full'
+          className='border-input flex justify-between max-w-full border-[1px]'
         >
           <p className='truncate max-w-full'>
             {renderValue?.(validatedValues as T) ??

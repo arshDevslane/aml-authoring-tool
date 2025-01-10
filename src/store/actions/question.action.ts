@@ -44,3 +44,72 @@ export const deleteQuestionCompletedAction = () => ({
   type: QuestionsActionType.DELETE_QUESTION_COMPLETED,
   payload: {},
 });
+
+export const getQuestionAction = (payload: { id: string }) => ({
+  type: QuestionsActionType.GET_QUESTION,
+  payload,
+});
+
+export const getQuestionCompletedAction = (payload: {
+  question: Question;
+}) => ({
+  type: QuestionsActionType.GET_QUESTION_COMPLETED,
+  payload,
+});
+
+export const getQuestionErrorAction = (message: string) => ({
+  type: QuestionsActionType.GET_QUESTION_ERROR,
+  payload: message,
+});
+
+export const createQuestionAction = (question: any) => ({
+  type: QuestionsActionType.CREATE_QUESTION,
+  question,
+});
+
+export const createQuestionCompletedAction = (payload: {
+  question: Question;
+}) => ({
+  type: QuestionsActionType.CREATE_QUESTION_COMPLETED,
+  payload,
+});
+
+export const createQuestionErrorAction = (message: string) => ({
+  type: QuestionsActionType.CREATE_QUESTION_ERROR,
+  payload: message,
+});
+
+export const updateQuestionAction = (payload: {
+  id: string;
+  question: any;
+}) => ({
+  type: QuestionsActionType.UPDATE_QUESTION,
+  payload,
+});
+
+export const updateQuestionCompletedAction = (payload: {
+  question: Question;
+}) => ({
+  type: QuestionsActionType.UPDATE_QUESTION_COMPLETED,
+  payload,
+});
+
+export const updateQuestionErrorAction = (message: string) => ({
+  type: QuestionsActionType.UPDATE_QUESTION_ERROR,
+  payload: message,
+});
+
+export const publishQuestionAction = (questionId: string) => ({
+  type: QuestionsActionType.PUBLISH_QUESTION,
+  payload: { questionId },
+});
+
+export const publishQuestionCompletedAction = (payload: any) => ({
+  type: QuestionsActionType.PUBLISH_QUESTION_COMPLETED,
+  payload,
+});
+
+export const publishQuestionErrorAction = (message: string) => ({
+  type: QuestionsActionType.PUBLISH_QUESTION_ERROR,
+  payload: message,
+});

@@ -1,5 +1,6 @@
 import { QuestionType } from '../enums/QuestionType.enum';
 import { SkillType } from '../enums/skillType.enum';
+import { ArithmaticOperations } from '../enums/ArithmaticOperations.enum';
 
 export interface QuestionSet {
   identifier: string;
@@ -58,9 +59,9 @@ export interface Skill {
 }
 export interface Question {
   identifier: string;
-  benchmark_time: number;
+  benchmark_time: string;
   question_type: QuestionType;
-  operation: string;
+  operation: ArithmaticOperations;
   name: Description;
   description: Description;
   tenant: string;
@@ -87,6 +88,15 @@ export interface QuestionBody {
   correct_option?: string;
   question_image?: string;
   question_image_url?: string;
+  grid1_pre_fills_top?: string;
+  grid1_pre_fills_result?: string;
+  grid1_show_carry?: boolean;
+  grid1_show_regroup?: boolean;
+  grid1_multiply_intermediate_steps_prefills?: string;
+  grid1_pre_fills_quotient?: string;
+  grid1_pre_fills_remainder?: string;
+  grid1_div_intermediate_steps_prefills?: string;
+  fib_answer?: string;
 }
 
 export interface Answers {

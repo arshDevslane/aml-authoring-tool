@@ -1,3 +1,4 @@
+import Loader from '@/components/Loader/Loader';
 import QuestionSetDetailPublish from '@/components/QuestionSet/QuestionSetListing/QuestionSetDetails/QuestionSetDetailPublish/QuestionSetDetailPublish';
 import { navigateTo } from '@/store/actions/navigation.action';
 import { getQuestionSetAction } from '@/store/actions/questionSet.actions';
@@ -32,7 +33,11 @@ const QuestionSetDetailPage = () => {
   }, [id]);
 
   if (isLoadingQuestionSet) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Loader />
+      </div>
+    );
   }
 
   return <QuestionSetDetailPublish questionSet={questionSet} />;
