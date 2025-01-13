@@ -74,7 +74,7 @@ export const InfiniteSelect = ({
       const newOptions = _.differenceBy(
         availableOptions,
         newDataArray,
-        'identifier'
+        valueKey ?? ''
       );
 
       newDataArray.unshift(...newOptions);

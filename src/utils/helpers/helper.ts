@@ -21,10 +21,12 @@ export function getCommaSeparatedNumbers(numbersObject: object) {
     : numberArray.join(', ');
 }
 
-export function toReadableFormat(input: string): string {
+export function toReadableFormat(input: string, splitBy = '-'): string {
   // Replace dashes with spaces and capitalize the first letter of each word
+  if (!input) return '-';
+
   return input
-    .split('-') // Split the string by dash
+    .split(splitBy) // Split the string by dash
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize the first letter
     .join(' '); // Join the words with a space
 }

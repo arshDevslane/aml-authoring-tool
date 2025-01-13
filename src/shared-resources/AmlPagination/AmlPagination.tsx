@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import {
   Pagination,
   PaginationContent,
@@ -89,12 +89,6 @@ const AmlPagination: React.FC<AmlPaginationProps> = ({
 
     return pageNumbers;
   };
-
-  useEffect(() => {
-    if (currentPage > totalPages || currentPage < 1) {
-      handlePageClick(1);
-    }
-  }, [currentPage, handlePageClick, totalPages]);
 
   return (
     <Pagination className='justify-between items-center mt-2'>

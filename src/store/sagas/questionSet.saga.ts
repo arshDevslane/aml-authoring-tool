@@ -119,7 +119,7 @@ function* getQuestionSetSaga(data: any): any {
       yield call(questionSetService.getById, id);
     yield put(
       getQuestionSetCompletedAction({
-        questionSet: response.result,
+        questionSet: response.result.question_set,
       })
     );
   } catch (e: any) {

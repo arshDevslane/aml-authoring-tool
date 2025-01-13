@@ -184,6 +184,7 @@ const QuestionSetDetails = ({
             values?.purpose !== QuestionSetPurposeType.MAIN_DIAGNOSTIC &&
               values?.enable_feedback
           ),
+          is_atomic: false,
         };
 
         if (questionSet) {
@@ -408,6 +409,7 @@ const QuestionSetDetails = ({
               variant='outline'
               onClick={onClose}
               size='lg'
+              type='button'
               disabled={isFormSubmitted}
             >
               Cancel

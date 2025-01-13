@@ -176,9 +176,9 @@ const QuestionSetDetailPublish = ({
               !(
                 isOrderUpdated ||
                 (Boolean(selectedContentId) &&
-                  questionSet.content_ids?.[0] !== selectedContentId) ||
-                isFormSubmitted
-              )
+                  questionSet.content_ids?.[0] !== selectedContentId)
+              ) ||
+              isFormSubmitted
             }
             onClick={handleSaveQuestionSet}
           >
