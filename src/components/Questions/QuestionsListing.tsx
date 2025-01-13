@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { useTable } from '@/hooks/useTable';
 import TableComponent from '@/shared-resources/TableComponent/TableComponent';
-import { ColumnDef } from '@tanstack/react-table';
-import { Loader2, Pencil, Send, Trash } from 'lucide-react';
+import { CellContext, ColumnDef } from '@tanstack/react-table';
+import { Circle, Loader2, Pencil, Send, Trash } from 'lucide-react';
 
 import { Question } from '@/models/entities/Question';
 import {
@@ -23,6 +23,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import AmlTooltip from '@/shared-resources/AmlTooltip/AmlTooltip';
 import AmlDialog from '@/shared-resources/AmlDialog/AmlDialog';
 import { useNavigate } from 'react-router-dom';
+
+const coloredDot = (info: CellContext<Question, unknown>) => {
+  const status = info.getValue();
+
+  return (
+    <div className='flex items-center justify-center'>
+      {status === 'live' && (
+        <Circle className='w-4 fill-green-500 text-green-500' />
+      )}
+      {status === 'draft' && (
+        <Circle className='w-4 fill-red-500 text-red-500' />
+      )}
+    </div>
+  );
+};
 
 enum DialogTypes {
   DELETE = 'delete',
@@ -64,6 +79,11 @@ const QuestionsListing: React.FC<QuestionsListingProps> = ({
 
   const columns: ColumnDef<Question>[] = useMemo(
     () => [
+      {
+        accessorKey: 'status',
+        header: 'Status',
+        cell: coloredDot,
+      },
       {
         accessorKey: 'taxonomy',
         header: 'Class',
