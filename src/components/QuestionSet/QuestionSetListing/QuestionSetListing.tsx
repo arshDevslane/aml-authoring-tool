@@ -23,15 +23,24 @@ import AmlListingFilterPopup from '@/shared-resources/AmlListingFilterPopup/AmlL
 import QuestionSetDetails from './QuestionSetDetails/QuestionSetDetails';
 import QuestionSetFilters from '../QuestionSetFilters';
 
-const coloredDot = (info: CellContext<QuestionSet, unknown>) => (
-  <div className='flex items-center justify-center'>
-    {info.getValue() ? (
-      <Circle className='w-4 fill-green-500 text-green-500' />
-    ) : (
-      <Circle className='w-4 fill-red-500 text-red-500' />
-    )}
-  </div>
-);
+const coloredDot = (
+  info: CellContext<QuestionSet, unknown>,
+  checkFunction?: (value: any) => boolean
+) => {
+  const renderDot = (value: boolean) => (
+    <div className='flex items-center justify-center'>
+      {value ? (
+        <Circle className='w-4 fill-green-500 text-green-500' />
+      ) : (
+        <Circle className='w-4 fill-red-500 text-red-500' />
+      )}
+    </div>
+  );
+
+  return typeof checkFunction === 'function'
+    ? renderDot(checkFunction(info.getValue()))
+    : renderDot(info.getValue() as boolean);
+};
 
 enum DialogTypes {
   DELETE = 'delete',
@@ -70,6 +79,11 @@ const QuestionSetListing = () => {
   const columns: ColumnDef<QuestionSet>[] = useMemo(
     () => [
       {
+        accessorKey: 'status',
+        header: 'Live',
+        cell: (info) => coloredDot(info, (value) => value === 'live'),
+      },
+      {
         accessorKey: 'title',
         header: 'Title',
         cell: (info) => (info.getValue() as QuestionSet['title']).en,
@@ -106,11 +120,6 @@ const QuestionSetListing = () => {
         header: 'Purpose',
       },
       {
-        accessorKey: 'status',
-        header: 'Status',
-        cellClassName: 'uppercase',
-      },
-      {
         accessorKey: 'enable_feedback',
         header: 'Show Feedback',
         cell: coloredDot,
@@ -120,7 +129,7 @@ const QuestionSetListing = () => {
         header: 'Actions',
         // eslint-disable-next-line react/no-unstable-nested-components
         cell: ({ row }) => (
-          <div className='flex gap-5 ml-12 items-center'>
+          <div className='flex gap-5 items-center justify-center'>
             <NavLink to={`${location.pathname}/${row.id}`}>
               <AmlTooltip tooltip='Details'>
                 <Info className='h-5 w-5 hover:fill-slate-400 cursor-pointer' />

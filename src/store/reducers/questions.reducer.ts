@@ -33,13 +33,17 @@ export const questionsReducer = (
     switch (action.type) {
       case QuestionsActionType.GET_LIST: {
         draft.isLoading = true;
-        draft.filters = action.payload.filters;
+        if (!action.payload.noCache) {
+          draft.filters = action.payload.filters;
+        }
         break;
       }
       case QuestionsActionType.GET_LIST_COMPLETED: {
         draft.isLoading = false;
 
-        const filterKey = JSON.stringify(state.filters);
+        const filterKey = action.payload.noCache
+          ? 'noCacheData'
+          : JSON.stringify(state.filters);
         const questionsMap = action.payload.questions.reduce(
           (acc: any, question: Question) => ({
             ...acc,

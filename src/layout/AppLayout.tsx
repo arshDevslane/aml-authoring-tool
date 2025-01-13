@@ -9,7 +9,7 @@ const AppLayout: React.FC = () => (
     <AppSidebar />
 
     {/* Main Content */}
-    <main className='flex-1 p-6'>
+    <main className='relative flex-1 p-6 flex overflow-x-hidden overflow-y-scroll'>
       <AppRoutes />
     </main>
   </SidebarProvider>

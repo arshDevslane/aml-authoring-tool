@@ -49,6 +49,7 @@ function* getListQuestionsSaga(data: QuestionsSagaPayloadType): any {
             .map((id) => entities[id])
             .filter(Boolean),
           totalCount: cachedData.totalCount,
+          noCache: data.payload.noCache ?? false,
         })
       );
       return;
@@ -64,6 +65,7 @@ function* getListQuestionsSaga(data: QuestionsSagaPayloadType): any {
       getListQuestionsCompletedAction({
         questions: response.result.questions,
         totalCount: response.result.meta.total,
+        noCache: data.payload.noCache ?? false,
       })
     );
   } catch (e: any) {

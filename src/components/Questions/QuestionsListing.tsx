@@ -145,7 +145,7 @@ const QuestionsListing: React.FC<QuestionsListingProps> = ({
         header: 'Actions',
         // eslint-disable-next-line react/no-unstable-nested-components
         cell: ({ row }) => (
-          <div className='flex gap-5 ml-6 items-center justify-end'>
+          <div className='flex gap-5 items-center justify-center'>
             {row.original.status === 'draft' &&
               (isPublishing && row.id === publishingId ? (
                 <Loader2 className='animate-spin' />

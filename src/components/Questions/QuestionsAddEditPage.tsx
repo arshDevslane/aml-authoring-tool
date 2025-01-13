@@ -26,7 +26,7 @@ const QuestionsAddEditPage: React.FC = () => {
   }, [id, question]);
 
   return (
-    <div className='p-4 h-full flex flex-col bg-white shadow rounded-md'>
+    <div className='flex-1 overflow-x-hidden p-4 h-full flex flex-col bg-white shadow rounded-md'>
       <h1 className='text-2xl font-bold mb-4'>
         {id ? 'Edit Question' : 'Add Question'}
       </h1>
@@ -35,7 +35,7 @@ const QuestionsAddEditPage: React.FC = () => {
           <Loader />
         </p>
       ) : (
-        <div>
+        <div className='flex flex-1'>
           <QuestionAddEditForm id={id} question={questionData} />
         </div>
       )}

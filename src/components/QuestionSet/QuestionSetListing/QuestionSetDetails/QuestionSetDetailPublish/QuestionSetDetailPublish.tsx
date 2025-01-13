@@ -12,6 +12,7 @@ import { QuestionOrderType } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import QuestionSetContentUploadForm from '@/components/QuestionSetContentUploadForm/QuestionSetContentUploadForm';
 import { resetMediaUploadStateAction } from '@/store/actions/media.actions';
+import { toReadableFormat } from '@/utils/helpers/helper';
 import QuestionSetQuestionReorderComponent from './QuestionSetQuestionReorderComponent';
 import QuestionSetContentComponent from '../QuestionSetDetailContent/QuestionSetContentComponent';
 
@@ -36,6 +37,7 @@ const QuestionSetDetailPublish = ({
 
   const [isOrderUpdated, setIsOrderUpdated] = useState(false);
   const [isNewUpload, setIsNewUpload] = useState(false);
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
   const [selectedContentId, setSelectedContentId] = useState<string | null>(
     null
@@ -83,7 +85,7 @@ const QuestionSetDetailPublish = ({
     },
     {
       label: 'Class',
-      value: questionSet?.taxonomy?.class?.name?.en,
+      value: toReadableFormat(questionSet?.taxonomy?.class?.name?.en),
       hasValue: Boolean(questionSet?.taxonomy?.class?.name?.en),
     },
     {
@@ -113,6 +115,7 @@ const QuestionSetDetailPublish = ({
   ];
 
   const handleSaveQuestionSet = () => {
+    setIsFormSubmitted(true);
     dispatch(
       updateQuestionSetAction({
         questionSetId: questionSet?.identifier,
@@ -172,7 +175,9 @@ const QuestionSetDetailPublish = ({
               isActionInProgress ||
               !(
                 isOrderUpdated ||
-                questionSet.content_ids?.[0] !== selectedContentId
+                (Boolean(selectedContentId) &&
+                  questionSet.content_ids?.[0] !== selectedContentId) ||
+                isFormSubmitted
               )
             }
             onClick={handleSaveQuestionSet}

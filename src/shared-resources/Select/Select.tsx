@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Check, ChevronsUpDown } from 'lucide-react';
+import { Check, ChevronsUpDown, X } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -65,37 +65,55 @@ export const Select = <T extends string | number | (string | number)[]>({
     return value === val;
   };
 
-  const validatedValues = React.useMemo(() => {
+  const { validatedValues, renderLabels } = React.useMemo(() => {
     if (Array.isArray(value)) {
-      return _.intersectionBy(
+      const filteredValues = _.intersectionBy(
         value,
         options.map((option) => option.value)
       );
+      const labels = filteredValues.map((option) => option.label).join(', ');
+      return {
+        validatedValues: filteredValues,
+        renderLabels: labels,
+      };
     }
 
-    return options.find((option) => option.value === value)?.value;
+    const selectedOption = options.find((option) => option.value === value);
+
+    return {
+      validatedValues: selectedOption?.value,
+      renderLabels: selectedOption?.label,
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
+  const handleReset = () => {
+    onChange((multiple ? [] : '') as T);
+    setOpen(false);
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          ref={selectRef}
-          variant='outline'
-          role='combobox'
-          aria-expanded={open}
-          className='border-input flex justify-between max-w-full border-[1px]'
-        >
-          <p className='truncate max-w-full'>
-            {renderValue?.(validatedValues as T) ??
-              (Array.isArray(validatedValues)
-                ? validatedValues.join(', ')
-                : validatedValues)}
-          </p>
-          <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
-        </Button>
-      </PopoverTrigger>
+      <div className='flex flex-1 items-center gap-2 overflow-hidden'>
+        <PopoverTrigger asChild>
+          <Button
+            ref={selectRef}
+            variant='outline'
+            role='combobox'
+            aria-expanded={open}
+            className='border-input flex justify-between flex-1 overflow-hidden'
+          >
+            <p className='truncate max-w-full'>
+              {renderValue?.(validatedValues as T) ?? renderLabels}
+            </p>
+            <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+          </Button>
+        </PopoverTrigger>
+        <X
+          className='text-red-400 h-5 w-5 cursor-pointer'
+          onClick={handleReset}
+        />
+      </div>
       <PopoverContent
         className='p-0'
         style={{ width: selectRef.current?.clientWidth }}

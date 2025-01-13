@@ -212,12 +212,16 @@ const QuestionSetFilters = ({
                 value: status.toLowerCase(),
                 label: status,
               }))}
-              renderValue={(status) => (status as string)?.toUpperCase()}
             />
           </div>
           <div className='flex justify-end'>
-            <PopoverClose asChild>
-              <div className='w-min flex gap-3'>
+            <div className='w-min flex gap-3'>
+              <PopoverClose asChild disabled={!formik.dirty}>
+                <Button type='submit' disabled={!formik.dirty}>
+                  Apply
+                </Button>
+              </PopoverClose>
+              <PopoverClose asChild>
                 <Button
                   type='button'
                   variant='outline'
@@ -229,11 +233,8 @@ const QuestionSetFilters = ({
                 >
                   Reset
                 </Button>
-                <Button type='submit' disabled={!formik.dirty}>
-                  Apply
-                </Button>
-              </div>
-            </PopoverClose>
+              </PopoverClose>
+            </div>
           </div>
         </form>
       )}

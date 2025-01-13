@@ -25,7 +25,7 @@ const FormikInfiniteSelect: React.FC<FormikInfiniteSelectProps> = (props) => {
   return (
     <div
       className={cn(
-        'flex flex-1 overflow-hidden flex-col gap-1 mb-2',
+        'flex-1 flex flex-col gap-1 mb-2 overflow-hidden',
         Boolean(touched && error) && '[&_button]:!border-red-500'
       )}
     >
@@ -38,15 +38,15 @@ const FormikInfiniteSelect: React.FC<FormikInfiniteSelectProps> = (props) => {
         onChange={(v) => {
           setValue(
             Array.isArray(v)
-              ? v.map((item: any) => _.get(item, valueKey!))
-              : _.get(v, valueKey!)
+              ? v.map((item: any) => _.get(item, valueKey!)) ?? []
+              : _.get(v, valueKey!) ?? ''
           );
           onValueChange?.(v);
         }}
         {...props}
       />
       <ErrorMessage
-        className='text-red-500 mt-2 text-sm'
+        className='text-red-500 text-xs mt-1'
         name={name}
         component='p'
       />

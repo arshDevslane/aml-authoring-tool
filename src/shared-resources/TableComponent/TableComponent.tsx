@@ -43,6 +43,7 @@ export default function TableComponent<T, S extends Record<string, any>>(
             }
             totalPages={Math.ceil(props.totalCount / PaginationLimit.PAGE_SIZE)}
             disabled={props.tableInstance.getRowModel().rows.length === 0}
+            totalCount={props.totalCount}
           />
         )}
       </div>

@@ -6,7 +6,7 @@ import { InfiniteSelect } from '@/shared-resources/InfiniteSelect/InfiniteSelect
 import { getListQuestionsAction } from '@/store/actions/question.action';
 import {
   isLoadingQuestionsSelector,
-  questionsSelector,
+  noCacheQuestionSelector,
 } from '@/store/selectors/questions.selector';
 import {
   closestCenter,
@@ -185,7 +185,7 @@ const QuestionSetQuestionReorderComponent = ({
     class_id: '',
   });
 
-  const { result, totalCount } = useSelector(questionsSelector);
+  const { result, totalCount } = useSelector(noCacheQuestionSelector);
   const isLoadingQuestions = useSelector(isLoadingQuestionsSelector);
 
   const sensors = useSensors(
@@ -246,7 +246,7 @@ const QuestionSetQuestionReorderComponent = ({
     >
       <div className='flex justify-between mt-3 mb-5 gap-5'>
         <h1 className='text-2xl font-bold'>Questions</h1>
-        <div className='flex flex-1 overflow-hidden flex-col gap-1 max-w-[350px]'>
+        <div className='flex flex-1 overflow-hidden flex-col gap-1 w-[300px]'>
           <InfiniteSelect
             key={mountCounter}
             isLoading={isLoadingQuestions}
@@ -256,6 +256,7 @@ const QuestionSetQuestionReorderComponent = ({
             dispatchAction={(values) =>
               getListQuestionsAction({
                 filters: {
+                  search_query: values.value,
                   l1_skill_id: questionSet.taxonomy.l1_skill.identifier,
                   repository_id: questionSet.repository.identifier,
                   board_id: questionSet.taxonomy.board.identifier,
@@ -268,6 +269,7 @@ const QuestionSetQuestionReorderComponent = ({
                   l2_skill_id: filterState.l2_skill,
                   l3_skill_id: filterState.l3_skill,
                 },
+                noCache: true,
               })
             }
             valueKey='identifier'
@@ -283,16 +285,6 @@ const QuestionSetQuestionReorderComponent = ({
               setOpenDialog({ open: true, dialog: DialogTypes.FILTER })
             }
           />
-          <Button
-            variant='outline'
-            onClick={() => {
-              setChangeState([]);
-              setMountCounter((prev) => prev + 1);
-            }}
-            disabled={!changeState.length}
-          >
-            Cancel
-          </Button>
           <Button
             disabled={!changeState.length}
             onClick={handleQuestionAddition}

@@ -1,12 +1,12 @@
 import React from 'react';
 
 const Loader: React.FC = () => (
-  <div className='animate-spin w-fit'>
+  <div className='w-fit absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
     <svg
       xmlns='http://www.w3.org/2000/svg'
       version='1.1'
-      width='48'
-      height='48'
+      viewBox='0 0 48 48'
+      className='w-full h-full max-h-10 animate-spin'
     >
       <path
         d='M0 0 C3.35250701 0.57575664 4.93818629 1.59306263 7.25 4.0625 C7.77078125 4.61035156 8.2915625 5.15820312 8.828125 5.72265625 C9.21484375 6.14417969 9.6015625 6.56570312 10 7 C9.34 8.32 8.68 9.64 8 11 C4.17207132 9.4404735 1.63640136 7.16368164 -1 4 C-0.8125 1.6875 -0.8125 1.6875 0 0 Z '

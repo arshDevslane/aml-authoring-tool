@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Check, ChevronsUpDown, Search } from 'lucide-react';
+import { Check, ChevronsUpDown, Search, X } from 'lucide-react';
 
 import { cn, debounce } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -109,7 +109,7 @@ export const InfiniteSelect = ({
       dispatch(dispatchAction(searchFilters));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, searchFilters, isLoading]);
+  }, [open, searchFilters]);
 
   React.useEffect(() => {
     if (!open || searchFilters.page_no === totalPages) return;
@@ -161,6 +161,12 @@ export const InfiniteSelect = ({
     }
   };
 
+  const handleReset = () => {
+    onChange(multiple ? [] : '');
+    setValues(multiple ? [] : '');
+    setOpen(false);
+  };
+
   const checkValue = (val: string | number) => {
     if (multiple) {
       return selectedValues.includes(val);
@@ -192,24 +198,30 @@ export const InfiniteSelect = ({
         setSearchFilters({ value: '', page_no: 1 });
       }}
     >
-      <PopoverTrigger asChild>
-        <Button
-          ref={selectRef}
-          variant='outline'
-          role='combobox'
-          aria-expanded={open}
-          className='border-input flex justify-between max-w-full'
-        >
-          <p className='truncate max-w-full'>
-            {multiple
-              ? values
-                  .map((item: any) => _.get(item, labelKey ?? ''))
-                  .join(', ')
-              : _.get(values, labelKey ?? '')}
-          </p>
-          <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
-        </Button>
-      </PopoverTrigger>
+      <div className='flex flex-1 items-center gap-2 overflow-hidden'>
+        <PopoverTrigger asChild>
+          <Button
+            ref={selectRef}
+            variant='outline'
+            role='combobox'
+            aria-expanded={open}
+            className='border-input flex justify-between flex-1 overflow-hidden'
+          >
+            <p className='truncate max-w-full'>
+              {multiple
+                ? values
+                    .map((item: any) => _.get(item, labelKey ?? ''))
+                    .join(', ')
+                : _.get(values, labelKey ?? '')}
+            </p>
+            <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+          </Button>
+        </PopoverTrigger>
+        <X
+          className='text-red-400 h-5 w-5 cursor-pointer'
+          onClick={handleReset}
+        />
+      </div>
       <PopoverContent
         className='p-0'
         style={{ width: selectRef.current?.clientWidth }}
@@ -262,8 +274,7 @@ export const InfiniteSelect = ({
                   );
                 })}
                 {isLoading && (
-                  <p className='hover:bg-blue-50/80 flex cursor-default gap-2 select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0'>
-                    <Check className={cn('mr-2 h-4 w-4 opacity-0')} />
+                  <p className='relative min-h-8 hover:bg-blue-50/80 flex cursor-default gap-2 select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 justify-center'>
                     <Loader />
                   </p>
                 )}

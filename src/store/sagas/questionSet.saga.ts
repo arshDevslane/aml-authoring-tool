@@ -10,7 +10,6 @@ import {
   getListQuestionSetAction,
   getListQuestionSetCompletedAction,
   getListQuestionSetErrorAction,
-  getQuestionSetAction,
   getQuestionSetCompletedAction,
   getQuestionSetErrorAction,
   publishQuestionSetCompletedAction,
@@ -157,11 +156,6 @@ function* updateQuestionSetSaga(data: UpdateQuestionSetPayloadType): any {
     yield put(updateQuestionSetCompletedAction(response));
 
     toastService.showSuccess('Question Set updated successfully');
-    yield put(
-      getQuestionSetAction({
-        id: data.payload?.questionSetId,
-      })
-    );
   } catch (e: any) {
     toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
   }
@@ -176,11 +170,6 @@ function* publishQuestionSetSaga(data: DeleteQuestionSetSagaPayloadType): any {
     yield put(publishQuestionSetCompletedAction(response));
 
     toastService.showSuccess('Question Set published successfully');
-    yield put(
-      getQuestionSetAction({
-        id: data.payload?.questionSetId,
-      })
-    );
   } catch (e: any) {
     toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
   }

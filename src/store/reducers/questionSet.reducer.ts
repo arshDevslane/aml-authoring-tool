@@ -80,6 +80,11 @@ export const questionSetReducer = (
       case QuestionSetActionType.UPDATE_QUESTION_SET_COMPLETED:
       case QuestionSetActionType.PUBLISH_QUESTION_SET_COMPLETED:
         draft.actionInProgress = false;
+        draft.entities = {
+          ...state.entities,
+          [action.payload.result.question_set.identifier]:
+            action.payload.result.question_set,
+        };
         break;
 
       case QuestionSetActionType.GET_QUESTION_SET:
