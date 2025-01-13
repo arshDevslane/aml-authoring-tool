@@ -6,7 +6,11 @@ import FormikInput from '@/shared-resources/FormikInput/FormikInput';
 import FormikSelect from '@/shared-resources/FormikSelect/FormikSelect';
 import { Plus, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { cleanQuestionBody, enumToSelectOptions } from '@/utils/helpers/helper';
+import {
+  cleanQuestionBody,
+  enumToSelectOptions,
+  getMultiLangFormikInitialValues,
+} from '@/utils/helpers/helper';
 import { FibType, QuestionType } from '@/models/enums/QuestionType.enum';
 import { ArithmaticOperations } from '@/models/enums/ArithmaticOperations.enum';
 import FormikInfiniteSelect from '@/shared-resources/FormikSelect/FormikInfiniteSelect';
@@ -77,10 +81,10 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
   } = useImageLoader(question?.question_body.question_image_url);
   const initialValues = {
     // Base
-    repository_id: question?.repository.identifier ?? {},
-    board_id: question?.taxonomy?.board.identifier ?? {},
-    class_id: question?.taxonomy?.class.identifier ?? {},
-    l1_skill_id: question?.taxonomy?.l1_skill.identifier ?? {},
+    repository_id: question?.repository.identifier ?? '',
+    board_id: question?.taxonomy?.board.identifier ?? '',
+    class_id: question?.taxonomy?.class.identifier ?? '',
+    l1_skill_id: question?.taxonomy?.l1_skill.identifier ?? '',
     l2_skill_ids: question?.taxonomy?.l2_skill?.map(
       (skill) => skill.identifier
     ),
@@ -94,8 +98,8 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
     gradient: question?.gradient ?? '',
 
     // Multi-lang
-    name: question?.name ?? {},
-    description: question?.description ?? {},
+    name: getMultiLangFormikInitialValues(question?.name),
+    description: getMultiLangFormikInitialValues(question?.description),
 
     // Question body
     question_body: {
@@ -477,7 +481,7 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
             label='Correct Option'
             options={formik.values.question_body.options.map(
               (option: any, index: any) => ({
-                value: option,
+                value: `Option ${index + 1}`,
                 label: `Option ${index + 1}: ${option}`,
               })
             )}
@@ -767,18 +771,17 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
               preLoadedOptions={question?.sub_skills}
             />
           </div>
-          <div className='flex w-full gap-6 items-start'>
-            <MultiLangFormikInput
-              name='name'
-              label='Question text'
-              supportedLanguages={supportedLanguages}
-            />
-            <MultiLangFormikInput
-              name='description'
-              label='Description'
-              supportedLanguages={supportedLanguages}
-            />
-          </div>
+
+          <MultiLangFormikInput
+            name='name'
+            label='Question text'
+            supportedLanguages={supportedLanguages}
+          />
+          <MultiLangFormikInput
+            name='description'
+            label='Description'
+            supportedLanguages={supportedLanguages}
+          />
           <div className='flex w-full gap-6 items-start'>
             <FormikInput
               name='benchmark_time'

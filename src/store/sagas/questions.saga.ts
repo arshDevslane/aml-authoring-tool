@@ -10,7 +10,6 @@ import {
   getListQuestionsAction,
   getListQuestionsCompletedAction,
   getListQuestionsErrorAction,
-  getQuestionAction,
   getQuestionCompletedAction,
   getQuestionErrorAction,
   publishQuestionCompletedAction,
@@ -101,7 +100,7 @@ function* getQuestionSaga(data: any): any {
       yield call(questionsService.getById, id);
     yield put(
       getQuestionCompletedAction({
-        question: response.result,
+        question: response.result.question,
       })
     );
   } catch (e: any) {
@@ -150,16 +149,11 @@ function* updateQuestionSaga(data: any): any {
     > = yield call(questionsService.updateQuestion, { question, id });
     yield put(
       updateQuestionCompletedAction({
-        question: response.result,
+        question: response.result.question,
       })
     );
     toastService.showSuccess('Question updated successfully');
     yield put(navigateTo('/app/questions'));
-    yield put(
-      getQuestionAction({
-        id,
-      })
-    );
   } catch (e: any) {
     yield put(
       updateQuestionErrorAction(
@@ -175,15 +169,13 @@ function* publishQuestionSaga(data: DeleteQuestionSagaPayloadType): any {
       questionsService.publish,
       data.payload?.questionId
     );
-    yield put(publishQuestionCompletedAction(response));
-
-    toastService.showSuccess('Question published successfully');
-
     yield put(
-      getQuestionAction({
-        id: data.payload?.questionId,
+      publishQuestionCompletedAction({
+        question: response.result.question,
       })
     );
+
+    toastService.showSuccess('Question published successfully');
   } catch (e: any) {
     toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
   }

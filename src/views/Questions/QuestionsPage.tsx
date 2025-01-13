@@ -28,17 +28,16 @@ const QuestionsPage: React.FC = () => {
   };
   return (
     <div className='p-4 h-full flex flex-col bg-white shadow rounded-md'>
-      <div className='flex justify-between mb-4'>
-        <div className='flex justify-center items-center'>
-          <h1 className='text-2xl font-bold'>Questions</h1>
+      <div className='flex justify-between mb-4 items-center'>
+        <h1 className='text-2xl font-bold'>Questions</h1>
+        <div className='flex items-center space-x-4'>
           <AmlListingFilterPopup
             searchFilters={searchFilters}
             setSearchFilters={setSearchFilters}
             Component={QuestionSetFilters}
           />
+          <Button onClick={createQuestion}>+ Create</Button>
         </div>
-
-        <Button onClick={createQuestion}>+ Create</Button>
       </div>
       <QuestionsListing
         searchFilters={searchFilters}

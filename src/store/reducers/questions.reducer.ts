@@ -61,7 +61,8 @@ export const questionsReducer = (
         draft.error = action.payload;
         break;
       }
-      case QuestionsActionType.DELETE_QUESTION_COMPLETED: {
+      case QuestionsActionType.DELETE_QUESTION_COMPLETED:
+      case QuestionsActionType.CREATE_QUESTION_COMPLETED: {
         draft.entities = {};
         draft.cachedData = {};
         break;
@@ -82,8 +83,14 @@ export const questionsReducer = (
         draft.isPublishing = true;
         break;
       }
-      case QuestionsActionType.PUBLISH_QUESTION_COMPLETED: {
+      case QuestionsActionType.PUBLISH_QUESTION_COMPLETED:
+      case QuestionsActionType.UPDATE_QUESTION_COMPLETED: {
         draft.isPublishing = false;
+        const { question } = action.payload;
+        draft.entities = {
+          ...state.entities,
+          [question.identifier]: question,
+        };
         break;
       }
       case QuestionsActionType.GET_QUESTION_ERROR:

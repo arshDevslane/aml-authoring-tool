@@ -34,7 +34,7 @@ const FormikInput: React.FC<FormikInputProps> = (props) => {
       />
       {/* This wrapper for error message allows for conditional visibility without disturbing layout */}
       <ErrorMessage
-        className='absolute text-red-500 text-xs mt-1 top-full left-0 w-full'
+        className=' text-red-500 text-xs mt-1 w-full'
         name={name}
         component='p'
       />

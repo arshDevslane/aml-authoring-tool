@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import {
   Popover,
   PopoverContent,
@@ -32,21 +33,22 @@ const AmlListingFilterPopup = ({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <div className='relative cursor-pointer'>
+        <Button className='relative'>
           <Filter
             className={cn(
-              'text-primary/50',
+              'text-white',
               isFilterApplied
                 ? 'fill-primary'
                 : 'fill-primary/30 hover:fill-primary/70'
             )}
           />
+          Filters
           {isFilterApplied && (
-            <div className='absolute -top-1 -right-2 bg-primary h-4 w-4 rounded-full flex items-center justify-center text-white text-xs'>
+            <div className='absolute -top-2 -right-2 bg-gray-500 h-5 w-5 rounded-full flex items-center justify-center text-white text-xs'>
               {Object.keys(searchFilters ?? {}).length - 1}
             </div>
           )}
-        </div>
+        </Button>
       </PopoverTrigger>
       <PopoverContent
         className='w-[600px] max-h-[95%] overflow-y-auto'

@@ -218,9 +218,6 @@ const QuestionSetFilters = ({
           <div className='flex justify-end'>
             <PopoverClose asChild>
               <div className='w-min flex gap-3'>
-                <Button type='submit' disabled={!formik.dirty}>
-                  Apply
-                </Button>
                 <Button
                   type='button'
                   variant='outline'
@@ -231,6 +228,9 @@ const QuestionSetFilters = ({
                   }}
                 >
                   Reset
+                </Button>
+                <Button type='submit' disabled={!formik.dirty}>
+                  Apply
                 </Button>
               </div>
             </PopoverClose>

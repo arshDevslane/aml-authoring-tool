@@ -83,7 +83,7 @@ const MediaUpload = ({
   };
   return (
     <div className='flex flex-col gap-3 my-6'>
-      <div className='flex items-end gap-3 justify-between'>
+      <div className='flex items-center gap-3 justify-between'>
         <FileUpload multiple={multiple} value={value} setValue={setValue} />
         <Button
           type='button'

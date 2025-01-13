@@ -37,15 +37,15 @@ const FileUpload: React.FC<FileUploadProps> = ({
     <div
       {...getRootProps()}
       className={cn(
-        'flex-1 border-2 border-dashed border-primary/50 p-5 text-center',
+        'flex-1 border-[1px] rounded-md border-dashed border-primary/50 p-5 text-center',
         isDragActive ? 'bg-primary/10' : 'bg-white'
       )}
     >
       <input {...getInputProps()} />
       {isDragActive ? (
-        <p className='font-semibold text-primary'>Drop the files here...</p>
+        <p className='text-primary'>Drop the files here...</p>
       ) : (
-        <p className='font-semibold text-primary'>
+        <p className='text-primary'>
           Drag & drop your {multiple ? 'files' : 'file'} here, or click to
           select
         </p>

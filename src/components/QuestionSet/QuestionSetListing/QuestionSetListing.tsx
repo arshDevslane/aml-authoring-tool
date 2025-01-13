@@ -171,23 +171,25 @@ const QuestionSetListing = () => {
       <div className='flex items-center justify-between gap-6 mb-4'>
         <h1 className='flex items-center gap-3 text-2xl font-bold'>
           Question Sets
+        </h1>
+        <div className='flex items-center space-x-4'>
           <AmlListingFilterPopup
             searchFilters={searchFilters}
             setSearchFilters={setSearchFilters}
             Component={QuestionSetFilters}
           />
-        </h1>
-        <Button
-          onClick={() =>
-            setOpenDialog({
-              dialog: DialogTypes.DETAILS,
-              open: true,
-              questionSetId: null,
-            })
-          }
-        >
-          <Plus /> Create
-        </Button>
+          <Button
+            onClick={() =>
+              setOpenDialog({
+                dialog: DialogTypes.DETAILS,
+                open: true,
+                questionSetId: null,
+              })
+            }
+          >
+            <Plus /> Create
+          </Button>
+        </div>
       </div>
       <div className='flex-1 flex flex-col'>
         <TableComponent

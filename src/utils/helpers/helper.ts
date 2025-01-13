@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
+import { Description } from '@/models/entities/Question';
 import { ArithmaticOperations } from '@/models/enums/ArithmaticOperations.enum';
 import { FibType, QuestionType } from '@/models/enums/QuestionType.enum';
+import { SupportedLanguages } from '@/models/enums/SupportedLanguages.enum';
 
 export function convertToDate(isoString: string) {
   const date = new Date(isoString);
@@ -129,4 +131,12 @@ export const cleanQuestionBody = (
   }
 
   return cleanedQuestionBody;
+};
+
+export const getMultiLangFormikInitialValues = (data?: Description) => {
+  const res = {} as Description;
+  Object.values(SupportedLanguages).forEach((lang) => {
+    res[lang] = data?.[lang] ?? '';
+  });
+  return res;
 };

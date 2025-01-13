@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { QuestionSetPurposeType } from '@/enums/questionSet.enum';
 import { Board } from '@/models/entities/Board';
-import { SupportedLanguages } from '@/models/enums/SupportedLanguages.enum';
 import FormikSelect from '@/shared-resources/FormikSelect/FormikSelect';
 import {
   boardSelector,
@@ -48,18 +47,11 @@ import {
   updateQuestionSetAction,
 } from '@/store/actions/questionSet.actions';
 import { cn } from '@/lib/utils';
+import { getMultiLangFormikInitialValues } from '@/utils/helpers/helper';
 
 type QuestionSetDetailsProps = {
   onClose: () => void;
   questionSetId: string | null;
-};
-
-const getMultiLangFormikInitialValues = (data: Description) => {
-  const res = {} as Description;
-  Object.values(SupportedLanguages).forEach((lang) => {
-    res[lang] = data?.[lang] ?? '';
-  });
-  return res;
 };
 
 export type QuestionSetCreateUpdatePayload = {
