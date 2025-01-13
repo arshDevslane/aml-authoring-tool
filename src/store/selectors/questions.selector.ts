@@ -38,3 +38,8 @@ export const isPublishingSelector = createSelector(
   [questionsState],
   (state: QuestionsState) => state.isPublishing
 );
+
+export const isDeletingSelector = createSelector(
+  [questionsState],
+  (state: QuestionsState) => state.isDeleting
+);

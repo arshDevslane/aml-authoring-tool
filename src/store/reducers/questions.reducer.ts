@@ -11,6 +11,7 @@ export type QuestionsState = QuestionsActionPayloadType & {
   cachedData: CacheAPIResponse;
   latestCount: number;
   isPublishing: boolean;
+  isDeleting: boolean;
 };
 const initialState: QuestionsState = {
   isLoading: false,
@@ -21,6 +22,7 @@ const initialState: QuestionsState = {
     page_no: 1,
   },
   isPublishing: false,
+  isDeleting: false,
 };
 export const questionsReducer = (
   // eslint-disable-next-line @typescript-eslint/default-param-last
@@ -56,15 +58,11 @@ export const questionsReducer = (
         draft.latestCount = action.payload.totalCount;
         break;
       }
-      case QuestionsActionType.GET_LIST_ERROR: {
-        draft.isLoading = false;
-        draft.error = action.payload;
-        break;
-      }
       case QuestionsActionType.DELETE_QUESTION_COMPLETED:
       case QuestionsActionType.CREATE_QUESTION_COMPLETED: {
         draft.entities = {};
         draft.cachedData = {};
+        draft.isDeleting = false;
         break;
       }
       case QuestionsActionType.GET_QUESTION: {
@@ -96,6 +94,23 @@ export const questionsReducer = (
       case QuestionsActionType.GET_QUESTION_ERROR:
       case QuestionsActionType.PUBLISH_QUESTION_ERROR: {
         draft.isLoading = false;
+        draft.isPublishing = false;
+        draft.error = action.payload;
+        break;
+      }
+      case QuestionsActionType.DELETE_QUESTION: {
+        draft.isDeleting = true;
+        break;
+      }
+      case QuestionsActionType.GET_LIST_ERROR: {
+        draft.isLoading = false;
+        draft.error = action.payload;
+        break;
+      }
+      case QuestionsActionType.CREATE_QUESTION_ERROR:
+      case QuestionsActionType.UPDATE_QUESTION_ERROR:
+      case QuestionsActionType.DELETE_QUESTION_ERROR: {
+        draft.isDeleting = false;
         draft.isPublishing = false;
         draft.error = action.payload;
         break;

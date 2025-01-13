@@ -42,6 +42,7 @@ export enum QuestionsActionType {
 
   DELETE_QUESTION = 'question/delete',
   DELETE_QUESTION_COMPLETED = 'question/delete/completed',
+  DELETE_QUESTION_ERROR = 'question/delete/error',
 
   GET_QUESTION = 'question/get',
   GET_QUESTION_COMPLETED = 'question/get/completed',

@@ -7,12 +7,14 @@ import {
   createQuestionCompletedAction,
   createQuestionErrorAction,
   deleteQuestionCompletedAction,
+  deleteQuestionErrorAction,
   getListQuestionsAction,
   getListQuestionsCompletedAction,
   getListQuestionsErrorAction,
   getQuestionCompletedAction,
   getQuestionErrorAction,
   publishQuestionCompletedAction,
+  publishQuestionErrorAction,
   QuestionsActionPayloadType,
   updateQuestionCompletedAction,
   updateQuestionErrorAction,
@@ -70,6 +72,7 @@ function* getListQuestionsSaga(data: QuestionsSagaPayloadType): any {
         (e?.errors && e.errors[0]?.message) || e?.message
       )
     );
+    toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
   }
 }
 
@@ -90,6 +93,11 @@ function* deleteQuestionSaga(data: DeleteQuestionSagaPayloadType): any {
     );
   } catch (e: any) {
     toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
+    yield put(
+      deleteQuestionErrorAction(
+        (e?.errors && e.errors[0]?.message) || e?.message
+      )
+    );
   }
 }
 
@@ -107,15 +115,13 @@ function* getQuestionSaga(data: any): any {
     yield put(
       getQuestionErrorAction((e?.errors && e.errors[0]?.message) || e?.message)
     );
+    toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
   }
 }
 
 function* createQuestionSaga(data: any): any {
   try {
     const { question } = data;
-    const filters: QuestionsActionPayloadType['filters'] = yield select(
-      (state: AppState) => state.questions.filters
-    );
     const response: Awaited<
       ReturnType<typeof questionsService.createQuestion>
     > = yield call(questionsService.createQuestion, question);
@@ -126,17 +132,13 @@ function* createQuestionSaga(data: any): any {
     );
     toastService.showSuccess('Question created successfully');
     yield put(navigateTo('/app/questions'));
-    yield put(
-      getListQuestionsAction({
-        filters,
-      })
-    );
   } catch (e: any) {
     yield put(
       createQuestionErrorAction(
         (e?.errors && e.errors[0]?.message) || e?.message
       )
     );
+    toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
   }
 }
 
@@ -160,6 +162,7 @@ function* updateQuestionSaga(data: any): any {
         (e?.errors && e.errors[0]?.message) || e?.message
       )
     );
+    toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
   }
 }
 
@@ -177,6 +180,11 @@ function* publishQuestionSaga(data: DeleteQuestionSagaPayloadType): any {
 
     toastService.showSuccess('Question published successfully');
   } catch (e: any) {
+    yield put(
+      publishQuestionErrorAction(
+        (e?.errors && e.errors[0]?.message) || e?.message
+      )
+    );
     toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
   }
 }

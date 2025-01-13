@@ -10,6 +10,7 @@ import {
   publishQuestionAction,
 } from '@/store/actions/question.action';
 import {
+  isDeletingSelector,
   isLoadingQuestionsSelector,
   isPublishingSelector,
   questionsSelector,
@@ -57,7 +58,9 @@ const QuestionsListing: React.FC<QuestionsListingProps> = ({
   const navigate = useNavigate();
   const isQuestionsLoading = useSelector(isLoadingQuestionsSelector);
   const isPublishing = useSelector(isPublishingSelector);
+  const isDeleting = useSelector(isDeletingSelector);
   const [publishingId, setPublishingId] = useState<string>();
+  const [deletingId, setDeletingId] = useState<string>();
   const { result: questions, totalCount } = useSelector(questionsSelector);
   const [openDialog, setOpenDialog] = useState<{
     dialog: DialogTypes | null;
@@ -160,24 +163,30 @@ const QuestionsListing: React.FC<QuestionsListingProps> = ({
                 onClick={() => navigateToEditQuestion(row.id)}
               />
             </AmlTooltip>
-            <AmlTooltip tooltip='Delete'>
-              <Trash
-                data-disabled={!row.original.is_active}
-                className='h-5 w-5 fill-red-500 hover:text-red-600 text-red-500 cursor-pointer [data-disabled=true]:cursor-not-allowed'
-                onClick={() =>
-                  setOpenDialog({
-                    dialog: DialogTypes.DELETE,
-                    open: true,
-                    questionId: row.id,
-                  })
-                }
-              />
-            </AmlTooltip>
+
+            {isDeleting && row.id === deletingId ? (
+              <Loader2 className='animate-spin' />
+            ) : (
+              <AmlTooltip tooltip='Delete'>
+                <Trash
+                  data-disabled={!row.original.is_active}
+                  className='h-5 w-5 fill-red-500 hover:text-red-600 text-red-500 cursor-pointer [data-disabled=true]:cursor-not-allowed'
+                  onClick={() => {
+                    setOpenDialog({
+                      dialog: DialogTypes.DELETE,
+                      open: true,
+                      questionId: row.id,
+                    });
+                    setDeletingId(row.id);
+                  }}
+                />
+              </AmlTooltip>
+            )}
           </div>
         ),
       },
     ],
-    [isPublishing]
+    [isPublishing, isDeleting]
   );
   const tableInstance = useTable({
     columns,

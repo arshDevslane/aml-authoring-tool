@@ -45,6 +45,11 @@ export const deleteQuestionCompletedAction = () => ({
   payload: {},
 });
 
+export const deleteQuestionErrorAction = (message: string) => ({
+  type: QuestionsActionType.DELETE_QUESTION_ERROR,
+  payload: message,
+});
+
 export const getQuestionAction = (payload: { id: string }) => ({
   type: QuestionsActionType.GET_QUESTION,
   payload,
