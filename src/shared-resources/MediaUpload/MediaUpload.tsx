@@ -20,6 +20,7 @@ type MediaUploadProps = {
   value: File[];
   setValue: (files: File[]) => void;
   category: string;
+  acceptedFiles?: any;
 };
 
 const MediaUpload = ({
@@ -28,6 +29,7 @@ const MediaUpload = ({
   value,
   setValue,
   category,
+  acceptedFiles,
 }: MediaUploadProps) => {
   const dispatch = useDispatch();
   const [uploadClicked, setUploadClicked] = React.useState(false);
@@ -84,7 +86,12 @@ const MediaUpload = ({
   return (
     <div className='flex flex-col gap-3 my-6'>
       <div className='flex items-center gap-3 justify-between'>
-        <FileUpload multiple={multiple} value={value} setValue={setValue} />
+        <FileUpload
+          multiple={multiple}
+          value={value}
+          setValue={setValue}
+          acceptedFiles={acceptedFiles}
+        />
         <Button
           type='button'
           onClick={onUploadClick}

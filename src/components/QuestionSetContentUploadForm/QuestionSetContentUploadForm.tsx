@@ -103,6 +103,9 @@ const QuestionSetContentUploadForm = ({
                 value={formik.values.files}
                 setValue={(files) => formik.setFieldValue('files', files)}
                 category='content'
+                acceptedFiles={{
+                  'video/*': [],
+                }}
               />
               <div className='flex w-full justify-end'>
                 <Button

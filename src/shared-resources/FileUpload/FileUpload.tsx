@@ -6,12 +6,14 @@ interface FileUploadProps {
   multiple: boolean;
   value: File[];
   setValue: (files: File[]) => void;
+  acceptedFiles?: any;
 }
 
 const FileUpload: React.FC<FileUploadProps> = ({
   multiple,
   value,
   setValue,
+  acceptedFiles,
 }) => {
   // Restrict file types to only images and videos
   const acceptedFileTypes = {
@@ -29,7 +31,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: acceptedFileTypes,
+    accept: acceptedFiles ?? acceptedFileTypes,
     multiple,
   });
 

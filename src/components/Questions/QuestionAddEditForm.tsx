@@ -368,6 +368,9 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
             value={files}
             setValue={(files) => setFiles(files)}
             category='question'
+            acceptedFiles={{
+              'image/*': [],
+            }}
           />
         )}
       </>
