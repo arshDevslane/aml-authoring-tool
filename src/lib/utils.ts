@@ -1,4 +1,5 @@
 import { Question } from '@/models/entities/Question';
+import { User } from '@/models/entities/User';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -20,6 +21,7 @@ export type CacheAPIResponse = {
   [key: string]: {
     result: string[];
     totalCount: number;
+    users?: User[];
   };
 };
 

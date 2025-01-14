@@ -25,6 +25,7 @@ import AmlTooltip from '@/shared-resources/AmlTooltip/AmlTooltip';
 import AmlDialog from '@/shared-resources/AmlDialog/AmlDialog';
 import { useNavigate } from 'react-router-dom';
 import cx from 'classnames';
+import { usersSelector } from '@/store/selectors/user.selector';
 
 enum DialogTypes {
   DELETE = 'delete',
@@ -59,6 +60,7 @@ const QuestionsListing: React.FC<QuestionsListingProps> = ({
   const isQuestionsLoading = useSelector(isLoadingQuestionsSelector);
   const isPublishing = useSelector(isPublishingSelector);
   const isDeleting = useSelector(isDeletingSelector);
+  const usersMap = useSelector(usersSelector);
   const [publishingId, setPublishingId] = useState<string>();
   const [deletingId, setDeletingId] = useState<string>();
   const { result: questions, totalCount } = useSelector(questionsSelector);
@@ -121,7 +123,12 @@ const QuestionsListing: React.FC<QuestionsListingProps> = ({
       {
         accessorKey: 'created_by',
         header: 'Created By',
-        cell: (info) => info.getValue() as Question['created_by'],
+        cell: (info) =>
+          (info.getValue() === 'system'
+            ? info.getValue()
+            : `${usersMap?.[info.getValue() as string]?.first_name} ${
+                usersMap?.[info.getValue() as string]?.last_name
+              }`) as Question['created_by'],
       },
       {
         accessorKey: 'created_at',
@@ -186,7 +193,7 @@ const QuestionsListing: React.FC<QuestionsListingProps> = ({
         ),
       },
     ],
-    [isPublishing, isDeleting]
+    [isPublishing, isDeleting, usersMap]
   );
   const tableInstance = useTable({
     columns,

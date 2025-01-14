@@ -54,6 +54,7 @@ export const questionsReducer = (
             (question: Question) => question.identifier
           ),
           totalCount: action.payload.totalCount,
+          users: action.payload.users,
         };
         draft.latestCount = action.payload.totalCount;
         break;

@@ -1,5 +1,6 @@
 import { Question } from '@/models/entities/Question';
 import { QuestionType } from '@/models/enums/QuestionType.enum';
+import { User } from '@/models/entities/User';
 import { baseApiService } from './BaseApiService';
 
 class QuestionsService {
@@ -29,6 +30,7 @@ class QuestionsService {
         limit: number;
         total: number;
       };
+      users?: User[];
     };
   }> {
     return baseApiService.post(
