@@ -73,7 +73,7 @@ export default function TableSkeleton<T, S extends Record<string, any>>({
                 key={header.id}
                 className='[&_button_svg[data-applied=false]]:hover:fill-primary/70 [&_button_svg[data-applied=true]]:hover:fill-primary [&_div[data-applied=false]_svg]:hover:text-primary/70 [&_div[data-applied=true]_svg]:hover:text-primary'
               >
-                <div className='flex gap-3 items-center justify-center'>
+                <div className='flex gap-3 items-center justify-center whitespace-nowrap'>
                   {header.isPlaceholder
                     ? null
                     : flexRender(

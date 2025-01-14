@@ -131,7 +131,7 @@ const QuestionSetDetailPublish = ({
   };
 
   return (
-    <div className='p-4 h-full gap-3 flex flex-col max-h-[calc(100vh_-_48px)] bg-white shadow rounded-md'>
+    <div className='p-4 h-full gap-3 w-full flex flex-col max-h-[calc(100vh_-_48px)] bg-white shadow rounded-md'>
       <div className='flex-1 flex gap-3 overflow-hidden'>
         <div className='flex-1 flex flex-col overflow-y-auto mt-3 pr-3'>
           <h1 className='text-2xl font-bold mb-6'>Question Set - Details</h1>

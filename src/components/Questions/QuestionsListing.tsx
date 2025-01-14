@@ -106,11 +106,22 @@ const QuestionsListing: React.FC<QuestionsListingProps> = ({
         accessorKey: 'question_type',
         header: 'Question Type',
         cell: (info) => info.getValue() as Question['question_type'],
+        cellClassName: 'whitespace-nowrap',
       },
+
       {
         accessorKey: 'description',
         header: 'Description',
-        cell: (info) => (info.getValue() as Question['description']).en,
+        // eslint-disable-next-line react/no-unstable-nested-components
+        cell: (info) => (
+          <AmlTooltip tooltip={(info.getValue() as Question['description']).en}>
+            <p className='truncate'>
+              {(info.getValue() as Question['description']).en}
+            </p>
+          </AmlTooltip>
+        ),
+
+        cellClassName: 'max-w-10 [&_button]:max-w-full text-left',
       },
       {
         accessorKey: 'repository',
@@ -146,17 +157,25 @@ const QuestionsListing: React.FC<QuestionsListingProps> = ({
         // eslint-disable-next-line react/no-unstable-nested-components
         cell: ({ row }) => (
           <div className='flex gap-5 items-center justify-center'>
-            {row.original.status === 'draft' &&
-              (isPublishing && row.id === publishingId ? (
-                <Loader2 className='animate-spin' />
-              ) : (
+            {isPublishing && row.id === publishingId ? (
+              <Loader2 className='animate-spin' />
+            ) : (
+              <span
+                className={cx(
+                  'm-0 p-0 h-5 w-5',
+                  row.original.status !== 'draft'
+                    ? 'invisible pointer-events-none'
+                    : ''
+                )}
+              >
                 <AmlTooltip tooltip='Publish'>
                   <Send
                     className='h-5 w-5 hover:fill-slate-400 cursor-pointer'
                     onClick={() => publishQuestion(row.id)}
                   />
                 </AmlTooltip>
-              ))}
+              </span>
+            )}
             <AmlTooltip tooltip='Edit'>
               <Pencil
                 className='h-5 w-5 hover:fill-slate-400 cursor-pointer'

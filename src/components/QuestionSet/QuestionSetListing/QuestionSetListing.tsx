@@ -86,8 +86,15 @@ const QuestionSetListing = () => {
       {
         accessorKey: 'title',
         header: 'Title',
-        cell: (info) => (info.getValue() as QuestionSet['title']).en,
-        cellClassName: 'max-w-80 truncate text-left',
+        // eslint-disable-next-line react/no-unstable-nested-components
+        cell: (info) => (
+          <AmlTooltip tooltip={(info.getValue() as QuestionSet['title']).en}>
+            <p className='truncate'>
+              {(info.getValue() as QuestionSet['title']).en}
+            </p>
+          </AmlTooltip>
+        ),
+        cellClassName: 'max-w-80 [&_button]:max-w-full text-left',
       },
       {
         accessorKey: 'repository',

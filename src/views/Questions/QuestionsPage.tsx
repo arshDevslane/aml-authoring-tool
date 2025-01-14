@@ -27,7 +27,7 @@ const QuestionsPage: React.FC = () => {
     navigateTo(`add`);
   };
   return (
-    <div className='p-4 h-full flex flex-col bg-white shadow rounded-md'>
+    <div className='p-4 h-full w-full flex flex-col bg-white shadow rounded-md'>
       <div className='flex justify-between mb-4 items-center'>
         <h1 className='text-2xl font-bold'>Questions</h1>
         <div className='flex items-center space-x-4'>
