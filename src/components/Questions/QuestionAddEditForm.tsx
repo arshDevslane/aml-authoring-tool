@@ -57,6 +57,7 @@ import {
 } from '@/store/actions/question.action';
 import MediaUpload from '@/shared-resources/MediaUpload/MediaUpload';
 import { useImageLoader } from '@/hooks/useImageLoader';
+import { navigateTo } from '@/store/actions/navigation.action';
 import Loader from '../Loader/Loader';
 import { ImageRenderer } from '../ImageRenderer';
 
@@ -822,7 +823,13 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
           </div>
 
           {/* Submit Button */}
-          <div className='col-span-2 flex justify-end mt-4'>
+          <div className='col-span-2 flex justify-end mt-4 space-x-4'>
+            <Button
+              variant='outline'
+              onClick={() => dispatch(navigateTo('/app/questions'))}
+            >
+              Cancel
+            </Button>
             <Button type='submit'>
               {isEditMode ? 'Update Question' : 'Add Question'}
             </Button>
