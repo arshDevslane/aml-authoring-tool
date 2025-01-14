@@ -827,6 +827,7 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
             <Button
               variant='outline'
               onClick={() => dispatch(navigateTo('/app/questions'))}
+              type='button'
             >
               Cancel
             </Button>
