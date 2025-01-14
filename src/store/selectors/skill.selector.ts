@@ -13,7 +13,7 @@ const getSkills = (state: SkillState, filters = {}) => {
   };
 
   return {
-    result: resultIDs.map((id) => state.entities[id]).filter(Boolean),
+    result: resultIDs?.map((id) => state.entities[id]).filter(Boolean),
     totalCount,
   };
 };

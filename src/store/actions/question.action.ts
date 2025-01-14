@@ -1,5 +1,9 @@
 import { Question } from '@/models/entities/Question';
 import { QuestionType } from '@/models/enums/QuestionType.enum';
+import { Class } from '@/models/entities/Class';
+import { Board } from '@/models/entities/Board';
+import { Repository } from '@/models/entities/Repository';
+import { Skill } from '@/models/entities/Skill';
 import { QuestionsActionType } from './actions.constants';
 
 export type QuestionsActionPayloadType = {
@@ -17,6 +21,10 @@ export type QuestionsActionPayloadType = {
 export type QuestionsResponseType = {
   questions: Question[];
   totalCount: number;
+  classes?: Class[];
+  boards?: Board[];
+  repositories?: Repository[];
+  skills?: Skill[];
 };
 export const getListQuestionsAction = (
   payload: QuestionsActionPayloadType

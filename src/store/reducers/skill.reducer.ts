@@ -2,7 +2,11 @@
 import produce from 'immer';
 import { CacheAPIResponse } from '@/lib/utils';
 import { Skill } from '@/models/entities/Skill';
-import { SkillActionType } from '../actions/actions.constants';
+import {
+  QuestionsActionType,
+  QuestionSetActionType,
+  SkillActionType,
+} from '../actions/actions.constants';
 import { SkillActionPayloadType } from '../actions/skill.action';
 
 export type SkillState = SkillActionPayloadType & {
@@ -37,10 +41,11 @@ export const skillReducer = (
         draft.filters = action.payload.filters;
         break;
       case SkillActionType.GET_LIST_COMPLETED:
+      case QuestionsActionType.GET_LIST_COMPLETED:
+      case QuestionSetActionType.GET_LIST_COMPLETED:
         draft.isLoading = false;
-
         const filterKey = JSON.stringify(state.filters);
-        const skillMap = action.payload.skills.reduce(
+        const skillMap = action.payload?.skills?.reduce(
           (acc: any, skill: Skill) => ({
             ...acc,
             [skill.identifier]: skill,
@@ -50,7 +55,9 @@ export const skillReducer = (
 
         draft.entities = { ...state.entities, ...skillMap };
         draft.cachedData[filterKey] = {
-          result: action.payload.skills.map((skill: Skill) => skill.identifier),
+          result: action.payload?.skills?.map(
+            (skill: Skill) => skill.identifier
+          ),
           totalCount: action.payload.totalCount,
         };
         draft.latestCount = action.payload.totalCount;

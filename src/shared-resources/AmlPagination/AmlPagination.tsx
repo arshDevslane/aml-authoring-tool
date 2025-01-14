@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import {
   Pagination,
   PaginationContent,
@@ -27,6 +27,7 @@ const AmlPagination: React.FC<AmlPaginationProps> = ({
       if (page === currentPage) return;
       onPageChange(page);
     },
+
     [currentPage, onPageChange]
   );
 
@@ -88,11 +89,11 @@ const AmlPagination: React.FC<AmlPaginationProps> = ({
     return pageNumbers;
   };
 
-  useEffect(() => {
-    if (currentPage > totalPages || currentPage < 1) {
-      handlePageClick(1);
-    }
-  }, [currentPage, handlePageClick, totalPages]);
+  // useEffect(() => {
+  //   if (currentPage > totalPages || currentPage < 1) {
+  //     handlePageClick(1);
+  //   }
+  // }, [currentPage, handlePageClick, totalPages]);
 
   return (
     <Pagination className='justify-between mt-2'>

@@ -32,6 +32,7 @@ interface DeleteQuestionSagaPayloadType extends SagaPayloadType {
 function* getListQuestionsSaga(data: QuestionsSagaPayloadType): any {
   try {
     const { page_no: pageNo = 1, ...filters } = data.payload.filters;
+
     const cachedData: AppState['questions']['cachedData'][string] =
       yield select(
         (state: AppState) =>
@@ -64,6 +65,15 @@ function* getListQuestionsSaga(data: QuestionsSagaPayloadType): any {
       getListQuestionsCompletedAction({
         questions: response.result.questions,
         totalCount: response.result.meta.total,
+        classes: response.result.classes,
+        boards: response.result.boards,
+        repositories: response.result.repositories,
+
+        skills: [
+          ...response.result.l1_skills,
+          ...response.result.l2_skills,
+          ...response.result.l3_skills,
+        ],
       })
     );
   } catch (e: any) {
