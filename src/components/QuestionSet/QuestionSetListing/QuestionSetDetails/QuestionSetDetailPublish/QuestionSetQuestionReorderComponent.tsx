@@ -26,7 +26,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Filter, PlusCircle, Trash } from 'lucide-react';
-import React, { CSSProperties, useState } from 'react';
+import React, { CSSProperties, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { QuestionSetPurposeType } from '@/enums/questionSet.enum';
 import * as _ from 'lodash';
@@ -237,6 +237,17 @@ const QuestionSetQuestionReorderComponent = ({
   const enableClassFilter =
     questionSet?.purpose === QuestionSetPurposeType.MAIN_DIAGNOSTIC;
 
+  const filterCount = useMemo(() => {
+    const state = {
+      ...(enableClassFilter && { class_id: filterState.class_id }),
+      l2_skill: filterState.l2_skill,
+      l3_skill: filterState.l3_skill,
+    };
+
+    return Object.values(state).filter(Boolean).length;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterState]);
+
   return (
     <DndContext
       sensors={sensors}
@@ -279,12 +290,20 @@ const QuestionSetQuestionReorderComponent = ({
           />
         </div>
         <div className='flex items-center gap-5'>
-          <Filter
-            className='h-6 w-6 fill-primary/70 hover:fill-primary text-primary/50 cursor-pointer'
+          <Button
+            className='relative'
             onClick={() =>
               setOpenDialog({ open: true, dialog: DialogTypes.FILTER })
             }
-          />
+          >
+            <Filter className={cn('text-white')} />
+            Filters
+            {filterCount > 0 && (
+              <div className='absolute -top-2 -right-2 bg-gray-500 h-5 w-5 rounded-full flex items-center justify-center text-white text-xs'>
+                {filterCount}
+              </div>
+            )}
+          </Button>
           <Button
             disabled={!changeState.length}
             onClick={handleQuestionAddition}

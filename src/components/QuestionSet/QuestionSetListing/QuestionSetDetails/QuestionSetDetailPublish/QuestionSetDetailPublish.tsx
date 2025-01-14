@@ -167,7 +167,7 @@ const QuestionSetDetailPublish = ({
           />
         </div>
       </div>
-      <div className='flex justify-between'>
+      <div className='flex justify-between flex-row-reverse'>
         <div className='flex gap-3'>
           <Button
             size='lg'
@@ -175,8 +175,8 @@ const QuestionSetDetailPublish = ({
               isActionInProgress ||
               !(
                 isOrderUpdated ||
-                (Boolean(selectedContentId) &&
-                  questionSet.content_ids?.[0] !== selectedContentId)
+                Boolean(questionSet.content_ids?.[0]) !==
+                  Boolean(selectedContentId)
               ) ||
               isFormSubmitted
             }
@@ -193,15 +193,17 @@ const QuestionSetDetailPublish = ({
             Cancel
           </Button>
         </div>
-        <Button
-          size='lg'
-          disabled={questionSet?.status !== 'draft' || isActionInProgress}
-          onClick={() =>
-            dispatch(publishQuestionSetAction(questionSet?.identifier))
-          }
-        >
-          Publish
-        </Button>
+        {questionSet?.status === 'draft' && (
+          <Button
+            size='lg'
+            disabled={isActionInProgress}
+            onClick={() =>
+              dispatch(publishQuestionSetAction(questionSet?.identifier))
+            }
+          >
+            Publish
+          </Button>
+        )}
       </div>
       <QuestionSetContentUploadForm
         open={isNewUpload}

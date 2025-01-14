@@ -401,10 +401,7 @@ const QuestionSetDetails = ({
               </span>
             </label>
           </div>
-          <div className='flex gap-5 mt-5'>
-            <Button type='submit' size='lg'>
-              Save
-            </Button>
+          <div className='flex gap-5 mt-5 flex-row-reverse'>
             <Button
               variant='outline'
               onClick={onClose}
@@ -413,6 +410,9 @@ const QuestionSetDetails = ({
               disabled={isFormSubmitted}
             >
               Cancel
+            </Button>
+            <Button type='submit' size='lg'>
+              Save
             </Button>
           </div>
         </form>
