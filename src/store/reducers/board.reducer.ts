@@ -48,10 +48,14 @@ export const boardReducer = (
         );
 
         draft.entities = { ...state.entities, ...boardMap };
-        draft.cachedData[filterKey] = {
-          result: action.payload.boards.map((board: Board) => board.identifier),
-          totalCount: action.payload.totalCount,
-        };
+        if (!action.payload.noCache) {
+          draft.cachedData[filterKey] = {
+            result: action.payload.boards.map(
+              (board: Board) => board.identifier
+            ),
+            totalCount: action.payload.totalCount,
+          };
+        }
         draft.latestCount = action.payload.totalCount;
         break;
       case BoardActionType.GET_LIST_ERROR:

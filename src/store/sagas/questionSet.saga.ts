@@ -80,6 +80,7 @@ function* getListQuestionSetSaga(data: QuestionSetSagaPayloadType): any {
       getListBoardCompletedAction({
         boards: response.result.boards,
         totalCount: response.result.boards.length,
+        noCache: true,
       })
     );
   } catch (e: any) {
