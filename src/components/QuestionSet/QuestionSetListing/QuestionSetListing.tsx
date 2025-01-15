@@ -169,6 +169,7 @@ const QuestionSetListing = () => {
             </AmlTooltip>
           </div>
         ),
+        enableSorting: false,
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -178,8 +179,6 @@ const QuestionSetListing = () => {
   const tableInstance = useTable({
     columns,
     rows: questionSets,
-    enableFilters: false,
-    enableSorting: false,
   });
 
   return (

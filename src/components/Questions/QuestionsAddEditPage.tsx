@@ -4,8 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { allQuestionsSelector } from '@/store/selectors/questions.selector';
 import { Question } from '@/models/entities/Question';
 import { getQuestionAction } from '@/store/actions/question.action';
+import { ChevronLeft } from 'lucide-react';
+import { navigateTo } from '@/store/actions/navigation.action';
 import QuestionAddEditForm from './QuestionAddEditForm';
 import Loader from '../Loader/Loader';
+import { Button } from '../ui/button';
 
 const QuestionsAddEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -27,9 +30,18 @@ const QuestionsAddEditPage: React.FC = () => {
 
   return (
     <div className='flex-1 overflow-x-hidden p-4 h-full flex flex-col bg-white shadow rounded-md'>
-      <h1 className='text-2xl font-bold mb-4'>
-        {id ? 'Edit Question' : 'Add Question'}
-      </h1>
+      <div className='flex items-center gap-6 mb-4'>
+        <Button
+          type='button'
+          onClick={() => dispatch(navigateTo('/app/questions'))}
+        >
+          <ChevronLeft />
+          Back
+        </Button>
+        <h1 className='text-2xl font-bold'>
+          {id ? 'Edit Question' : 'Add Question'}
+        </h1>
+      </div>
       {!!id && !questionData ? (
         <p>
           <Loader />

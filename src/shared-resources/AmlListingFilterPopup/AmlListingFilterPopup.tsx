@@ -4,7 +4,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
+import { cn, isValueEmpty } from '@/lib/utils';
 import { Filter } from 'lucide-react';
 import React, { useMemo } from 'react';
 
@@ -21,14 +21,11 @@ const AmlListingFilterPopup = ({
   Component,
   componentProps,
 }: AmlListingFilterPopupProps) => {
-  const isFilterApplied = useMemo(
-    () =>
-      !(
-        Object.keys(searchFilters).length === 1 &&
-        Boolean(searchFilters.page_no)
-      ),
-    [searchFilters]
-  );
+  const appliedFiltersLength = useMemo(() => {
+    const { page_no: pageNo, sortOrder, orderBy, ...rest } = searchFilters;
+
+    return Object.values(rest).filter((value) => !isValueEmpty(value)).length;
+  }, [searchFilters]);
 
   return (
     <Popover>
@@ -37,15 +34,15 @@ const AmlListingFilterPopup = ({
           <Filter
             className={cn(
               'text-white',
-              isFilterApplied
+              appliedFiltersLength > 0
                 ? 'fill-primary'
                 : 'fill-primary/30 hover:fill-primary/70'
             )}
           />
           Filters
-          {isFilterApplied && (
+          {appliedFiltersLength > 0 && (
             <div className='absolute -top-2 -right-2 bg-gray-500 h-5 w-5 rounded-full flex items-center justify-center text-white text-xs'>
-              {Object.keys(searchFilters ?? {}).length - 1}
+              {appliedFiltersLength}
             </div>
           )}
         </Button>

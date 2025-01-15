@@ -9,7 +9,7 @@ import {
   updateQuestionSetAction,
 } from '@/store/actions/questionSet.actions';
 import { QuestionOrderType } from '@/lib/utils';
-import { Plus } from 'lucide-react';
+import { ChevronLeft, Plus } from 'lucide-react';
 import QuestionSetContentUploadForm from '@/components/QuestionSetContentUploadForm/QuestionSetContentUploadForm';
 import { resetMediaUploadStateAction } from '@/store/actions/media.actions';
 import { toReadableFormat } from '@/utils/helpers/helper';
@@ -133,8 +133,17 @@ const QuestionSetDetailPublish = ({
   return (
     <div className='p-4 h-full gap-3 w-full flex flex-col max-h-[calc(100vh_-_48px)] bg-white shadow rounded-md'>
       <div className='flex-1 flex gap-3 overflow-hidden'>
-        <div className='flex-1 flex flex-col overflow-y-auto mt-3 pr-3'>
-          <h1 className='text-2xl font-bold mb-6'>Question Set - Details</h1>
+        <div className='flex-1 flex flex-col overflow-y-auto pr-3'>
+          <h1 className='text-2xl font-bold mb-4 flex items-center gap-6'>
+            <Button
+              type='button'
+              onClick={() => dispatch(navigateTo('/app/question-sets'))}
+            >
+              <ChevronLeft />
+              Back
+            </Button>
+            Question Set - Details
+          </h1>
           <div className='grid grid-cols-2 md:grid-cols-2 gap-6'>
             {dataObject.map((item) => (
               <div key={item.label}>
@@ -163,7 +172,6 @@ const QuestionSetDetailPublish = ({
           <QuestionSetQuestionReorderComponent
             questionsOrder={questionsOrder}
             setQuestionsOrder={setQuestionsOrder}
-            questionSet={questionSet}
           />
         </div>
       </div>
