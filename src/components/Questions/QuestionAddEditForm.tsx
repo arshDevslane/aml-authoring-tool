@@ -1,4 +1,4 @@
-/* eslint-disable react/no-array-index-key, react/jsx-no-useless-fragment, jsx-a11y/label-has-associated-control, react-hooks/rules-of-hooks */
+/* eslint-disable react/no-array-index-key, react/jsx-no-useless-fragment, jsx-a11y/label-has-associated-control, react-hooks/rules-of-hooks, @typescript-eslint/naming-convention, react/no-this-in-sfc, func-names */
 import React, { useEffect, useMemo, useState } from 'react';
 import { Formik, Form, FieldArray } from 'formik';
 import * as Yup from 'yup';
@@ -194,135 +194,200 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
     l1_skill_id: Yup.string().required('Required'),
     question_body: Yup.object().shape({
       numbers: Yup.object().shape({
-        n1: Yup.string().when(['question_type', 'fib_type'], {
-          is: (val: QuestionType, fibType: FibType) =>
-            [QuestionType.GRID_1, QuestionType.GRID_2].includes(val) ||
-            [FibType.FIB_STANDARD, FibType.FIB_QUOTIENT_REMAINDER].includes(
-              fibType
-            ),
-          then: () => Yup.string().required('N1 is required'),
-          otherwise: () => Yup.string().notRequired(),
-        }),
-        n2: Yup.string().when(['question_type', 'fib_type'], {
-          is: (val: QuestionType, fibType: FibType) =>
-            [QuestionType.GRID_1, QuestionType.GRID_2].includes(val) ||
-            [FibType.FIB_STANDARD, FibType.FIB_QUOTIENT_REMAINDER].includes(
-              fibType
-            ),
-          then: () => Yup.string().required('N2 is required'),
-          otherwise: () => Yup.string().notRequired(),
-        }),
+        n1: Yup.string()
+          .nullable()
+          .test('n1-required', 'N1 is required', function (fieldVal) {
+            const { question_type, question_body } = this.options
+              .context as any;
+            const fib_type = question_body?.fib_type;
+            return !(
+              ([QuestionType.GRID_1, QuestionType.GRID_2].includes(
+                question_type
+              ) ||
+                [FibType.FIB_STANDARD, FibType.FIB_QUOTIENT_REMAINDER].includes(
+                  fib_type
+                )) &&
+              !fieldVal
+            );
+          }),
+        n2: Yup.string()
+          .nullable()
+          .test('n2-required', 'N2 is required', function (fieldVal) {
+            const { question_type, question_body } = this.options
+              .context as any;
+            const fib_type = question_body?.fib_type;
+            return !(
+              ([QuestionType.GRID_1, QuestionType.GRID_2].includes(
+                question_type
+              ) ||
+                [FibType.FIB_STANDARD, FibType.FIB_QUOTIENT_REMAINDER].includes(
+                  fib_type
+                )) &&
+              !fieldVal
+            );
+          }),
       }),
       options: Yup.array()
         .of(Yup.string().required('Option is required'))
-        .when('question_type', {
-          is: (val: QuestionType) => val === QuestionType.MCQ,
-          then: () =>
-            Yup.array()
-              .of(Yup.string().required('Option is required'))
-              .min(1, 'At least one option is required'),
-          otherwise: () => Yup.array().of(Yup.string().notRequired()),
+        .test(
+          'options-required',
+          'At least one option is required',
+          function (fieldVal) {
+            const { question_type } = this.options.context as any;
+            return !(
+              question_type === QuestionType.MCQ &&
+              (!fieldVal || fieldVal.length === 0)
+            );
+          }
+        ),
+      correct_option: Yup.string()
+        .nullable()
+        .test(
+          'correct-option-required',
+          'Correct option is required',
+          function (fieldVal) {
+            const { question_type } = this.options.context as any;
+            return !(question_type === QuestionType.MCQ && !fieldVal);
+          }
+        ),
+      fib_type: Yup.string()
+        .nullable()
+        .test('fib-type-required', 'Fib type is required', function (fieldVal) {
+          const { question_type } = this.options.context as any;
+          return !(question_type === QuestionType.FIB && !fieldVal);
         }),
-      correct_option: Yup.string().when('question_type', {
-        is: (val: QuestionType) => val === QuestionType.MCQ,
-        then: () => Yup.string().required('Correct option is required'),
-        otherwise: () => Yup.string().notRequired(),
-      }),
-      fib_type: Yup.string().when('question_type', {
-        is: (val: string) => val === QuestionType.FIB,
-        then: () => Yup.string().required('Fib type is required'),
-      }),
-      fib_answer: Yup.string().when(['question_type', 'fib_type'], {
-        is: (questionType: string, fibType: string) =>
-          questionType === QuestionType.FIB &&
-          fibType === FibType.FIB_STANDARD_WITH_IMAGE,
-        then: () => Yup.string().required('Fib answer is required'),
-      }),
-      grid1_show_carry: Yup.boolean().when(['operation', 'question_type'], {
-        is: (operation: string, questionType: string) =>
-          operation === ArithmaticOperations.ADDITION &&
-          questionType === QuestionType.GRID_1,
-        then: () => Yup.boolean().required('Grid 1 show carry is required'),
-        otherwise: () => Yup.boolean().notRequired(),
-      }),
-      grid1_show_regroup: Yup.boolean().when(['operation', 'question_type'], {
-        is: (operation: string, questionType: string) =>
-          operation === ArithmaticOperations.SUBTRACTION &&
-          questionType === QuestionType.GRID_1,
-        then: () => Yup.boolean().required('Grid 1 show regroup is required'),
-        otherwise: () => Yup.boolean().notRequired(),
-      }),
-      // grid1_multiply_intermediate_steps_prefills: Yup.string().when(
-      //   ['operation', 'question_type'],
-      //   {
-      //     is: (operation: string, questionType: string) =>
-      //       operation === ArithmaticOperations.MULTIPLICATION &&
-      //       questionType === QuestionType.GRID_1,
-      //     then: () =>
-      //       Yup.string().required(
-      //         'Grid 1 multiply intermediate steps prefills are required'
-      //       ),
-      //     otherwise: () => Yup.string().notRequired(),
-      //   }
-      // ),
-      grid1_div_intermediate_steps_prefills: Yup.string().when(
-        ['operation', 'question_type'],
-        {
-          is: (operation: string, questionType: string) =>
-            operation === ArithmaticOperations.DIVISION &&
-            questionType === QuestionType.GRID_1,
-          then: () =>
-            Yup.string().required(
-              'Grid 1 division intermediate steps prefills are required'
-            ),
-          otherwise: () => Yup.string().notRequired(),
+      fib_answer: Yup.string()
+        .nullable()
+        .test(
+          'fib-answer-required',
+          'Fib answer is required',
+          function (fieldVal) {
+            const { question_type, question_body } = this.options
+              .context as any;
+            const fib_type = question_body?.fib_type;
+            return !(
+              question_type === QuestionType.FIB &&
+              fib_type === FibType.FIB_STANDARD_WITH_IMAGE &&
+              !fieldVal
+            );
+          }
+        ),
+      grid1_show_carry: Yup.boolean().test(
+        'grid1-show-carry-required',
+        'Grid 1 show carry is required',
+        function (fieldVal) {
+          const { operation, question_type } = this.options.context as any;
+          return !(
+            operation === ArithmaticOperations.ADDITION &&
+            question_type === QuestionType.GRID_1 &&
+            fieldVal === undefined
+          );
         }
       ),
-      grid1_pre_fills_top: Yup.string().when(['operation', 'question_type'], {
-        is: (operation: ArithmaticOperations, questionType: string) =>
-          [
-            ArithmaticOperations.ADDITION,
-            ArithmaticOperations.SUBTRACTION,
-          ].includes(operation) && questionType === QuestionType.GRID_1,
-        then: () => Yup.string().required('Grid 1 prefills top is required'),
-        otherwise: () => Yup.string().notRequired(),
-      }),
-      grid1_pre_fills_result: Yup.string().when(
-        ['operation', 'question_type'],
-        {
-          is: (operation: ArithmaticOperations, questionType: string) =>
-            [
-              ArithmaticOperations.ADDITION,
-              ArithmaticOperations.SUBTRACTION,
-              ArithmaticOperations.MULTIPLICATION,
-            ].includes(operation) && questionType === QuestionType.GRID_1,
-          then: () =>
-            Yup.string().required('Grid 1 prefills result is required'),
-          otherwise: () => Yup.string().notRequired(),
+      grid1_show_regroup: Yup.boolean().test(
+        'grid1-show-regroup-required',
+        'Grid 1 show regroup is required',
+        function (fieldVal) {
+          const { operation, question_type } = this.options.context as any;
+          return !(
+            operation === ArithmaticOperations.SUBTRACTION &&
+            question_type === QuestionType.GRID_1 &&
+            fieldVal === undefined
+          );
         }
       ),
-      grid1_pre_fills_quotient: Yup.string().when(
-        ['operation', 'question_type'],
-        {
-          is: (operation: string, questionType: string) =>
-            operation === ArithmaticOperations.DIVISION &&
-            questionType === QuestionType.GRID_1,
-          then: () =>
-            Yup.string().required('Grid 1 prefills quotient is required'),
-          otherwise: () => Yup.string().notRequired(),
-        }
-      ),
-      grid1_pre_fills_remainder: Yup.string().when(
-        ['operation', 'question_type'],
-        {
-          is: (operation: string, questionType: string) =>
-            operation === ArithmaticOperations.DIVISION &&
-            questionType === QuestionType.GRID_1,
-          then: () =>
-            Yup.string().required('Grid 1 prefills remainder is required'),
-          otherwise: () => Yup.string().notRequired(),
-        }
-      ),
+      grid1_pre_fills_top: Yup.string()
+        .nullable()
+        .test(
+          'grid1-pre-fills-top-required',
+          'Grid 1 prefills top is required',
+          function (fieldVal) {
+            const { operation, question_type } = this.options.context as any;
+            return !(
+              [
+                ArithmaticOperations.ADDITION,
+                ArithmaticOperations.SUBTRACTION,
+              ].includes(operation) &&
+              question_type === QuestionType.GRID_1 &&
+              !fieldVal
+            );
+          }
+        ),
+      grid1_pre_fills_result: Yup.string()
+        .nullable()
+        .test(
+          'grid1-pre-fills-result-required',
+          'Prefills result is required',
+          function (fieldVal) {
+            const { operation, question_type } = this.options.context as any;
+            return !(
+              [
+                ArithmaticOperations.ADDITION,
+                ArithmaticOperations.SUBTRACTION,
+                ArithmaticOperations.MULTIPLICATION,
+              ].includes(operation) &&
+              question_type === QuestionType.GRID_1 &&
+              !fieldVal
+            );
+          }
+        ),
+      grid1_pre_fills_quotient: Yup.string()
+        .nullable()
+        .test(
+          'grid1-pre-fills-quotient-required',
+          'Grid 1 prefills quotient is required',
+          function (fieldVal) {
+            const { operation, question_type } = this.options.context as any;
+            return !(
+              operation === ArithmaticOperations.DIVISION &&
+              question_type === QuestionType.GRID_1 &&
+              !fieldVal
+            );
+          }
+        ),
+      grid1_pre_fills_remainder: Yup.string()
+        .nullable()
+        .test(
+          'grid1-pre-fills-remainder-required',
+          'Grid 1 prefills remainder is required',
+          function (fieldVal) {
+            const { operation, question_type } = this.options.context as any;
+            return !(
+              operation === ArithmaticOperations.DIVISION &&
+              question_type === QuestionType.GRID_1 &&
+              !fieldVal
+            );
+          }
+        ),
+
+      // grid1_multiply_intermediate_steps_prefills: Yup.string()
+      //   .nullable()
+      //   .test(
+      //     'grid1-multiply-steps-required',
+      //     'Grid 1 multiply intermediate steps prefills are required',
+      //     function (fieldVal) {
+      //       const { question_type, operation } = this.options.context as any;
+      //       return !(
+      //         question_type === QuestionType.GRID_1 &&
+      //         operation === ArithmaticOperations.MULTIPLICATION &&
+      //         !fieldVal
+      //       );
+      //     }
+      //   ),
+      // grid1_div_intermediate_steps_prefills: Yup.string()
+      //   .nullable()
+      //   .test(
+      //     'grid1-division-steps-required',
+      //     'Grid 1 division intermediate steps prefills are required',
+      //     function (fieldVal) {
+      //       const { question_type, operation } = this.options.context as any;
+      //       return !(
+      //         question_type === QuestionType.GRID_1 &&
+      //         operation === ArithmaticOperations.DIVISION &&
+      //         !fieldVal
+      //       );
+      //     }
+      //   ),
     }),
   });
 
@@ -381,7 +446,8 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
         <FormikInput
           name='question_body.grid1_pre_fills_result'
           type='text'
-          label='Pre Fill Result'
+          label='Prefills Result'
+          required
         />
       </>
     );
@@ -503,7 +569,7 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
           {/* Rendering numbers fields */}
           {numberFields}
           <div>
-            <label className='font-medium text-sm flex gap-3 items-center'>
+            <label className='font-medium text-sm flex gap-3 items-center w-fit'>
               <Switch
                 checked={formik.values.grid1_show_carry}
                 onCheckedChange={(checked) =>
@@ -572,7 +638,6 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
           <FormikInput
             name='question_body.grid1_div_intermediate_steps_prefills'
             label='Grid 1 division intermediate steps prefills'
-            required
           />
           <FormikInput
             name='question_body.grid1_pre_fills_quotient'
