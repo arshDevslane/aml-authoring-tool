@@ -126,6 +126,7 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
       correct_option: question?.question_body?.correct_option ?? '',
       fib_type: question?.question_body?.answers?.fib_type ?? '',
       fib_answer: question?.question_body?.fib_answer ?? '',
+      question_image: question?.question_body?.question_image ?? {},
     },
   };
   const [selectedBoard, setSelectedBoard] = React.useState<Board>();
@@ -240,7 +241,18 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
           }),
       }),
       options: Yup.array()
-        .of(Yup.string().required('Option is required'))
+        .of(
+          Yup.string()
+            .nullable()
+            .test(
+              'correct-option-required',
+              'Option is required',
+              function (fieldVal) {
+                const { question_type } = this.options.context as any;
+                return !(question_type === QuestionType.MCQ && !fieldVal);
+              }
+            )
+        )
         .test(
           'options-required',
           'At least one option is required',
@@ -314,13 +326,17 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
           'grid1-pre-fills-top-required',
           'Grid 1 prefills top is required',
           function (fieldVal) {
-            const { operation, question_type } = this.options.context as any;
+            const { operation, question_type, question_body } = this.options
+              .context as any;
+            const showCarry = question_body?.grid1_show_carry;
+            const showRegroup = question_body?.grid1_show_regroup;
             return !(
               [
                 ArithmaticOperations.ADDITION,
                 ArithmaticOperations.SUBTRACTION,
               ].includes(operation) &&
               question_type === QuestionType.GRID_1 &&
+              (showCarry || showRegroup) &&
               !fieldVal
             );
           }
@@ -471,6 +487,10 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
           name='question_body.grid1_pre_fills_top'
           type='text'
           label='Pre Fill Top'
+          required={
+            formik.values.question_body.grid1_show_carry ||
+            formik.values.question_body.grid1_show_regroup
+          }
         />
 
         {grid1PreFillsResultInput}
@@ -609,7 +629,7 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
         <>
           {numberFields}
           <div>
-            <label className='font-medium text-sm flex gap-3 items-center'>
+            <label className='font-medium text-sm flex gap-3 items-center w-fit'>
               <Switch
                 checked={formik.values.grid1_show_regroup}
                 onCheckedChange={(checked) =>
