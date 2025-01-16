@@ -360,34 +360,36 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
           }
         ),
 
-      // grid1_multiply_intermediate_steps_prefills: Yup.string()
-      //   .nullable()
-      //   .test(
-      //     'grid1-multiply-steps-required',
-      //     'Grid 1 multiply intermediate steps prefills are required',
-      //     function (fieldVal) {
-      //       const { question_type, operation } = this.options.context as any;
-      //       return !(
-      //         question_type === QuestionType.GRID_1 &&
-      //         operation === ArithmaticOperations.MULTIPLICATION &&
-      //         !fieldVal
-      //       );
-      //     }
-      //   ),
-      // grid1_div_intermediate_steps_prefills: Yup.string()
-      //   .nullable()
-      //   .test(
-      //     'grid1-division-steps-required',
-      //     'Grid 1 division intermediate steps prefills are required',
-      //     function (fieldVal) {
-      //       const { question_type, operation } = this.options.context as any;
-      //       return !(
-      //         question_type === QuestionType.GRID_1 &&
-      //         operation === ArithmaticOperations.DIVISION &&
-      //         !fieldVal
-      //       );
-      //     }
-      //   ),
+      grid1_multiply_intermediate_steps_prefills: Yup.string()
+        .nullable()
+        .test(
+          'grid1-multiply-steps-required',
+          'Grid 1 multiply intermediate steps prefills are required',
+          function (fieldVal) {
+            const { question_type, operation, question_body } = this.options
+              .context as any;
+            return !(
+              question_type === QuestionType.GRID_1 &&
+              operation === ArithmaticOperations.MULTIPLICATION &&
+              question_body?.numbers?.n2?.length > 1 &&
+              !fieldVal
+            );
+          }
+        ),
+      grid1_div_intermediate_steps_prefills: Yup.string()
+        .nullable()
+        .test(
+          'grid1-division-steps-required',
+          'Grid 1 division intermediate steps prefills are required',
+          function (fieldVal) {
+            const { question_type, operation } = this.options.context as any;
+            return !(
+              question_type === QuestionType.GRID_1 &&
+              operation === ArithmaticOperations.DIVISION &&
+              !fieldVal
+            );
+          }
+        ),
     }),
   });
 
@@ -623,6 +625,7 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
           <FormikInput
             name='question_body.grid1_multiply_intermediate_steps_prefills'
             label='Grid 1 multiply intermediate steps prefills'
+            required={formik.values.question_body?.numbers?.n2?.length > 1}
           />
           {grid1PreFillsResultInput}
         </>
