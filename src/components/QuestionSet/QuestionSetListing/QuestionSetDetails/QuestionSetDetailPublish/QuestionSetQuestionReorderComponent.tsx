@@ -25,11 +25,13 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Filter, PlusCircle, Trash } from 'lucide-react';
+import { Filter, Pencil, PlusCircle, Trash } from 'lucide-react';
 import React, { CSSProperties, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { QuestionSetPurposeType } from '@/enums/questionSet.enum';
 import * as _ from 'lodash';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import QuestionsAddEditPage from '@/components/Questions/QuestionsAddEditPage';
 import QuestionSetReorderQuestionFilterComponent from '../QuestionSetReorderQuestionFilterComponent';
 
 type QuestionSetQuestionsReorderComponentProps = {
@@ -41,16 +43,19 @@ type QuestionSetQuestionsReorderComponentProps = {
 enum DialogTypes {
   FILTER = 'filter',
   CONTENT = 'content',
+  DETAILS = 'details',
 }
 
 const DraggableItem = ({
   question,
   onRemove,
   index,
+  onEdit,
 }: {
   question: QuestionOrderType;
   onRemove: (id: string) => void;
   index: number;
+  onEdit: (id: string) => void;
 }) => {
   const {
     attributes,
@@ -71,41 +76,23 @@ const DraggableItem = ({
     zIndex: isDragging ? 1 : 0,
     position: 'relative',
   };
-
   const dataObject = [
-    {
-      label: 'Class',
-      value: question?.taxonomy?.class?.name?.en,
-      hasValue: Boolean(question?.taxonomy?.class?.name?.en),
-    },
     {
       label: 'Question Type',
       value: question?.question_type,
       hasValue: Boolean(question?.question_type),
     },
     {
-      label: 'L2 Skills',
-      value: question?.taxonomy?.l2_skill?.length
-        ? question.taxonomy.l2_skill?.map((l2) => l2.name.en).join(', ')
-        : '--',
-      hasValue: Boolean(question?.taxonomy?.l2_skill?.length),
-    },
-    {
-      label: 'L3 Skills',
-      value: question?.taxonomy?.l3_skill?.length
-        ? question.taxonomy.l3_skill.map((l3) => l3.name.en).join(', ')
-        : '--',
-      hasValue: Boolean(question?.taxonomy?.l3_skill?.length),
-    },
-    {
       label: 'N1',
       value: question?.question_body?.numbers?.n1,
       hasValue: Boolean(question?.question_body?.numbers?.n1),
+      hide: Boolean(!question?.question_body?.numbers?.n1),
     },
     {
       label: 'N2',
       value: question?.question_body?.numbers?.n2,
       hasValue: Boolean(question?.question_body?.numbers?.n2),
+      hide: Boolean(!question?.question_body?.numbers?.n2),
     },
     {
       label: 'Image',
@@ -117,7 +104,7 @@ const DraggableItem = ({
       label: 'Options',
       value: question?.question_body?.options?.join(', '),
       hasValue: Boolean(question?.question_body?.options?.length),
-      hide: true,
+      hide: Boolean(!question?.question_body?.options?.length),
     },
   ];
 
@@ -134,11 +121,30 @@ const DraggableItem = ({
         isOver && !isDragging && 'bg-yellow-100 border-yellow-200'
       )}
     >
-      <div>
-        <div className='flex gap-2 items-end mb-2'>
-          <p className='font-bold text-2xl'>{index + 1}.</p>
-          <h1 className='text-xl font-bold'>{question?.description?.en}</h1>
+      <div className='w-full'>
+        <div className='flex justify-between w-full'>
+          <span className='flex gap-2 mb-2 items-end'>
+            <p className='font-bold text-2xl'>{index + 1}.</p>
+            <h1 className='text-xl font-bold'>{question?.description?.en}</h1>
+          </span>
+          <span className='flex gap-2'>
+            <AmlTooltip tooltip='Edit'>
+              <Pencil
+                className='hover:fill-slate-400 cursor-pointer'
+                onClick={() => onEdit(question?.identifier)}
+                size='18px'
+              />
+            </AmlTooltip>
+            <AmlTooltip tooltip='Remove'>
+              <Trash
+                className='fill-red-500 hover:text-red-600 text-red-500 cursor-pointer'
+                onClick={() => onRemove(question?.identifier)}
+                size='18px'
+              />
+            </AmlTooltip>
+          </span>
         </div>
+
         <div className='grid grid-cols-3 gap-x-8 gap-y-2'>
           {dataObject.map((item) => (
             <div
@@ -151,12 +157,6 @@ const DraggableItem = ({
           ))}
         </div>
       </div>
-      <AmlTooltip tooltip='Remove'>
-        <Trash
-          className='h-6 w-6 fill-red-500 hover:text-red-600 text-red-500 cursor-pointer'
-          onClick={() => onRemove(question?.identifier)}
-        />
-      </AmlTooltip>
     </div>
   );
 };
@@ -174,6 +174,14 @@ const QuestionSetQuestionReorderComponent = ({
   }>({
     open: false,
     dialog: null,
+  });
+  const [openQuestionDialog, setOpenQuestionDialog] = useState<{
+    dialog: DialogTypes | null;
+    open: boolean;
+    questionId?: string;
+  }>({
+    dialog: null,
+    open: false,
   });
   const [filterState, setFilterState] = useState<{
     l2_skill: string;
@@ -213,7 +221,13 @@ const QuestionSetQuestionReorderComponent = ({
       prevOrder.filter((ques) => ques.identifier !== id)
     );
   };
-
+  const handleOnEdit = (id: string) => {
+    setOpenQuestionDialog({
+      dialog: DialogTypes.DETAILS,
+      open: true,
+      questionId: id,
+    });
+  };
   const handleQuestionAddition = () => {
     const uniqueQuestions = _.differenceBy(
       changeState,
@@ -249,97 +263,126 @@ const QuestionSetQuestionReorderComponent = ({
   }, [filterState]);
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      modifiers={[restrictToVerticalAxis]}
-      onDragEnd={onDragEnd}
-    >
-      <div className='flex justify-between mt-3 mb-5 gap-5'>
-        <h1 className='text-2xl font-bold'>Questions</h1>
-        <div className='flex flex-1 overflow-hidden flex-col gap-1 w-[300px]'>
-          <InfiniteSelect
-            key={mountCounter}
-            isLoading={isLoadingQuestions}
-            onChange={setChangeState}
-            data={result}
-            totalCount={totalCount}
-            dispatchAction={(values) =>
-              getListQuestionsAction({
-                filters: {
-                  search_query: values.value,
-                  l1_skill_id: questionSet.taxonomy.l1_skill.identifier,
-                  repository_id: questionSet.repository.identifier,
-                  board_id: questionSet.taxonomy.board.identifier,
-                  class_id: enableClassFilter
-                    ? filterState.class_id
-                    : questionSet.taxonomy.class.identifier,
+    <>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        modifiers={[restrictToVerticalAxis]}
+        onDragEnd={onDragEnd}
+      >
+        <div className='flex justify-between mt-3 mb-5 gap-5'>
+          <h1 className='text-2xl font-bold'>Questions</h1>
+          <div className='flex flex-1 overflow-hidden flex-col gap-1 w-[300px]'>
+            <InfiniteSelect
+              key={mountCounter}
+              isLoading={isLoadingQuestions}
+              onChange={setChangeState}
+              data={result}
+              totalCount={totalCount}
+              dispatchAction={(values) =>
+                getListQuestionsAction({
+                  filters: {
+                    search_query: values.value,
+                    l1_skill_id: questionSet.taxonomy.l1_skill.identifier,
+                    repository_id: questionSet.repository.identifier,
+                    board_id: questionSet.taxonomy.board.identifier,
+                    class_id: enableClassFilter
+                      ? filterState.class_id
+                      : questionSet.taxonomy.class.identifier,
 
-                  page_no: values.page_no,
+                    page_no: values.page_no,
 
-                  l2_skill_id: filterState.l2_skill,
-                  l3_skill_id: filterState.l3_skill,
-                },
-                noCache: true,
+                    l2_skill_id: filterState.l2_skill,
+                    l3_skill_id: filterState.l3_skill,
+                  },
+                  noCache: true,
+                })
+              }
+              valueKey='identifier'
+              labelKey='description.en'
+              preLoadedOptions={changeState}
+              multiple
+            />
+          </div>
+          <div className='flex items-center gap-5'>
+            <Button
+              className='relative'
+              onClick={() =>
+                setOpenDialog({ open: true, dialog: DialogTypes.FILTER })
+              }
+            >
+              <Filter className={cn('text-white')} />
+              Filters
+              {filterCount > 0 && (
+                <div className='absolute -top-2 -right-2 bg-gray-500 h-5 w-5 rounded-full flex items-center justify-center text-white text-xs'>
+                  {filterCount}
+                </div>
+              )}
+            </Button>
+            <Button
+              disabled={!changeState.length}
+              onClick={handleQuestionAddition}
+            >
+              <PlusCircle /> Add
+            </Button>
+          </div>
+        </div>
+        <div className='flex-1 flex flex-col overflow-y-auto pr-3'>
+          {questionsOrder.length === 0 && (
+            <div className='text-lg font-bold h-full flex items-center justify-center'>
+              No questions added yet.
+            </div>
+          )}
+          <SortableContext
+            items={questionsOrder.map((row) => row.identifier)}
+            strategy={verticalListSortingStrategy}
+          >
+            {questionsOrder.map((question, index) => (
+              <DraggableItem
+                index={index}
+                key={question.identifier}
+                question={question}
+                onRemove={handleRemoveQuestion}
+                onEdit={handleOnEdit}
+              />
+            ))}
+          </SortableContext>
+        </div>
+        <QuestionSetReorderQuestionFilterComponent
+          open={openDialog.open && openDialog.dialog === DialogTypes.FILTER}
+          onClose={() => setOpenDialog({ open: false, dialog: null })}
+          filterState={filterState}
+          setFilterState={setFilterState}
+          enableClassFilter={enableClassFilter}
+        />
+      </DndContext>
+      <Dialog
+        open={
+          openQuestionDialog.open &&
+          openQuestionDialog.dialog === DialogTypes.DETAILS
+        }
+        onOpenChange={() =>
+          setOpenQuestionDialog({
+            dialog: null,
+            open: false,
+            questionId: undefined,
+          })
+        }
+      >
+        <DialogContent className='max-w-[80%] max-h-[95%] overflow-y-auto'>
+          <QuestionsAddEditPage
+            questionId={openQuestionDialog.questionId}
+            onClose={() =>
+              setOpenQuestionDialog({
+                dialog: null,
+                open: false,
+                questionId: undefined,
               })
             }
-            valueKey='identifier'
-            labelKey='description.en'
-            preLoadedOptions={changeState}
-            multiple
           />
-        </div>
-        <div className='flex items-center gap-5'>
-          <Button
-            className='relative'
-            onClick={() =>
-              setOpenDialog({ open: true, dialog: DialogTypes.FILTER })
-            }
-          >
-            <Filter className={cn('text-white')} />
-            Filters
-            {filterCount > 0 && (
-              <div className='absolute -top-2 -right-2 bg-gray-500 h-5 w-5 rounded-full flex items-center justify-center text-white text-xs'>
-                {filterCount}
-              </div>
-            )}
-          </Button>
-          <Button
-            disabled={!changeState.length}
-            onClick={handleQuestionAddition}
-          >
-            <PlusCircle /> Add
-          </Button>
-        </div>
-      </div>
-      <div className='flex-1 flex flex-col overflow-y-auto pr-3'>
-        {questionsOrder.length === 0 && (
-          <div className='text-lg font-bold h-full flex items-center justify-center'>
-            No questions added yet.
-          </div>
-        )}
-        <SortableContext
-          items={questionsOrder.map((row) => row.identifier)}
-          strategy={verticalListSortingStrategy}
-        >
-          {questionsOrder.map((question, index) => (
-            <DraggableItem
-              index={index}
-              key={question.identifier}
-              question={question}
-              onRemove={handleRemoveQuestion}
-            />
-          ))}
-        </SortableContext>
-      </div>
-      <QuestionSetReorderQuestionFilterComponent
-        open={openDialog.open && openDialog.dialog === DialogTypes.FILTER}
-        onClose={() => setOpenDialog({ open: false, dialog: null })}
-        filterState={filterState}
-        setFilterState={setFilterState}
-        enableClassFilter={enableClassFilter}
-      />
-    </DndContext>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

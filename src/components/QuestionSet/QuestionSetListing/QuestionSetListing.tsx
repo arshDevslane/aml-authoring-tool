@@ -107,6 +107,11 @@ const QuestionSetListing = () => {
         cell: (info) => (info.getValue() as QuestionSet['questions']).length,
       },
       {
+        accessorKey: 'sequence',
+        header: 'Sequence',
+        cell: (info) => info.getValue(),
+      },
+      {
         accessorKey: 'l1_skill',
         header: 'L1 Skill',
         cell: ({ row }) => row.original?.taxonomy?.l1_skill?.name?.en ?? '--',

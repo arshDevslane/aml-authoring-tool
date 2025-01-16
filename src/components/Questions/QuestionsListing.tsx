@@ -155,7 +155,9 @@ const QuestionsListing: React.FC<QuestionsListingProps> = ({
         cell: (info) => {
           const numbers = (info.getValue() as Question['question_body'])
             ?.numbers;
-          return getCommaSeparatedNumbers(numbers || {});
+          const options = (info.getValue() as Question['question_body'])
+            ?.options;
+          return getCommaSeparatedNumbers(numbers || options);
         },
       },
       {

@@ -148,7 +148,7 @@ function* createQuestionSaga(data: any): any {
 
 function* updateQuestionSaga(data: any): any {
   try {
-    const { question, id } = data.payload;
+    const { question, id, navigate } = data.payload;
 
     const response: Awaited<
       ReturnType<typeof questionsService.updateQuestion>
@@ -159,7 +159,9 @@ function* updateQuestionSaga(data: any): any {
       })
     );
     toastService.showSuccess('Question updated successfully');
-    yield put(navigateTo('/app/questions'));
+    if (navigate) {
+      yield put(navigateTo('/app/questions'));
+    }
   } catch (e: any) {
     yield put(
       updateQuestionErrorAction(

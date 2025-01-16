@@ -92,6 +92,7 @@ export const createQuestionErrorAction = (message: string) => ({
 export const updateQuestionAction = (payload: {
   id: string;
   question: any;
+  navigate: boolean;
 }) => ({
   type: QuestionsActionType.UPDATE_QUESTION,
   payload,
