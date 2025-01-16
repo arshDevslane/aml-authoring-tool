@@ -1,5 +1,5 @@
+import QuestionFilters from '@/components/Questions/QuestionFilters';
 import QuestionsListing from '@/components/Questions/QuestionsListing';
-import QuestionSetFilters from '@/components/QuestionSet/QuestionSetFilters';
 import { Button } from '@/components/ui/button';
 import AmlListingFilterPopup from '@/shared-resources/AmlListingFilterPopup/AmlListingFilterPopup';
 import { getListQuestionsAction } from '@/store/actions/question.action';
@@ -34,7 +34,7 @@ const QuestionsPage: React.FC = () => {
           <AmlListingFilterPopup
             searchFilters={searchFilters}
             setSearchFilters={setSearchFilters}
-            Component={QuestionSetFilters}
+            Component={QuestionFilters}
           />
           <Button onClick={createQuestion}>+ Create</Button>
         </div>

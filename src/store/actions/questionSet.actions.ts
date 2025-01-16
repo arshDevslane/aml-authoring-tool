@@ -13,7 +13,7 @@ export type QuestionSetActionPayloadType = {
     l2_skill_id: string;
     l3_skill_id: string;
     sub_skill_id: string;
-  }> & { page_no: number };
+  }> & { page_no: number; sortOrder?: string; orderBy?: string };
 };
 
 export type QuestionSetResponseType = {

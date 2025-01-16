@@ -7,6 +7,7 @@ export type QuestionsActionPayloadType = {
   filters: Partial<{
     search_query: string;
     question_type: Array<QuestionType>;
+    question_set_id: string;
     repository_id: string;
     board_id: string;
     class_id: string;
@@ -14,14 +15,12 @@ export type QuestionsActionPayloadType = {
     l2_skill_id: string;
     l3_skill_id: string;
     sub_skill_id: string;
-  }> & { page_no: number };
-  noCache?: boolean;
+  }> & { page_no: number; sortOrder?: string; orderBy?: string };
 };
 export type QuestionsResponseType = {
   questions: Question[];
   totalCount: number;
   users?: User[];
-  noCache: boolean;
 };
 export const getListQuestionsAction = (
   payload: QuestionsActionPayloadType

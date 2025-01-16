@@ -41,7 +41,12 @@ interface DeleteQuestionSetSagaPayloadType extends SagaPayloadType {
 
 function* getListQuestionSetSaga(data: QuestionSetSagaPayloadType): any {
   try {
-    const { page_no: pageNo = 1, ...filters } = data.payload.filters;
+    const {
+      page_no: pageNo = 1,
+      sortOrder,
+      orderBy,
+      ...filters
+    } = data.payload.filters;
     const cachedData: AppState['questionSet']['cachedData'][string] =
       yield select(
         (state: AppState) =>
@@ -67,6 +72,7 @@ function* getListQuestionSetSaga(data: QuestionSetSagaPayloadType): any {
     const response: Awaited<ReturnType<typeof questionSetService.getList>> =
       yield call(questionSetService.getList, {
         filters,
+        ...(sortOrder && orderBy && { sort_by: [[orderBy, sortOrder]] }),
         limit: PaginationLimit.PAGE_SIZE,
         offset: (pageNo - 1) * PaginationLimit.PAGE_SIZE,
       });

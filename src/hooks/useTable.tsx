@@ -41,15 +41,11 @@ export function getSelectionColumn<T>() {
 export function useTable<T extends { identifier: string }>({
   columns,
   rows,
-  enableFilters = true,
   enableSorting = true,
   enableRowSelection = false,
   selectedRows = {},
   setSelectedRows,
-}: Pick<
-  TableOptions<T>,
-  'columns' | 'enableFilters' | 'enableSorting' | 'enableRowSelection'
-> & {
+}: Pick<TableOptions<T>, 'columns' | 'enableSorting' | 'enableRowSelection'> & {
   rows: T[];
   selectedRows?: RowSelectionState;
   setSelectedRows?: OnChangeFn<RowSelectionState>;
@@ -72,7 +68,6 @@ export function useTable<T extends { identifier: string }>({
     manualSorting: true,
     manualPagination: true,
 
-    enableFilters,
     enableSorting,
     enableRowSelection,
   });

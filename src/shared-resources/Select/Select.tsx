@@ -71,7 +71,11 @@ export const Select = <T extends string | number | (string | number)[]>({
         value,
         options.map((option) => option.value)
       );
-      const labels = filteredValues.map((option) => option.label).join(', ');
+      const labels = options
+        .filter((option) => filteredValues.includes(option.value))
+        .map((option) => option.label)
+        .join(', ');
+
       return {
         validatedValues: filteredValues,
         renderLabels: labels,

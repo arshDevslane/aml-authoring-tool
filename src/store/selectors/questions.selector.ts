@@ -43,18 +43,3 @@ export const isDeletingSelector = createSelector(
   [questionsState],
   (state: QuestionsState) => state.isDeleting
 );
-
-export const noCacheQuestionSelector = createSelector(
-  [questionsState],
-  (questionState: QuestionsState) => {
-    const { result: resultIDs, totalCount } = questionState.cachedData
-      .noCacheData || {
-      result: [],
-      totalCount: questionState.latestCount ?? 0,
-    };
-    return {
-      result: resultIDs.map((id) => questionState.entities[id]).filter(Boolean),
-      totalCount,
-    };
-  }
-);

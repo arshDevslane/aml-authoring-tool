@@ -31,7 +31,12 @@ interface DeleteQuestionSagaPayloadType extends SagaPayloadType {
 }
 function* getListQuestionsSaga(data: QuestionsSagaPayloadType): any {
   try {
-    const { page_no: pageNo = 1, ...filters } = data.payload.filters;
+    const {
+      page_no: pageNo = 1,
+      sortOrder,
+      orderBy,
+      ...filters
+    } = data.payload.filters;
     const cachedData: AppState['questions']['cachedData'][string] =
       yield select(
         (state: AppState) =>
@@ -50,7 +55,6 @@ function* getListQuestionsSaga(data: QuestionsSagaPayloadType): any {
             .filter(Boolean),
           totalCount: cachedData.totalCount,
           users: cachedData.users,
-          noCache: data.payload.noCache ?? false,
         })
       );
       return;
@@ -59,6 +63,7 @@ function* getListQuestionsSaga(data: QuestionsSagaPayloadType): any {
     const response: Awaited<ReturnType<typeof questionsService.getList>> =
       yield call(questionsService.getList, {
         filters,
+        ...(orderBy && sortOrder && { sort_by: [[orderBy, sortOrder]] }),
         limit: PaginationLimit.PAGE_SIZE,
         offset: (pageNo - 1) * PaginationLimit.PAGE_SIZE,
       });
@@ -67,7 +72,6 @@ function* getListQuestionsSaga(data: QuestionsSagaPayloadType): any {
         questions: response.result.questions,
         totalCount: response.result.meta.total,
         users: response.result.users,
-        noCache: data.payload.noCache ?? false,
       })
     );
   } catch (e: any) {
