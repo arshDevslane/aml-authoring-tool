@@ -9,15 +9,19 @@ import { ArrowLeft } from 'lucide-react';
 import { navigateTo } from '@/store/actions/navigation.action';
 import QuestionAddEditForm from './QuestionAddEditForm';
 import Loader from '../Loader/Loader';
+import QuestionViewPage from './QuestionView/QuestionViewPage';
+import { transformQuestion } from './QuestionView/QuestionViewUtils';
 
 interface QuestionsAddEditPageProps {
   questionId?: string;
   onClose?: () => void;
+  viewMode?: boolean;
 }
 
 const QuestionsAddEditPage: React.FC<QuestionsAddEditPageProps> = ({
   questionId,
   onClose,
+  viewMode = false,
 }) => {
   const { id: urlId } = useParams<{ id: string }>();
   const dispatch = useDispatch();
@@ -42,6 +46,12 @@ const QuestionsAddEditPage: React.FC<QuestionsAddEditPageProps> = ({
     }
   }, [effectiveId, question]);
 
+  const label = useMemo(() => {
+    if (viewMode) return 'View Question';
+    if (effectiveId) return 'Edit Question';
+    return 'Add Question';
+  }, [viewMode, effectiveId]);
+
   return (
     <div
       className={cx(
@@ -56,9 +66,7 @@ const QuestionsAddEditPage: React.FC<QuestionsAddEditPageProps> = ({
             onClick={() => dispatch(navigateTo('/app/questions'))}
           />
         )}
-        <h1 className='text-2xl font-bold'>
-          {effectiveId ? 'Edit Question' : 'Add Question'}
-        </h1>
+        <h1 className='text-2xl font-bold'>{label}</h1>
       </div>
       {effectiveId && !questionData ? (
         <p>
@@ -66,11 +74,15 @@ const QuestionsAddEditPage: React.FC<QuestionsAddEditPageProps> = ({
         </p>
       ) : (
         <div className='flex flex-1'>
-          <QuestionAddEditForm
-            id={effectiveId}
-            question={questionData}
-            onClose={onClose}
-          />
+          {viewMode ? (
+            <QuestionViewPage question={transformQuestion(questionData)} />
+          ) : (
+            <QuestionAddEditForm
+              id={effectiveId}
+              question={questionData}
+              onClose={onClose}
+            />
+          )}
         </div>
       )}
     </div>
