@@ -139,7 +139,15 @@ const DraggableItem = ({
               className={cn('flex gap-1', item.hide && 'hidden')}
             >
               <h1 className='text-sm font-bold'>{item.label}:</h1>
-              <p className='text-sm'>{item.hasValue ? item.value : '--'}</p>
+              {item.label === 'Options' ? (
+                <AmlTooltip tooltip={item.hasValue ? item.value : ''}>
+                  <p className={cn('text-sm truncate max-w-20')}>
+                    {item.hasValue ? item.value : '--'}
+                  </p>
+                </AmlTooltip>
+              ) : (
+                <p className='text-sm'>{item.hasValue ? item.value : '--'}</p>
+              )}
             </div>
           ))}
         </div>
