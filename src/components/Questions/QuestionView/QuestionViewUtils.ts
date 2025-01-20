@@ -30,6 +30,7 @@ export interface QuestionViewPropsType {
   operation: ArithmaticOperations;
   questionImageUrl?: string;
   correct_option?: string;
+  description?: { en: string };
 }
 
 export const transformQuestion = (apiQuestion: any): any => {
@@ -106,3 +107,5 @@ export const transformQuestion = (apiQuestion: any): any => {
     ...(options && { options, correct_option: options[correctOptionIndex] }), // Include only if it's an MCQ question
   };
 };
+
+export const DIGIT_PLACES = ['U', 'T', 'H', 'Th', 'TTh', 'L', 'TL', 'C', 'TC'];

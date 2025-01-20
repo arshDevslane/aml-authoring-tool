@@ -17,7 +17,6 @@ const MCQQuestionView: React.FC<MCQQuestionViewProps> = ({ question }) => {
     handleImageLoad,
     setImgError,
   } = useImageLoader(question?.questionImageUrl);
-  console.log('QUE', question);
 
   return (
     <div>
