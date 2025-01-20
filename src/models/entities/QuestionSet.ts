@@ -25,6 +25,7 @@ export interface QuestionSet {
   updated_by: string | null;
   created_at: string;
   updated_at: string;
+  x_id: string;
 }
 
 export interface Description {

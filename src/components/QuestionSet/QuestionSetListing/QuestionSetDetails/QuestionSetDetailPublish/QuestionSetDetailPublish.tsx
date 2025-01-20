@@ -1,4 +1,3 @@
-import { QuestionSet } from '@/models/entities/Question';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { isQuestionSetActionInProgressSelector } from '@/store/selectors/questionSet.selector';
@@ -13,6 +12,7 @@ import { ArrowLeft, Plus } from 'lucide-react';
 import QuestionSetContentUploadForm from '@/components/QuestionSetContentUploadForm/QuestionSetContentUploadForm';
 import { resetMediaUploadStateAction } from '@/store/actions/media.actions';
 import { toReadableFormat } from '@/utils/helpers/helper';
+import { QuestionSet } from '@/models/entities/QuestionSet';
 import QuestionSetQuestionReorderComponent from './QuestionSetQuestionReorderComponent';
 import QuestionSetContentComponent from '../QuestionSetDetailContent/QuestionSetContentComponent';
 

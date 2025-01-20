@@ -94,6 +94,11 @@ const QuestionsListing: React.FC<QuestionsListingProps> = ({
         cell: coloredDot,
       },
       {
+        accessorKey: 'x_id',
+        header: 'ID',
+        cell: (info) => info.getValue() || '--',
+      },
+      {
         accessorKey: 'taxonomy',
         header: 'Class',
         cell: (info) =>

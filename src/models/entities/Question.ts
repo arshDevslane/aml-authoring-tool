@@ -1,32 +1,7 @@
-import { QuestionType } from '../enums/QuestionType.enum';
+import { FibType, QuestionType } from '../enums/QuestionType.enum';
 import { SkillType } from '../enums/skillType.enum';
 import { ArithmaticOperations } from '../enums/ArithmaticOperations.enum';
 
-export interface QuestionSet {
-  identifier: string;
-  title: Description;
-  description: Description;
-  repository: Repository;
-  questions: Question[];
-  sequence: number;
-  tenant: string;
-  taxonomy: Taxonomy;
-  sub_skills: SubSkill[];
-  purpose: string;
-  enable_feedback: boolean;
-  is_atomic: boolean;
-  gradient: string;
-  group_name: number | null;
-  content_ids: string[] | null;
-  contents: string[];
-  instruction_text: string;
-  status: string;
-  is_active: boolean;
-  created_by: string;
-  updated_by: string | null;
-  created_at: string;
-  updated_at: string;
-}
 export interface Description {
   en: string;
   kn?: string;
@@ -78,6 +53,7 @@ export interface Question {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  x_id: string;
 }
 
 export interface QuestionBody {
@@ -101,7 +77,7 @@ export interface QuestionBody {
 
 export interface Answers {
   result: number;
-  fib_type: string;
+  fib_type: FibType;
 }
 export interface Numbers {
   n1: string | null;

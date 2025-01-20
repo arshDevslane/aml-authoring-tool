@@ -84,6 +84,11 @@ const QuestionSetListing = () => {
         cell: (info) => coloredDot(info, (value) => value === 'live'),
       },
       {
+        accessorKey: 'x_id',
+        header: 'ID',
+        cell: (info) => info.getValue() || '--',
+      },
+      {
         accessorKey: 'title',
         header: 'Title',
         // eslint-disable-next-line react/no-unstable-nested-components
