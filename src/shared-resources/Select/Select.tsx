@@ -64,8 +64,7 @@ export const Select = <T extends string | number | (string | number)[]>({
 
     return value === val;
   };
-
-  const { validatedValues, renderLabels } = React.useMemo(() => {
+  const { validatedValues, renderLabels } = (() => {
     if (Array.isArray(value)) {
       const filteredValues = _.intersectionBy(
         value,
@@ -89,7 +88,7 @@ export const Select = <T extends string | number | (string | number)[]>({
       renderLabels: selectedOption?.label,
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value]);
+  })();
 
   const handleReset = () => {
     onChange((multiple ? [] : '') as T);
