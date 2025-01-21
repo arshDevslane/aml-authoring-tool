@@ -19,7 +19,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Pencil, Trash } from 'lucide-react';
+import { Eye, Pencil, Trash } from 'lucide-react';
 import React, { CSSProperties, useState } from 'react';
 
 type QuestionSetQuestionsReorderComponentProps = {
@@ -42,7 +42,7 @@ const DraggableItem = ({
   question: QuestionOrderType;
   onRemove: (id: string) => void;
   index: number;
-  onEdit: (id: string) => void;
+  onEdit: (id: string, isViewMode?: boolean) => void;
 }) => {
   const {
     attributes,
@@ -115,6 +115,13 @@ const DraggableItem = ({
             <h1 className='text-xl font-bold'>{question?.description?.en}</h1>
           </span>
           <span className='flex gap-2'>
+            <AmlTooltip tooltip='View'>
+              <Eye
+                className='hover:fill-slate-400 cursor-pointer'
+                onClick={() => onEdit(question?.identifier, true)}
+                size='18px'
+              />
+            </AmlTooltip>
             <AmlTooltip tooltip='Edit'>
               <Pencil
                 className='hover:fill-slate-400 cursor-pointer'
@@ -164,6 +171,7 @@ const QuestionSetQuestionReorderComponent = ({
     dialog: DialogTypes | null;
     open: boolean;
     questionId?: string;
+    isViewMode?: boolean;
   }>({
     dialog: null,
     open: false,
@@ -194,11 +202,12 @@ const QuestionSetQuestionReorderComponent = ({
       prevOrder.filter((ques) => ques.identifier !== id)
     );
   };
-  const handleOnEdit = (id: string) => {
+  const handleOnEdit = (id: string, isViewMode?: boolean) => {
     setOpenQuestionDialog({
       dialog: DialogTypes.DETAILS,
       open: true,
       questionId: id,
+      isViewMode,
     });
   };
 
@@ -243,17 +252,20 @@ const QuestionSetQuestionReorderComponent = ({
             dialog: null,
             open: false,
             questionId: undefined,
+            isViewMode: undefined,
           })
         }
       >
         <DialogContent className='max-w-[80%] max-h-[95%] overflow-y-auto'>
           <QuestionsAddEditPage
             questionId={openQuestionDialog.questionId}
+            viewMode={openQuestionDialog?.isViewMode}
             onClose={() =>
               setOpenQuestionDialog({
                 dialog: null,
                 open: false,
                 questionId: undefined,
+                isViewMode: undefined,
               })
             }
           />

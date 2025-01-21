@@ -27,15 +27,17 @@ export const userReducer: Reducer<UserState> = (
         break;
       }
       case QuestionsActionType.GET_LIST_COMPLETED: {
-        const { users } = action.payload;
-        const usersMap = users.reduce(
-          (acc: any, user: User) => ({
-            ...acc,
-            [user.identifier]: user,
-          }),
-          {} as Record<string, User>
-        );
-        draft.entities = { ...state.entities, ...usersMap };
+        if (action.payload.users) {
+          const { users } = action.payload;
+          const usersMap = users.reduce(
+            (acc: any, user: User) => ({
+              ...acc,
+              [user.identifier]: user,
+            }),
+            {} as Record<string, User>
+          );
+          draft.entities = { ...state.entities, ...usersMap };
+        }
         break;
       }
       default: {
