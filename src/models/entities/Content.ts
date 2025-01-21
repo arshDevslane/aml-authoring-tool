@@ -20,8 +20,8 @@ export type Content = {
 
 export type Media = {
   src: string;
-  file_name: string;
+  fileName: string;
   mediaType: string;
-  mime_type: string;
+  mimeType: string;
   url: string;
 };

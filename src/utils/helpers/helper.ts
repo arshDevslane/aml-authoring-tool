@@ -71,12 +71,7 @@ export const cleanQuestionBody = (
       cleanedQuestionBody = {
         options: cleanedQuestionBody.options,
         correct_option: cleanedQuestionBody.correct_option,
-        question_image: {
-          ...cleanedQuestionBody.question_image,
-          mimeType:
-            cleanedQuestionBody.question_image?.mimeType ||
-            cleanedQuestionBody.question_image?.mime_type,
-        },
+        question_image: cleanedQuestionBody.question_image,
       };
     }
   } else if (
@@ -95,12 +90,7 @@ export const cleanQuestionBody = (
     cleanedQuestionBody = {
       fib_type: cleanedQuestionBody.fib_type,
       fib_answer: cleanedQuestionBody.fib_answer,
-      question_image: {
-        ...cleanedQuestionBody.question_image,
-        mimeType:
-          cleanedQuestionBody.question_image?.mimeType ||
-          cleanedQuestionBody.question_image?.mime_type,
-      },
+      question_image: cleanedQuestionBody.question_image,
     };
   } else if (
     operation === ArithmaticOperations.ADDITION &&
@@ -148,9 +138,7 @@ export const cleanQuestionBody = (
         cleanedQuestionBody.grid1_div_intermediate_steps_prefills,
     };
   }
-  if (cleanedQuestionBody?.question_image?.mime_type) {
-    delete cleanedQuestionBody?.question_image?.mime_type;
-  }
+
   return cleanedQuestionBody;
 };
 
