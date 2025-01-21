@@ -59,7 +59,7 @@ export const InfiniteSelect = ({
   }, [multiple, values, valueKey]);
 
   React.useEffect(() => {
-    if (data.length) {
+    if (data?.length) {
       const newDataArray = structuredClone(options);
       const availableOptions = (multiple ? values : [values]).filter(
         (option: any) => {

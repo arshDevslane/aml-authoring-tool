@@ -1,6 +1,7 @@
 import { Question } from '@/models/entities/Question';
 import { QuestionType } from '@/models/enums/QuestionType.enum';
 import { User } from '@/models/entities/User';
+import { QuestionSet } from '@/models/entities/QuestionSet';
 import { QuestionsActionType } from './actions.constants';
 
 export type QuestionsActionPayloadType = {
@@ -61,6 +62,7 @@ export const getQuestionAction = (payload: { id: string }) => ({
 
 export const getQuestionCompletedAction = (payload: {
   question: Question;
+  questionSets: QuestionSet[];
 }) => ({
   type: QuestionsActionType.GET_QUESTION_COMPLETED,
   payload,

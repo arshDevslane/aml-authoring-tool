@@ -3,7 +3,10 @@ import produce from 'immer';
 import { QuestionSet } from '@/models/entities/QuestionSet';
 import { CacheAPIResponse } from '@/lib/utils';
 import { QuestionSetActionPayloadType } from '../actions/questionSet.actions';
-import { QuestionSetActionType } from '../actions/actions.constants';
+import {
+  QuestionsActionType,
+  QuestionSetActionType,
+} from '../actions/actions.constants';
 
 export type QuestionSetState = QuestionSetActionPayloadType & {
   isLoading: boolean;
@@ -39,10 +42,12 @@ export const questionSetReducer = (
         draft.filters = action.payload.filters;
         break;
       case QuestionSetActionType.GET_LIST_COMPLETED:
+      case QuestionsActionType.UPDATE_QUESTION_COMPLETED:
+      case QuestionsActionType.GET_QUESTION_COMPLETED:
         draft.isLoading = false;
 
         const filterKey = JSON.stringify(state.filters);
-        const questionSetMap = action.payload.questionSets.reduce(
+        const questionSetMap = action.payload.questionSets?.reduce(
           (acc: any, questionSet: QuestionSet) => ({
             ...acc,
             [questionSet.identifier]: questionSet,
@@ -52,7 +57,7 @@ export const questionSetReducer = (
 
         draft.entities = { ...state.entities, ...questionSetMap };
         draft.cachedData[filterKey] = {
-          result: action.payload.questionSets.map(
+          result: action.payload.questionSets?.map(
             (questionSet: QuestionSet) => questionSet.identifier
           ),
           totalCount: action.payload.totalCount,

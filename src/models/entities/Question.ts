@@ -46,6 +46,7 @@ export interface Question {
   hints: string;
   status: string;
   media: any[];
+  question_set_ids: string[];
   question_body: QuestionBody;
   sub_skills: Array<SubSkill | null>;
   created_by: string;

@@ -59,8 +59,14 @@ import MediaUpload from '@/shared-resources/MediaUpload/MediaUpload';
 import { useImageLoader } from '@/hooks/useImageLoader';
 import { navigateTo } from '@/store/actions/navigation.action';
 import { isUpdatingSelector } from '@/store/selectors/questions.selector';
-import Loader from '../Loader/Loader';
+import {
+  allQuestionSetsSelector,
+  isLoadingQuestionSetsSelector,
+} from '@/store/selectors/questionSet.selector';
+import { getListQuestionSetAction } from '@/store/actions/questionSet.actions';
+import { QuestionSet } from '@/models/entities/QuestionSet';
 import { ImageRenderer } from '../ImageRenderer';
+import Loader from '../Loader/Loader';
 
 interface QuestionAddEditFormProps {
   id?: string;
@@ -83,6 +89,9 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
     handleImageLoad,
     setImgError,
   } = useImageLoader(question?.question_body.question_image_url);
+
+  const questionSetsMap = useSelector(allQuestionSetsSelector);
+
   const initialValues = {
     // Base
     repository_id: question?.repository.identifier ?? '',
@@ -96,6 +105,7 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
       (skill) => skill.identifier
     ),
     sub_skill_ids: question?.sub_skills?.map((skill) => skill?.identifier),
+    question_set_ids: question?.question_set_ids,
     operation: question?.operation ?? '',
     question_type: question?.question_type ?? '',
     benchmark_time: question?.benchmark_time ?? '',
@@ -152,8 +162,18 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
   const isLoadingClass = useSelector(isLoadingClassesSelector);
   const isLoadingSkill = useSelector(isLoadingSkillsSelector);
   const isLoadingSubSkill = useSelector(isLoadingSubSkillsSelector);
+  const isLoadingQuestionSets = useSelector(isLoadingQuestionSetsSelector);
   const isUpdating = useSelector(isUpdatingSelector);
   const [isFormSubmitted, setIsFormSubmitted] = React.useState(false);
+  const [questionSetOptions, setQuestionSetOptions] =
+    React.useState<QuestionSet[]>();
+
+  useEffect(() => {
+    const preloadedQuestionSetOptions = question?.question_set_ids?.map(
+      (id) => questionSetsMap?.[id]
+    );
+    setQuestionSetOptions(preloadedQuestionSetOptions);
+  }, [questionSetsMap, question]);
 
   useEffect(() => {
     if (!isUpdating && isFormSubmitted && onClose) {
@@ -881,6 +901,28 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
               totalCount={subSkillsCount}
               multiple
               preLoadedOptions={question?.sub_skills}
+            />
+          </div>
+          <div className='flex w-full gap-6 items-start'>
+            <FormikInfiniteSelect
+              name='question_set_ids'
+              label='Question Set'
+              placeholder='Select question set'
+              data={Object.values(questionSetsMap)}
+              labelKey='title.en'
+              valueKey='identifier'
+              dispatchAction={(payload) =>
+                getListQuestionSetAction({
+                  filters: {
+                    search_query: payload.value,
+                    page_no: payload.page_no,
+                  },
+                })
+              }
+              isLoading={isLoadingQuestionSets}
+              totalCount={Object.values(questionSetsMap).length}
+              multiple
+              preLoadedOptions={questionSetOptions}
             />
           </div>
 
