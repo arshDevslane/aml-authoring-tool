@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useTable } from '@/hooks/useTable';
 import TableComponent from '@/shared-resources/TableComponent/TableComponent';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { Circle, Loader2, Pencil, Send, Trash } from 'lucide-react';
+import { Circle, Eye, Loader2, Pencil, Send, Trash } from 'lucide-react';
 
 import { Question } from '@/models/entities/Question';
 import {
@@ -27,6 +27,8 @@ import { useNavigate } from 'react-router-dom';
 import cx from 'classnames';
 import { usersSelector } from '@/store/selectors/user.selector';
 import { QuestionType } from '@/models/enums/QuestionType.enum';
+import { Dialog, DialogContent } from '../ui/dialog';
+import QuestionsAddEditPage from './QuestionsAddEditPage';
 
 enum DialogTypes {
   DELETE = 'delete',
@@ -68,11 +70,10 @@ const QuestionsListing: React.FC<QuestionsListingProps> = ({
   const [openDialog, setOpenDialog] = useState<{
     dialog: DialogTypes | null;
     open: boolean;
-    questionId: string | null;
+    questionId?: string;
   }>({
     dialog: null,
     open: false,
-    questionId: null,
   });
   const dispatch = useDispatch();
 
@@ -91,6 +92,11 @@ const QuestionsListing: React.FC<QuestionsListingProps> = ({
         accessorKey: 'status',
         header: 'Live',
         cell: coloredDot,
+      },
+      {
+        accessorKey: 'x_id',
+        header: 'ID',
+        cell: (info) => info.getValue() || '--',
       },
       {
         accessorKey: 'taxonomy',
@@ -199,6 +205,18 @@ const QuestionsListing: React.FC<QuestionsListingProps> = ({
                 </AmlTooltip>
               </span>
             )}
+            <AmlTooltip tooltip='View'>
+              <Eye
+                className='h-5 w-5 hover:fill-slate-400 cursor-pointer'
+                onClick={() =>
+                  setOpenDialog({
+                    dialog: DialogTypes.DETAILS,
+                    open: true,
+                    questionId: row.id,
+                  })
+                }
+              />
+            </AmlTooltip>
             <AmlTooltip tooltip='Edit'>
               <Pencil
                 className='h-5 w-5 hover:fill-slate-400 cursor-pointer'
@@ -249,19 +267,31 @@ const QuestionsListing: React.FC<QuestionsListingProps> = ({
       />
       <AmlDialog
         open={openDialog.open && openDialog.dialog === DialogTypes.DELETE}
-        onOpenChange={() =>
-          setOpenDialog({ dialog: null, open: false, questionId: null })
-        }
+        onOpenChange={() => setOpenDialog({ dialog: null, open: false })}
         title='Are you sure you want to delete this question?'
         description='This action cannot be undone. This will permanently delete your question.'
         onPrimaryButtonClick={() => {
           dispatch(deleteQuestionAction(openDialog.questionId!));
-          setOpenDialog({ dialog: null, open: false, questionId: null });
+          setOpenDialog({ dialog: null, open: false });
         }}
         onSecondaryButtonClick={() => {
-          setOpenDialog({ dialog: null, open: false, questionId: null });
+          setOpenDialog({ dialog: null, open: false });
         }}
       />
+      <Dialog
+        open={openDialog.open && openDialog.dialog === DialogTypes.DETAILS}
+        onOpenChange={() =>
+          setOpenDialog({
+            dialog: null,
+            open: false,
+            questionId: undefined,
+          })
+        }
+      >
+        <DialogContent className='max-w-[80%] max-h-[95%] overflow-y-auto'>
+          <QuestionsAddEditPage questionId={openDialog.questionId} viewMode />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
