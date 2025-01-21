@@ -89,17 +89,17 @@ const QuestionsListing: React.FC<QuestionsListingProps> = ({
   };
 
   const getQuestionSetTitles = (questionSetIds: string[]): string => {
-    if (!questionSetIds.length) {
+    if (!questionSetIds?.length) {
       return '0 Sets';
     }
 
     const titles = questionSetIds
-      .map((qSetId) => questionSetsMap[qSetId]?.title?.en || '')
+      .map((qSetId) => questionSetsMap?.[qSetId]?.title?.en || '')
       .filter(Boolean);
 
     const finalString = titles.join(', ');
 
-    return finalString.length > 100
+    return finalString?.length > 100
       ? `${finalString.slice(0, 97)}...`
       : finalString;
   };
@@ -187,7 +187,7 @@ const QuestionsListing: React.FC<QuestionsListingProps> = ({
             )}
           >
             <p className='truncate'>
-              {(info.getValue() as Question['question_set_ids']).length}
+              {(info.getValue() as Question['question_set_ids'])?.length}
             </p>
           </AmlTooltip>
         ),
