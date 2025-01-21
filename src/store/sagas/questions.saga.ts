@@ -54,7 +54,6 @@ function* getListQuestionsSaga(data: QuestionsSagaPayloadType): any {
             .map((id) => entities[id])
             .filter(Boolean),
           totalCount: cachedData.totalCount,
-          users: cachedData.users,
         })
       );
       return;
@@ -72,6 +71,7 @@ function* getListQuestionsSaga(data: QuestionsSagaPayloadType): any {
         questions: response.result.questions,
         totalCount: response.result.meta.total,
         users: response.result.users,
+        questionSets: response.result.question_sets,
       })
     );
   } catch (e: any) {

@@ -107,12 +107,6 @@ const QuestionSetListing = () => {
         cell: (info) => (info.getValue() as QuestionSet['repository']).name.en,
       },
       {
-        accessorKey: 'questions',
-        header: 'Questions Count',
-        cell: (info) => (info.getValue() as QuestionSet['questions']).length,
-        enableSorting: false,
-      },
-      {
         accessorKey: 'sequence',
         header: 'Sequence',
         cell: (info) => info.getValue(),

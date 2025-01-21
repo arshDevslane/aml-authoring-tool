@@ -27,6 +27,7 @@ import { useNavigate } from 'react-router-dom';
 import cx from 'classnames';
 import { usersSelector } from '@/store/selectors/user.selector';
 import { QuestionType } from '@/models/enums/QuestionType.enum';
+import { allQuestionSetsSelector } from '@/store/selectors/questionSet.selector';
 import { Dialog, DialogContent } from '../ui/dialog';
 import QuestionsAddEditPage from './QuestionsAddEditPage';
 
@@ -67,6 +68,7 @@ const QuestionsListing: React.FC<QuestionsListingProps> = ({
   const [publishingId, setPublishingId] = useState<string>();
   const [deletingId, setDeletingId] = useState<string>();
   const { result: questions, totalCount } = useSelector(questionsSelector);
+  const questionSetsMap = useSelector(allQuestionSetsSelector);
   const [openDialog, setOpenDialog] = useState<{
     dialog: DialogTypes | null;
     open: boolean;
@@ -84,6 +86,22 @@ const QuestionsListing: React.FC<QuestionsListingProps> = ({
   const publishQuestion = (id: string) => {
     setPublishingId(id);
     dispatch(publishQuestionAction(id));
+  };
+
+  const getQuestionSetTitles = (questionSetIds: string[]): string => {
+    if (!questionSetIds.length) {
+      return '0 Sets';
+    }
+
+    const titles = questionSetIds
+      .map((qSetId) => questionSetsMap[qSetId]?.title?.en || '')
+      .filter(Boolean);
+
+    const finalString = titles.join(', ');
+
+    return finalString.length > 100
+      ? `${finalString.slice(0, 97)}...`
+      : finalString;
   };
 
   const columns: ColumnDef<Question>[] = useMemo(
@@ -157,6 +175,24 @@ const QuestionsListing: React.FC<QuestionsListingProps> = ({
           const createdAt = info.getValue() as Question['created_at'];
           return convertToDate(createdAt);
         },
+      },
+      {
+        accessorKey: 'question_set_ids',
+        header: 'Q. sets count',
+        // eslint-disable-next-line react/no-unstable-nested-components
+        cell: (info) => (
+          <AmlTooltip
+            tooltip={getQuestionSetTitles(
+              info.getValue() as Question['question_set_ids']
+            )}
+          >
+            <p className='truncate'>
+              {(info.getValue() as Question['question_set_ids']).length}
+            </p>
+          </AmlTooltip>
+        ),
+        enableSorting: false,
+        cellClassName: 'max-w-10 [&_button]:max-w-full',
       },
       {
         accessorKey: 'question_body',
@@ -249,7 +285,7 @@ const QuestionsListing: React.FC<QuestionsListingProps> = ({
         enableSorting: false,
       },
     ],
-    [isPublishing, isDeleting, usersMap]
+    [isPublishing, isDeleting, usersMap, questionSetsMap]
   );
   const tableInstance = useTable({
     columns,
