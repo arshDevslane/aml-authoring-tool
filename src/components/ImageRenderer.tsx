@@ -19,11 +19,6 @@ export const ImageRenderer: React.FC<ImageRendererProps> = ({
   onImageError,
 }) => (
   <div className='min-h-20 flex items-center justify-center relative'>
-    {!imageUrl && (
-      <div className='text-red-500 text-lg pb-10 mt-0 font-normal'>
-        Please upload an image to preview.
-      </div>
-    )}
     {isImageLoading && (
       <div className='absolute'>
         <Loader />

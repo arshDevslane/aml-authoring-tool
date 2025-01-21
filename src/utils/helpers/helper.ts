@@ -62,7 +62,7 @@ export const cleanQuestionBody = (
       numbers: convertToNumbers(cleanedQuestionBody.numbers),
     };
   } else if (questionType === QuestionType.MCQ) {
-    if (!questionBody?.question_image) {
+    if (!Object.keys(questionBody?.question_image).length) {
       cleanedQuestionBody = {
         options: cleanedQuestionBody.options,
         correct_option: cleanedQuestionBody.correct_option,
