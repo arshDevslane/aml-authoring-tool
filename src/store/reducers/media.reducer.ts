@@ -30,7 +30,7 @@ export const mediaReducer = (state: MediaState = mediaState, action: any) =>
         draft.isLoadingSignedUrls = false;
         draft.signedUrls = action.payload.signedUrls.reduce(
           (acc: any, currData: any) => {
-            acc[currData.media.file_name] = currData;
+            acc[currData.media.fileName] = currData;
             return acc;
           },
           {} as Record<string, any>
