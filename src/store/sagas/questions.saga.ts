@@ -117,6 +117,7 @@ function* getQuestionSaga(data: any): any {
     yield put(
       getQuestionCompletedAction({
         question: response.result.question,
+        questionSets: response.result.question_sets,
       })
     );
   } catch (e: any) {

@@ -63,6 +63,7 @@ export const getQuestionAction = (payload: { id: string }) => ({
 
 export const getQuestionCompletedAction = (payload: {
   question: Question;
+  questionSets: QuestionSet[];
 }) => ({
   type: QuestionsActionType.GET_QUESTION_COMPLETED,
   payload,
