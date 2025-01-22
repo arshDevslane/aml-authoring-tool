@@ -42,7 +42,7 @@ export const questionsReducer = (
         draft.isLoading = false;
 
         const filterKey = JSON.stringify(state.filters);
-        const questionsMap = action.payload.questions.reduce(
+        const questionsMap = action.payload.questions?.reduce(
           (acc: any, question: Question) => ({
             ...acc,
             [question.identifier]: question,
@@ -52,7 +52,7 @@ export const questionsReducer = (
 
         draft.entities = { ...state.entities, ...questionsMap };
         draft.cachedData[filterKey] = {
-          result: action.payload.questions.map(
+          result: action.payload.questions?.map(
             (question: Question) => question.identifier
           ),
           totalCount: action.payload.totalCount,

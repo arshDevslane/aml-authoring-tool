@@ -29,6 +29,7 @@ const AmlPagination: React.FC<AmlPaginationProps> = ({
       if (page === currentPage) return;
       onPageChange(page);
     },
+
     [currentPage, onPageChange]
   );
 

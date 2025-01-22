@@ -14,7 +14,7 @@ export const classesSelector = createSelector(
     };
 
     return {
-      result: resultIDs.map((id) => state.entities[id]).filter(Boolean),
+      result: resultIDs?.map((id) => state.entities[id]).filter(Boolean),
       totalCount,
     };
   }

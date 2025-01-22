@@ -45,7 +45,7 @@ export const questionSetReducer = (
         draft.isLoading = false;
 
         const filterKey = JSON.stringify(state.filters);
-        const questionSetMap = action.payload.questionSets.reduce(
+        const questionSetMap = action.payload.questionSets?.reduce(
           (acc: any, questionSet: QuestionSet) => ({
             ...acc,
             [questionSet.identifier]: questionSet,
@@ -54,12 +54,15 @@ export const questionSetReducer = (
         );
 
         draft.entities = { ...state.entities, ...questionSetMap };
-        draft.cachedData[filterKey] = {
-          result: action.payload.questionSets.map(
-            (questionSet: QuestionSet) => questionSet.identifier
-          ),
-          totalCount: action.payload.totalCount,
-        };
+        if (action.payload.noCache) {
+          draft.cachedData[filterKey] = {
+            result: action.payload.questionSets?.map(
+              (questionSet: QuestionSet) => questionSet.identifier
+            ),
+            totalCount: action.payload.totalCount,
+          };
+        }
+
         draft.latestCount = action.payload.totalCount;
         break;
       case QuestionsActionType.GET_LIST_COMPLETED: {

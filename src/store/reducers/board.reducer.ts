@@ -2,7 +2,11 @@
 import produce from 'immer';
 import { CacheAPIResponse } from '@/lib/utils';
 import { Board } from '@/models/entities/Board';
-import { BoardActionType } from '../actions/actions.constants';
+import {
+  BoardActionType,
+  QuestionsActionType,
+  QuestionSetActionType,
+} from '../actions/actions.constants';
 import { BoardActionPayloadType } from '../actions/board.action';
 
 export type BoardState = BoardActionPayloadType & {
@@ -36,10 +40,12 @@ export const boardReducer = (
         draft.filters = action.payload.filters;
         break;
       case BoardActionType.GET_LIST_COMPLETED:
+      case QuestionsActionType.GET_LIST_COMPLETED:
+      case QuestionSetActionType.GET_LIST_COMPLETED:
         draft.isLoading = false;
 
         const filterKey = JSON.stringify(state.filters);
-        const boardMap = action.payload.boards.reduce(
+        const boardMap = action.payload?.boards?.reduce(
           (acc: any, board: Board) => ({
             ...acc,
             [board.identifier]: board,
@@ -50,7 +56,7 @@ export const boardReducer = (
         draft.entities = { ...state.entities, ...boardMap };
         if (!action.payload.noCache) {
           draft.cachedData[filterKey] = {
-            result: action.payload.boards.map(
+            result: action.payload.boards?.map(
               (board: Board) => board.identifier
             ),
             totalCount: action.payload.totalCount,

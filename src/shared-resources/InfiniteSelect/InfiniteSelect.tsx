@@ -59,7 +59,7 @@ export const InfiniteSelect = ({
   }, [multiple, values, valueKey]);
 
   React.useEffect(() => {
-    if (data.length) {
+    if (data?.length) {
       const newDataArray = structuredClone(options);
       const availableOptions = (multiple ? values : [values]).filter(
         (option: any) => {
@@ -241,7 +241,7 @@ export const InfiniteSelect = ({
               placeholder={placeholder ?? 'Select...'}
             />
           </div>
-          {options.length || isLoading ? (
+          {options?.length || isLoading ? (
             <div className='overflow-hidden p-1 text-foreground'>
               <div
                 className='max-h-[300px] overflow-y-auto overflow-x-hidden'

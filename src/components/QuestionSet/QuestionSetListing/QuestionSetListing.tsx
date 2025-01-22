@@ -6,6 +6,7 @@ import TableComponent from '@/shared-resources/TableComponent/TableComponent';
 import {
   deleteQuestionSetAction,
   getListQuestionSetAction,
+  QuestionSetActionPayloadType,
 } from '@/store/actions/questionSet.actions';
 import {
   filtersQuestionSetsSelector,
@@ -18,7 +19,12 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { NavLink, useLocation } from 'react-router-dom';
+import {
+  createSearchParams,
+  NavLink,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom';
 import AmlListingFilterPopup from '@/shared-resources/AmlListingFilterPopup/AmlListingFilterPopup';
 import QuestionSetDetails from './QuestionSetDetails/QuestionSetDetails';
 import QuestionSetFilters from '../QuestionSetFilters';
@@ -49,12 +55,29 @@ enum DialogTypes {
 
 const QuestionSetListing = () => {
   const location = useLocation();
+  const navigateTo = useNavigate();
+  const { pathname, search } = useLocation();
+  const params = new URLSearchParams(search);
+  const dispatch = useDispatch();
+  const [isInitialized, setIsInitialized] = useState(false);
   const filters = useSelector(filtersQuestionSetsSelector);
   const isQuestionSetLoading = useSelector(isLoadingQuestionSetsSelector);
   const { result: questionSets, totalCount } =
     useSelector(questionSetsSelector);
 
-  const [searchFilters, setSearchFilters] = useState(filters);
+  const [searchFilters, setSearchFilters] = useState<
+    Record<string, any> & { page_no: number }
+  >(() => {
+    const initialFilters: Record<string, any> & { page_no: number } = {
+      ...filters,
+      page_no: 1,
+    };
+    params.forEach((value, key) => {
+      initialFilters[key] = key === 'page_no' ? +value : value;
+    });
+    return initialFilters;
+  });
+
   const [openDialog, setOpenDialog] = useState<{
     dialog: DialogTypes | null;
     open: boolean;
@@ -64,17 +87,45 @@ const QuestionSetListing = () => {
     open: false,
     questionSetId: null,
   });
-
-  const dispatch = useDispatch();
+  const updateURL = (updatedFilters: Record<string, any>) => {
+    navigateTo({
+      pathname,
+      search: `?${createSearchParams(
+        Object.entries(updatedFilters)?.map(([key, value]) => [
+          key,
+          value.toString(),
+        ]) as any
+      )}`,
+    });
+  };
 
   useEffect(() => {
-    dispatch(
-      getListQuestionSetAction({
-        filters: searchFilters,
-      })
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchFilters]);
+    if (!isInitialized) {
+      const urlFilters: Record<string, any> = {};
+      params.forEach((value, key) => {
+        urlFilters[key] = key === 'page_no' ? +value : value;
+      });
+
+      setSearchFilters((prevFilters) => ({
+        ...prevFilters,
+        ...urlFilters,
+      }));
+      setIsInitialized(true);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }
+  }, [search]);
+
+  useEffect(() => {
+    if (isInitialized) {
+      dispatch(
+        getListQuestionSetAction({
+          filters: searchFilters as QuestionSetActionPayloadType['filters'],
+        })
+      );
+      updateURL(searchFilters);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }
+  }, [searchFilters, isInitialized]);
 
   const columns: ColumnDef<QuestionSet>[] = useMemo(
     () => [
