@@ -1,7 +1,16 @@
 import QuestionsAddEditPage from '@/components/Questions/QuestionsAddEditPage';
+import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { QuestionSetPurposeType } from '@/enums/questionSet.enum';
 import { cn, QuestionOrderType } from '@/lib/utils';
+import { QuestionSet } from '@/models/entities/QuestionSet';
 import AmlTooltip from '@/shared-resources/AmlTooltip/AmlTooltip';
+import { InfiniteSelect } from '@/shared-resources/InfiniteSelect/InfiniteSelect';
+import { getListQuestionsAction } from '@/store/actions/question.action';
+import {
+  isLoadingQuestionsSelector,
+  noCacheQuestionSelector,
+} from '@/store/selectors/questions.selector';
 import {
   closestCenter,
   DndContext,
@@ -19,11 +28,14 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Eye, Pencil, Trash } from 'lucide-react';
-import React, { CSSProperties, useState } from 'react';
+import { Eye, Filter, Pencil, Trash } from 'lucide-react';
+import React, { CSSProperties, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
+import QuestionSetReorderQuestionFilterComponent from '../QuestionSetReorderQuestionFilterComponent';
 
 type QuestionSetQuestionsReorderComponentProps = {
   questionsOrder: QuestionOrderType[];
+  questionSet: QuestionSet;
   setQuestionsOrder: React.Dispatch<React.SetStateAction<QuestionOrderType[]>>;
 };
 
@@ -110,9 +122,10 @@ const DraggableItem = ({
     >
       <div className='w-full'>
         <div className='flex justify-between w-full'>
-          <span className='flex gap-2 mb-2 items-end'>
+          <span className='flex gap-2 mb-2 items-center'>
             <p className='font-bold text-2xl'>{index + 1}.</p>
             <h1 className='text-xl font-bold'>{question?.description?.en}</h1>
+            <span className='font-normal'>{`(${question.x_id})`}</span>
           </span>
           <span className='flex gap-2'>
             <AmlTooltip tooltip='View'>
@@ -165,8 +178,17 @@ const DraggableItem = ({
 
 const QuestionSetQuestionReorderComponent = ({
   questionsOrder = [],
+  questionSet,
   setQuestionsOrder,
 }: QuestionSetQuestionsReorderComponentProps) => {
+  const [mountCounter, setMountCounter] = useState(0);
+  const [openDialog, setOpenDialog] = useState<{
+    open: boolean;
+    dialog: DialogTypes | null;
+  }>({
+    open: false,
+    dialog: null,
+  });
   const [openQuestionDialog, setOpenQuestionDialog] = useState<{
     dialog: DialogTypes | null;
     open: boolean;
@@ -177,6 +199,19 @@ const QuestionSetQuestionReorderComponent = ({
     open: false,
   });
 
+  const [filterState, setFilterState] = useState<{
+    l2_skill: string;
+    l3_skill: string;
+    class_id: string;
+  }>({
+    l2_skill: '',
+    l3_skill: '',
+    class_id: '',
+  });
+
+  const { result, totalCount } = useSelector(noCacheQuestionSelector);
+  const isLoadingQuestions = useSelector(isLoadingQuestionsSelector);
+
   const sensors = useSensors(
     useSensor(MouseSensor, {}),
     useSensor(PointerSensor, {
@@ -185,6 +220,20 @@ const QuestionSetQuestionReorderComponent = ({
       },
     })
   );
+
+  const enableClassFilter =
+    questionSet?.purpose === QuestionSetPurposeType.MAIN_DIAGNOSTIC;
+
+  const filterCount = useMemo(() => {
+    const state = {
+      ...(enableClassFilter && { class_id: filterState.class_id }),
+      l2_skill: filterState.l2_skill,
+      l3_skill: filterState.l3_skill,
+    };
+
+    return Object.values(state).filter(Boolean).length;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterState]);
 
   const onDragEnd = (event: DragEndEvent) => {
     if (!event.over) return;
@@ -201,6 +250,7 @@ const QuestionSetQuestionReorderComponent = ({
     setQuestionsOrder((prevOrder) =>
       prevOrder.filter((ques) => ques.identifier !== id)
     );
+    setMountCounter((prev) => prev + 1);
   };
   const handleOnEdit = (id: string, isViewMode?: boolean) => {
     setOpenQuestionDialog({
@@ -219,7 +269,57 @@ const QuestionSetQuestionReorderComponent = ({
         modifiers={[restrictToVerticalAxis]}
         onDragEnd={onDragEnd}
       >
-        <h1 className='text-2xl font-bold mb-5'>Questions</h1>
+        <div className='flex justify-between mt-3 mb-5 gap-5'>
+          <h1 className='text-2xl font-bold'>Questions</h1>
+          <div className='flex flex-1 overflow-hidden flex-col gap-1 w-[300px]'>
+            <InfiniteSelect
+              key={mountCounter}
+              isLoading={isLoadingQuestions}
+              onChange={setQuestionsOrder}
+              data={result}
+              totalCount={totalCount}
+              dispatchAction={(values) =>
+                getListQuestionsAction({
+                  filters: {
+                    search_query: values.value,
+                    l1_skill_id: questionSet.taxonomy.l1_skill.identifier,
+                    repository_id: questionSet.repository.identifier,
+                    board_id: questionSet.taxonomy.board.identifier,
+                    class_id: enableClassFilter
+                      ? filterState.class_id
+                      : questionSet.taxonomy.class.identifier,
+
+                    page_no: values.page_no,
+
+                    l2_skill_id: filterState.l2_skill,
+                    l3_skill_id: filterState.l3_skill,
+                  },
+                  noCache: true,
+                })
+              }
+              valueKey='identifier'
+              labelKey='x_id'
+              preLoadedOptions={questionsOrder}
+              multiple
+            />
+          </div>
+          <div className='flex items-center gap-5'>
+            <Button
+              className='relative'
+              onClick={() =>
+                setOpenDialog({ open: true, dialog: DialogTypes.FILTER })
+              }
+            >
+              <Filter className={cn('text-white')} />
+              Filters
+              {filterCount > 0 && (
+                <div className='absolute -top-2 -right-2 bg-gray-500 h-5 w-5 rounded-full flex items-center justify-center text-white text-xs'>
+                  {filterCount}
+                </div>
+              )}
+            </Button>
+          </div>
+        </div>
         <div className='flex-1 flex flex-col overflow-y-auto pr-3'>
           {questionsOrder.length === 0 && (
             <div className='text-lg font-bold h-full flex items-center justify-center'>
@@ -241,6 +341,13 @@ const QuestionSetQuestionReorderComponent = ({
             ))}
           </SortableContext>
         </div>
+        <QuestionSetReorderQuestionFilterComponent
+          open={openDialog.open && openDialog.dialog === DialogTypes.FILTER}
+          onClose={() => setOpenDialog({ open: false, dialog: null })}
+          filterState={filterState}
+          setFilterState={setFilterState}
+          enableClassFilter={enableClassFilter}
+        />
       </DndContext>
       <Dialog
         open={
