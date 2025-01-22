@@ -885,6 +885,21 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
             />
           </div>
           <div className='flex w-full gap-6 items-start'>
+            <FormikSelect
+              name='operation'
+              label='Operation'
+              options={enumToSelectOptions(ArithmaticOperations)}
+              required
+            />
+            <FormikSelect
+              name='question_type'
+              label='Question Type'
+              placeholder='Select type'
+              options={enumToSelectOptions(QuestionType)}
+              required
+            />
+          </div>
+          <div className='flex w-full gap-6 items-start'>
             <FormikInfiniteSelect
               name='sub_skill_ids'
               label='Sub Skills'
@@ -948,21 +963,7 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
             />
             <FormikInput name='gradient' label='Gradient' type='string' />
           </div>
-          <div className='flex w-full gap-6 items-start'>
-            <FormikSelect
-              name='operation'
-              label='Operation'
-              options={enumToSelectOptions(ArithmaticOperations)}
-              required
-            />
-            <FormikSelect
-              name='question_type'
-              label='Question Type'
-              placeholder='Select type'
-              options={enumToSelectOptions(QuestionType)}
-              required
-            />
-          </div>
+
           {/* Conditionally render the question body */}
           <div className='col-span-2'>
             <h3 className='font-bold text-lg text-primary mb-4'>

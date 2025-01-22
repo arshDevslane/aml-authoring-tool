@@ -56,10 +56,9 @@ type QuestionSetDetailsProps = {
 
 export type QuestionSetCreateUpdatePayload = {
   title: Description;
-  description: Description;
   instruction_text: Description;
   repository_id: string;
-  sequence: number;
+  sequence?: number;
   board_id: string;
   class_id: string;
   l1_skill_id: string;
@@ -69,7 +68,7 @@ export type QuestionSetCreateUpdatePayload = {
   purpose: string;
   is_atomic: boolean;
   enable_feedback: boolean;
-  questions: { identifier: string; sequence: number }[];
+  questions: { identifier: string; sequence?: number }[];
   gradient?: string;
   group_name?: number;
 };
@@ -115,13 +114,12 @@ const QuestionSetDetails = ({
 
   const validationSchema = yup.object().shape({
     title: yup.object().shape(multiLanguageSchemaObject('title')),
-    description: yup.object().shape(multiLanguageSchemaObject('description')),
     instruction_text: yup.string().required().label('Instruction Text'),
     repository_id: yup.string().required().label('Repository'),
     board_id: yup.string().required().label('Board'),
     class_id: yup.string().required().label('Class'),
     l1_skill_id: yup.string().required().label('L1 Skill'),
-    sequence: yup.number().required().label('Sequence'),
+    sequence: yup.number().label('Sequence'),
     purpose: yup
       .string()
       .required()
@@ -155,7 +153,6 @@ const QuestionSetDetails = ({
 
         // Multi-lang
         title: getMultiLangFormikInitialValues(questionSet?.title),
-        description: getMultiLangFormikInitialValues(questionSet?.description),
         instruction_text: questionSet?.instruction_text ?? '',
 
         // other
@@ -170,7 +167,6 @@ const QuestionSetDetails = ({
         setIsFormSubmitted(true);
         const payload = {
           title: values.title,
-          description: values.description,
           instruction_text: values.instruction_text,
           repository_id: values.repository_id,
           board_id: values.board_id,
@@ -178,7 +174,6 @@ const QuestionSetDetails = ({
           l1_skill_id: values.l1_skill_id,
           l2_skill_ids: values.l2_skill_ids,
           l3_skill_ids: values.l3_skill_ids,
-          sequence: parseInt(values.sequence?.toString() ?? '0', 10),
           purpose: values.purpose,
           enable_feedback: Boolean(
             values?.purpose !== QuestionSetPurposeType.MAIN_DIAGNOSTIC &&
@@ -191,7 +186,7 @@ const QuestionSetDetails = ({
           dispatch(
             updateQuestionSetAction({
               questionSetId: questionSet.identifier,
-              data: payload,
+              data: { ...payload, sequence: +values.sequence },
             })
           );
         } else {
@@ -348,24 +343,22 @@ const QuestionSetDetails = ({
               }))}
               required
             />
-            <FormikInput
-              name='sequence'
-              label='Sequence'
-              type='number'
-              placeholder='Sequence'
-              required
-            />
+            {questionSetId && (
+              <FormikInput
+                name='sequence'
+                label='Sequence'
+                type='number'
+                placeholder='Sequence'
+                required
+              />
+            )}
           </div>
           <MultiLangFormikInput
             name='title'
             label='Title'
             supportedLanguages={supportedLanguages}
           />
-          <MultiLangFormikInput
-            name='description'
-            label='Description'
-            supportedLanguages={supportedLanguages}
-          />
+
           <FormikInput
             name='instruction_text'
             label='Instruction Text'
