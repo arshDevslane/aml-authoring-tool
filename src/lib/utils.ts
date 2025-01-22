@@ -25,7 +25,12 @@ export type CacheAPIResponse = {
 
 export type QuestionOrderType = Pick<
   Question,
-  'identifier' | 'description' | 'question_type' | 'taxonomy' | 'question_body'
+  | 'identifier'
+  | 'description'
+  | 'question_type'
+  | 'taxonomy'
+  | 'question_body'
+  | 'x_id'
 >;
 
 export function debounce<T extends (...args: any[]) => any>(

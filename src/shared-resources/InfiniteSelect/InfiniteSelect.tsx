@@ -54,7 +54,6 @@ export const InfiniteSelect = ({
     if (!multiple) return _.get(values, valueKey ?? '');
     return values.map((item: any) => _.get(item, valueKey ?? ''));
   }, [multiple, values, valueKey]);
-
   React.useEffect(() => {
     if (preLoadedOptions.length === 0) return; // Avoiding infinite loop when empty
     setValues((prevValues: any) => {
@@ -99,7 +98,7 @@ export const InfiniteSelect = ({
         return 0;
       });
 
-      setOptions(newDataArray);
+      setOptions(_.uniqBy(newDataArray, 'identifier'));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);

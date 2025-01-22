@@ -17,12 +17,14 @@ export type QuestionsActionPayloadType = {
     l3_skill_id: string;
     sub_skill_id: string;
   }> & { page_no: number; sortOrder?: string; orderBy?: string };
+  noCache?: boolean;
 };
 export type QuestionsResponseType = {
   questions: Question[];
   totalCount: number;
   users?: User[];
   questionSets?: QuestionSet[];
+  noCache?: boolean;
 };
 export const getListQuestionsAction = (
   payload: QuestionsActionPayloadType

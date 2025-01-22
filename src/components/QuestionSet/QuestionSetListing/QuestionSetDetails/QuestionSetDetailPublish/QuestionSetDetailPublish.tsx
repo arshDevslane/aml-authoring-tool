@@ -32,6 +32,7 @@ const QuestionSetDetailPublish = ({
       taxonomy: item.taxonomy,
       question_type: item.question_type,
       question_body: item.question_body,
+      x_id: item.x_id,
     })) ?? []
   );
 
@@ -168,6 +169,7 @@ const QuestionSetDetailPublish = ({
         <div className='flex-1 flex flex-col'>
           <QuestionSetQuestionReorderComponent
             questionsOrder={questionsOrder}
+            questionSet={questionSet}
             setQuestionsOrder={setQuestionsOrder}
           />
         </div>
