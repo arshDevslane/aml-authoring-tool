@@ -48,10 +48,7 @@ export const InfiniteSelect = ({
   });
   const [searchValue, setSearchValue] = React.useState('');
   const [options, setOptions] = React.useState<any[]>([]);
-  const [values, setValues] = React.useState<any>(() => {
-    if (!multiple) return preLoadedOptions[0];
-    return preLoadedOptions;
-  });
+  const [values, setValues] = React.useState<any>([]);
 
   const selectedValues = React.useMemo(() => {
     if (!multiple) return _.get(values, valueKey ?? '');
@@ -59,7 +56,17 @@ export const InfiniteSelect = ({
   }, [multiple, values, valueKey]);
 
   React.useEffect(() => {
-    if (data.length) {
+    if (preLoadedOptions.length === 0) return; // Avoiding infinite loop when empty
+    setValues((prevValues: any) => {
+      if (!prevValues || prevValues.length === 0) {
+        return multiple ? preLoadedOptions : preLoadedOptions[0];
+      }
+      return prevValues;
+    });
+  }, [preLoadedOptions, multiple]);
+
+  React.useEffect(() => {
+    if (data?.length) {
       const newDataArray = structuredClone(options);
       const availableOptions = (multiple ? values : [values]).filter(
         (option: any) => {
@@ -96,7 +103,6 @@ export const InfiniteSelect = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
-
   const nextPageRef = React.useRef<HTMLDivElement | null>(null);
 
   const dispatch = useDispatch();

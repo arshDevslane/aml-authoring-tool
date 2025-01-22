@@ -22,8 +22,8 @@ export const questionSetsSelector = createSelector(
 
     return {
       result: resultIDs
-        .map((id) => questionSetState.entities[id])
-        .filter(Boolean),
+        ?.map((id) => questionSetState.entities[id])
+        ?.filter(Boolean),
       totalCount,
     };
   }
