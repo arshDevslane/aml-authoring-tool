@@ -12,6 +12,7 @@ type Props = {
   name: string;
   label: string;
   supportedLanguages: Record<string, boolean>;
+  required?: boolean;
 };
 
 export const useMultiLanguage = (selectedBoard?: Board) => {
@@ -55,7 +56,12 @@ export const useMultiLanguage = (selectedBoard?: Board) => {
   };
 };
 
-const MultiLangFormikInput = ({ name, label, supportedLanguages }: Props) => (
+const MultiLangFormikInput = ({
+  name,
+  label,
+  supportedLanguages,
+  required,
+}: Props) => (
   <div className={cn('flex flex-col w-full mb-3 items-start')}>
     {Object.values(SupportedLanguages).map((lang, index) => (
       <FormikInput
@@ -65,7 +71,7 @@ const MultiLangFormikInput = ({ name, label, supportedLanguages }: Props) => (
         placeholder={`${label} (${
           SupportedLanguagesLabel[lang as keyof typeof SupportedLanguagesLabel]
         }) ${supportedLanguages[lang] ? '' : '(Optional)'}`}
-        required={index === 0}
+        required={required !== undefined ? required : index === 0}
         className='[&_+_p]:relative [&_+_p]:top-0'
       />
     ))}

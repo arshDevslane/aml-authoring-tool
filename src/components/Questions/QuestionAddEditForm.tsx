@@ -203,9 +203,9 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
     });
     return res;
   }, [selectedBoard]);
-  const multiLanguageSchemaObject = (label: string) =>
+  const multiLanguageSchemaObject = (label: string, isRequired?: boolean) =>
     Object.values(SupportedLanguages).reduce((schema, lang) => {
-      if (supportedLanguages[lang]) {
+      if (supportedLanguages[lang] && isRequired) {
         schema[lang] = Yup.string()
           .required()
           .label(`${SupportedLanguagesLabel[lang]} ${label}`);
@@ -219,7 +219,9 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
 
   const validationSchema = Yup.object().shape({
     name: Yup.object().shape(multiLanguageSchemaObject('name')),
-    description: Yup.object().shape(multiLanguageSchemaObject('description')),
+    description: Yup.object().shape(
+      multiLanguageSchemaObject('description', true)
+    ),
 
     question_type: Yup.string().required('Required'),
     operation: Yup.string().required('Required'),
@@ -696,6 +698,7 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
           <FormikInput
             name='question_body.grid1_div_intermediate_steps_prefills'
             label='Grid 1 division intermediate steps prefills'
+            required
           />
           <FormikInput
             name='question_body.grid1_pre_fills_quotient'
@@ -885,6 +888,21 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
             />
           </div>
           <div className='flex w-full gap-6 items-start'>
+            <FormikSelect
+              name='operation'
+              label='Operation'
+              options={enumToSelectOptions(ArithmaticOperations)}
+              required
+            />
+            <FormikSelect
+              name='question_type'
+              label='Question Type'
+              placeholder='Select type'
+              options={enumToSelectOptions(QuestionType)}
+              required
+            />
+          </div>
+          <div className='flex w-full gap-6 items-start'>
             <FormikInfiniteSelect
               name='sub_skill_ids'
               label='Sub Skills'
@@ -933,6 +951,7 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
             name='name'
             label='Question text'
             supportedLanguages={supportedLanguages}
+            required={false}
           />
           <MultiLangFormikInput
             name='description'
@@ -948,21 +967,7 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
             />
             <FormikInput name='gradient' label='Gradient' type='string' />
           </div>
-          <div className='flex w-full gap-6 items-start'>
-            <FormikSelect
-              name='operation'
-              label='Operation'
-              options={enumToSelectOptions(ArithmaticOperations)}
-              required
-            />
-            <FormikSelect
-              name='question_type'
-              label='Question Type'
-              placeholder='Select type'
-              options={enumToSelectOptions(QuestionType)}
-              required
-            />
-          </div>
+
           {/* Conditionally render the question body */}
           <div className='col-span-2'>
             <h3 className='font-bold text-lg text-primary mb-4'>
@@ -987,7 +992,7 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
             >
               Cancel
             </Button>
-            <Button type='submit'>
+            <Button type='submit' disabled={!formik.dirty}>
               {isEditMode ? 'Update Question' : 'Add Question'}
             </Button>
           </div>
