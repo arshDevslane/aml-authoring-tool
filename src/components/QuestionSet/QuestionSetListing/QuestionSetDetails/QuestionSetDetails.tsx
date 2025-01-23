@@ -119,7 +119,9 @@ const QuestionSetDetails = ({
     board_id: yup.string().required().label('Board'),
     class_id: yup.string().required().label('Class'),
     l1_skill_id: yup.string().required().label('L1 Skill'),
-    sequence: yup.number().label('Sequence'),
+    sequence: questionSetId
+      ? yup.number().required().label('Sequence')
+      : yup.number().label('Sequence'),
     purpose: yup
       .string()
       .required()
