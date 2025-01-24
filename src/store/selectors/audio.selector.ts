@@ -6,7 +6,7 @@ const audioState = (state: AppState) => state.audio;
 
 export const audioListSelector = createSelector(
   [audioState],
-  (state: AudioState) => state.entries
+  (state: AudioState) => state.entities
 );
 
 export const isLoadingAudioSelector = createSelector(

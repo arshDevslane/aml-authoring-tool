@@ -4,12 +4,12 @@ import { AudioActionType } from '../actions/actions.constants';
 export type AudioState = {
   isLoading: boolean;
   error?: string;
-  entries: Record<string, Record<string, string>>;
+  entities: Record<string, Record<string, string>>;
 };
 
 const initialState: AudioState = {
   isLoading: false,
-  entries: {},
+  entities: {},
 };
 
 export const audioReducer = (
@@ -21,14 +21,14 @@ export const audioReducer = (
     switch (action.type) {
       case AudioActionType.GET_AUDIO:
         draft.isLoading = true;
-        draft.entries = {};
+        draft.entities = {};
         break;
       case AudioActionType.GET_AUDIO_COMPLETED:
         draft.isLoading = false;
-        draft.entries = action.payload.reduce((prev: any, curr: any) => {
+        draft.entities = action.payload.reduce((prev: any, curr: any) => {
           prev[curr.language] = curr;
           return prev;
-        }, draft.entries);
+        }, draft.entities);
         break;
       case AudioActionType.GET_AUDIO_ERROR:
         draft.isLoading = false;
@@ -36,10 +36,10 @@ export const audioReducer = (
         break;
       case AudioActionType.RESET_STATE:
         draft.isLoading = false;
-        draft.entries = {};
+        draft.entities = {};
         break;
       case AudioActionType.REMOVE_AUDIO_RECORD:
-        delete draft.entries[action.payload];
+        delete draft.entities[action.payload];
         break;
       default:
         break;

@@ -4,7 +4,7 @@ import { AppState } from '../reducers';
 export const createEntitiesSelectorFactory = (
   entityStore: Exclude<
     keyof AppState,
-    'user' | 'auth' | 'navigationReducer' | 'media'
+    'user' | 'auth' | 'navigationReducer' | 'media' | 'translation' | 'tts'
   >,
   ids: string[]
 ) =>
@@ -16,7 +16,7 @@ export const createEntitiesSelectorFactory = (
 export const createEntitySelectorFactory = (
   entityStore: Exclude<
     keyof AppState,
-    'user' | 'auth' | 'navigationReducer' | 'media'
+    'user' | 'auth' | 'navigationReducer' | 'media' | 'translation' | 'tts'
   >,
   id: string
 ) =>
