@@ -66,8 +66,13 @@ import {
 } from '@/store/selectors/questionSet.selector';
 import { getListQuestionSetAction } from '@/store/actions/questionSet.actions';
 import { QuestionSet } from '@/models/entities/QuestionSet';
-import { ImageRenderer } from '../ImageRenderer';
+import MultiLangFormikInputForAudioDesc from '@/shared-resources/MultiLangFormikInputForAudioDesc/MultiLangFormikInputForAudioDesc';
+import { audioListSelector } from '@/store/selectors/audio.selector';
+import { resetAudioStateAction } from '@/store/actions/audio.action';
+import { resetTranslationStateAction } from '@/store/actions/translation.action';
+import { calculateMD5, isValueEmpty } from '@/lib/utils';
 import Loader from '../Loader/Loader';
+import { ImageRenderer } from '../ImageRenderer';
 
 interface QuestionAddEditFormProps {
   id?: string;
@@ -115,6 +120,9 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
     // Multi-lang
     name: getMultiLangFormikInitialValues(question?.name),
     description: getMultiLangFormikInitialValues(question?.description),
+    question_audio_description: getMultiLangFormikInitialValues(
+      question?.question_audio_description
+    ),
 
     // Question body
     question_body: {
@@ -159,6 +167,8 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
 
   const { result: questionSets, totalCount: questionSetsCount } =
     useSelector(questionSetsSelector);
+
+  const audioRecords = useSelector(audioListSelector);
 
   const isLoadingSkills = useSelector(isLoadingSkillsSelector);
   const isLoadingBoard = useSelector(isLoadingBoardsSelector);
@@ -444,7 +454,36 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
           }
         ),
     }),
+    question_audio_description: Yup.object().shape(
+      Object.values(SupportedLanguages).reduce((acc, lang: any) => {
+        acc[lang] = Yup.string().test(
+          'audio-description-validation',
+          'Please generate audio for the description',
+          (fieldVal) => {
+            const audioUrl = audioRecords?.[lang]?.audio_url;
+
+            if (!audioUrl && isValueEmpty(fieldVal)) return true;
+
+            if (audioUrl && isValueEmpty(fieldVal)) return false;
+
+            const audioHash = audioRecords?.[lang]?.description_hash;
+            const textHash = calculateMD5(
+              `${fieldVal}-${lang}`.replace(/\s+/g, '').toLowerCase()
+            );
+
+            return audioHash === textHash;
+          }
+        );
+        return acc;
+      }, {} as Yup.ObjectShape)
+    ),
   });
+
+  useEffect(() => {
+    dispatch(resetAudioStateAction());
+    dispatch(resetTranslationStateAction());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!initialValues) {
     return (
@@ -739,6 +778,9 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
           ...values,
           benchmark_time: Number(values.benchmark_time),
           question_body: cleanedQuestionBody,
+          audio_ids: Object.values(audioRecords).map(
+            ({ identifier }) => identifier
+          ),
         };
         if (isEditMode && id) {
           dispatch(
@@ -753,6 +795,7 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
           dispatch(createQuestionAction(payload));
         }
       }}
+      enableReinitialize
     >
       {(formik) => (
         <Form className='flex flex-1 flex-col overflow-x-hidden px-1'>
@@ -957,6 +1000,11 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
             name='description'
             label='Description'
             supportedLanguages={supportedLanguages}
+          />
+          <MultiLangFormikInputForAudioDesc
+            name='question_audio_description'
+            label='Text for Audio Description'
+            audioRecords={audioRecords as any}
           />
           <div className='flex w-full gap-6 items-start'>
             <FormikInput

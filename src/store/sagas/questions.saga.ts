@@ -22,6 +22,7 @@ import {
 import { QuestionsActionType } from '../actions/actions.constants';
 import { AppState } from '../reducers';
 import { navigateTo } from '../actions/navigation.action';
+import { getAudioListAction } from '../actions/audio.action';
 
 interface QuestionsSagaPayloadType extends SagaPayloadType {
   payload: QuestionsActionPayloadType;
@@ -122,6 +123,7 @@ function* getQuestionSaga(data: any): any {
         questionSets: response.result.question_sets,
       })
     );
+    yield put(getAudioListAction({ questionId: id }));
   } catch (e: any) {
     yield put(
       getQuestionErrorAction((e?.errors && e.errors[0]?.message) || e?.message)

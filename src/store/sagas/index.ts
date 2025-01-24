@@ -9,6 +9,9 @@ import { skillSaga } from './skill.saga';
 import { subSkillSaga } from './subSkill.saga';
 import { contentSaga } from './content.saga';
 import { mediaSaga } from './media.saga';
+import translationSaga from './translation.saga';
+import { ttsSaga } from './tts.saga';
+import { audioSaga } from './audio.saga';
 
 export default function* rootSaga() {
   yield all([
@@ -22,5 +25,8 @@ export default function* rootSaga() {
     fork(subSkillSaga),
     fork(contentSaga),
     fork(mediaSaga),
+    fork(translationSaga),
+    fork(ttsSaga),
+    fork(audioSaga),
   ]);
 }

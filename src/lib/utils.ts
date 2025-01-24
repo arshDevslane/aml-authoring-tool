@@ -1,6 +1,7 @@
 import { Question } from '@/models/entities/Question';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import CryptoJS from 'crypto-js';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -49,3 +50,5 @@ export function debounce<T extends (...args: any[]) => any>(
     }, wait);
   };
 }
+
+export const calculateMD5 = (input: string) => CryptoJS.MD5(input).toString();

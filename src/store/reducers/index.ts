@@ -12,6 +12,9 @@ import { skillReducer } from './skill.reducer';
 import { subSkillReducer } from './subSkill.reducer';
 import { contentReducer } from './content.reducer';
 import { mediaReducer } from './media.reducer';
+import { translationReducer } from './translation.reducer';
+import { ttsReducer } from './tts.reducer';
+import { audioReducer } from './audio.reducer';
 
 const appReducer = combineReducers({
   auth: authReducer,
@@ -26,6 +29,9 @@ const appReducer = combineReducers({
   content: contentReducer,
   media: mediaReducer,
   navigationReducer,
+  translation: translationReducer,
+  tts: ttsReducer,
+  audio: audioReducer,
 });
 
 export const rootReducer = (state: any, action: any) => {

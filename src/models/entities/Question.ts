@@ -39,6 +39,7 @@ export interface Question {
   operation: ArithmaticOperations;
   name: Description;
   description: Description;
+  question_audio_description: Description;
   tenant: string;
   repository: Repository;
   taxonomy: Taxonomy;

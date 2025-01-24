@@ -121,3 +121,30 @@ export enum MediaActionType {
 
   RESET_STATE = 'media/resetState',
 }
+
+// translations
+export enum TranslationActionType {
+  GET_TRANSLATIONS = 'translation/getTranslations',
+  GET_TRANSLATIONS_COMPLETED = 'translation/getTranslations/completed',
+  GET_TRANSLATIONS_ERROR = 'translation/getTranslations/error',
+
+  RESET_STATE = 'translation/resetState',
+  REMOVE_TRANSLATION = 'translation/removeTranslation',
+}
+
+// tts
+export enum TtsActionType {
+  GET_TTS = 'tts/getTts',
+  GET_TTS_COMPLETED = 'tts/getTts/completed',
+  GET_TTS_ERROR = 'tts/getTts/error',
+}
+
+// audio
+export enum AudioActionType {
+  GET_AUDIO = 'audio/getAudio',
+  GET_AUDIO_COMPLETED = 'audio/getAudio/completed',
+  GET_AUDIO_ERROR = 'audio/getAudio/error',
+
+  RESET_STATE = 'audio/resetState',
+  REMOVE_AUDIO_RECORD = 'audio/removeAudioRecord',
+}
