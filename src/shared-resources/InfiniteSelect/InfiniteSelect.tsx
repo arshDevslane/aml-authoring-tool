@@ -246,7 +246,7 @@ export const InfiniteSelect = ({
               placeholder={placeholder ?? 'Select...'}
             />
           </div>
-          {options.length || isLoading ? (
+          {options?.length || isLoading ? (
             <div className='overflow-hidden p-1 text-foreground'>
               <div
                 className='max-h-[300px] overflow-y-auto overflow-x-hidden'

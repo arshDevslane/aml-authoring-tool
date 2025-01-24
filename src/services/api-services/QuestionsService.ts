@@ -2,6 +2,10 @@ import { Question } from '@/models/entities/Question';
 import { QuestionType } from '@/models/enums/QuestionType.enum';
 import { User } from '@/models/entities/User';
 import { QuestionSet } from '@/models/entities/QuestionSet';
+import { Class } from '@/models/entities/Class';
+import { Board } from '@/models/entities/Board';
+import { Repository } from '@/models/entities/Repository';
+import { Skill } from '@/models/entities/Skill';
 import { baseApiService } from './BaseApiService';
 
 class QuestionsService {
@@ -26,6 +30,12 @@ class QuestionsService {
   }): Promise<{
     result: {
       questions: Question[];
+      classes: Class[];
+      boards: Board[];
+      repositories: Repository[];
+      l1_skills: Skill[];
+      l2_skills: Skill[];
+      l3_skills: Skill[];
       meta: {
         offset: number;
         limit: number;

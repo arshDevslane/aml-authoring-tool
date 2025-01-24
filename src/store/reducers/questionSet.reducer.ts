@@ -54,12 +54,15 @@ export const questionSetReducer = (
         );
 
         draft.entities = { ...state.entities, ...questionSetMap };
-        draft.cachedData[filterKey] = {
-          result: action.payload.questionSets?.map(
-            (questionSet: QuestionSet) => questionSet.identifier
-          ),
-          totalCount: action.payload.totalCount,
-        };
+        if (action.payload.noCache) {
+          draft.cachedData[filterKey] = {
+            result: action.payload.questionSets?.map(
+              (questionSet: QuestionSet) => questionSet.identifier
+            ),
+            totalCount: action.payload.totalCount,
+          };
+        }
+
         draft.latestCount = action.payload.totalCount;
         break;
       case QuestionsActionType.UPDATE_QUESTION_COMPLETED:

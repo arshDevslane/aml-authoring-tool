@@ -1,4 +1,8 @@
 import { QuestionSet } from '@/models/entities/QuestionSet';
+import { Class } from '@/models/entities/Class';
+import { Board } from '@/models/entities/Board';
+import { Repository } from '@/models/entities/Repository';
+import { Skill } from '@/models/entities/Skill';
 import { QuestionSetActionType } from './actions.constants';
 
 export type QuestionSetActionPayloadType = {
@@ -19,6 +23,11 @@ export type QuestionSetActionPayloadType = {
 export type QuestionSetResponseType = {
   questionSets: QuestionSet[];
   totalCount: number;
+  classes?: Class[];
+  boards?: Board[];
+  repositories?: Repository[];
+  skills?: Skill[];
+  noCache?: boolean;
 };
 
 export const getListQuestionSetAction = (
