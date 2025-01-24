@@ -42,8 +42,6 @@ export const repositoryReducer = (
         draft.filters = action.payload.filters;
         break;
       case RepositoryActionType.GET_LIST_COMPLETED:
-      case QuestionsActionType.GET_LIST_COMPLETED:
-      case QuestionSetActionType.GET_LIST_COMPLETED:
         draft.isLoading = false;
 
         const filterKey = JSON.stringify(state.filters);
@@ -63,6 +61,20 @@ export const repositoryReducer = (
         };
         draft.latestCount = action.payload.totalCount;
         break;
+      case QuestionsActionType.GET_LIST_COMPLETED:
+      case QuestionSetActionType.GET_LIST_COMPLETED:
+      case QuestionsActionType.GET_QUESTION_COMPLETED: {
+        draft.isLoading = false;
+        const repositoryMap = action.payload?.repositories?.reduce(
+          (acc: any, repository: Repository) => ({
+            ...acc,
+            [repository.identifier]: repository,
+          }),
+          {} as Record<string, Repository>
+        );
+        draft.entities = { ...state.entities, ...repositoryMap };
+        break;
+      }
       case RepositoryActionType.GET_LIST_ERROR:
         draft.isLoading = false;
         draft.error = action.payload;

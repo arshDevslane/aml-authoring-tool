@@ -40,8 +40,6 @@ export const boardReducer = (
         draft.filters = action.payload.filters;
         break;
       case BoardActionType.GET_LIST_COMPLETED:
-      case QuestionsActionType.GET_LIST_COMPLETED:
-      case QuestionSetActionType.GET_LIST_COMPLETED:
         draft.isLoading = false;
 
         const filterKey = JSON.stringify(state.filters);
@@ -64,6 +62,22 @@ export const boardReducer = (
         }
         draft.latestCount = action.payload.totalCount;
         break;
+      case QuestionsActionType.GET_LIST_COMPLETED:
+      case QuestionSetActionType.GET_LIST_COMPLETED:
+      case QuestionsActionType.GET_QUESTION_COMPLETED: {
+        draft.isLoading = false;
+
+        const boardMap = action.payload?.boards?.reduce(
+          (acc: any, board: Board) => ({
+            ...acc,
+            [board.identifier]: board,
+          }),
+          {} as Record<string, Board>
+        );
+
+        draft.entities = { ...state.entities, ...boardMap };
+        break;
+      }
       case BoardActionType.GET_LIST_ERROR:
         draft.isLoading = false;
         draft.error = action.payload;

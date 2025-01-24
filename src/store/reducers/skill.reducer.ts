@@ -41,8 +41,6 @@ export const skillReducer = (
         draft.filters = action.payload.filters;
         break;
       case SkillActionType.GET_LIST_COMPLETED:
-      case QuestionsActionType.GET_LIST_COMPLETED:
-      case QuestionSetActionType.GET_LIST_COMPLETED:
         draft.isLoading = false;
         const filterKey = JSON.stringify(state.filters);
         const skillMap = action.payload?.skills?.reduce(
@@ -62,6 +60,21 @@ export const skillReducer = (
         };
         draft.latestCount = action.payload.totalCount;
         break;
+      case QuestionsActionType.GET_LIST_COMPLETED:
+      case QuestionSetActionType.GET_LIST_COMPLETED:
+      case QuestionsActionType.GET_QUESTION_COMPLETED: {
+        draft.isLoading = false;
+        const skillMap = action.payload?.skills?.reduce(
+          (acc: any, skill: Skill) => ({
+            ...acc,
+            [skill.identifier]: skill,
+          }),
+          {} as Record<string, Skill>
+        );
+
+        draft.entities = { ...state.entities, ...skillMap };
+        break;
+      }
       case SkillActionType.GET_LIST_ERROR:
         draft.isLoading = false;
         draft.error = action.payload;

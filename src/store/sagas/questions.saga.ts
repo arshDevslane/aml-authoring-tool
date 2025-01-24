@@ -129,6 +129,14 @@ function* getQuestionSaga(data: any): any {
       getQuestionCompletedAction({
         question: response.result.question,
         questionSets: response.result.question_sets,
+        classes: [response.result.question.taxonomy.class],
+        boards: [response.result.question.taxonomy.board],
+        repositories: [response.result.question.repository],
+        skills: [
+          response.result.question.taxonomy.l1_skill,
+          ...response.result.question.taxonomy.l2_skill,
+          ...response.result.question.taxonomy.l3_skill,
+        ],
       })
     );
     yield put(getAudioListAction({ questionId: id }));

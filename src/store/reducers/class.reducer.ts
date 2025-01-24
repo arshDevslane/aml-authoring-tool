@@ -40,8 +40,6 @@ export const classReducer = (
         draft.filters = action.payload.filters;
         break;
       case ClassActionType.GET_LIST_COMPLETED:
-      case QuestionsActionType.GET_LIST_COMPLETED:
-      case QuestionSetActionType.GET_LIST_COMPLETED:
         draft.isLoading = false;
 
         const filterKey = JSON.stringify(state.filters);
@@ -63,6 +61,20 @@ export const classReducer = (
         };
         draft.latestCount = action.payload.totalCount;
         break;
+      case QuestionsActionType.GET_LIST_COMPLETED:
+      case QuestionSetActionType.GET_LIST_COMPLETED:
+      case QuestionsActionType.GET_QUESTION_COMPLETED: {
+        const classMap = action.payload?.classes?.reduce(
+          (acc: any, classItem: Class) => ({
+            ...acc,
+            [classItem.identifier]: classItem,
+          }),
+          {} as Record<string, Class>
+        );
+
+        draft.entities = { ...state.entities, ...classMap };
+        break;
+      }
       case ClassActionType.GET_LIST_ERROR:
         draft.isLoading = false;
         draft.error = action.payload;
