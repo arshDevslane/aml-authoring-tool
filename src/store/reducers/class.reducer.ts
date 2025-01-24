@@ -3,7 +3,11 @@ import produce from 'immer';
 import { CacheAPIResponse } from '@/lib/utils';
 import { Class } from '@/models/entities/Class';
 import { ClassActionPayloadType } from '../actions/class.action';
-import { ClassActionType } from '../actions/actions.constants';
+import {
+  ClassActionType,
+  QuestionsActionType,
+  QuestionSetActionType,
+} from '../actions/actions.constants';
 
 export type ClassState = ClassActionPayloadType & {
   cachedData: CacheAPIResponse;
@@ -39,7 +43,7 @@ export const classReducer = (
         draft.isLoading = false;
 
         const filterKey = JSON.stringify(state.filters);
-        const classMap = action.payload.classes.reduce(
+        const classMap = action.payload?.classes?.reduce(
           (acc: any, classItem: Class) => ({
             ...acc,
             [classItem.identifier]: classItem,
@@ -48,14 +52,29 @@ export const classReducer = (
         );
 
         draft.entities = { ...state.entities, ...classMap };
+
         draft.cachedData[filterKey] = {
-          result: action.payload.classes.map(
+          result: action.payload?.classes?.map(
             (classItem: Class) => classItem.identifier
           ),
           totalCount: action.payload.totalCount,
         };
         draft.latestCount = action.payload.totalCount;
         break;
+      case QuestionsActionType.GET_LIST_COMPLETED:
+      case QuestionSetActionType.GET_LIST_COMPLETED:
+      case QuestionsActionType.GET_QUESTION_COMPLETED: {
+        const classMap = action.payload?.classes?.reduce(
+          (acc: any, classItem: Class) => ({
+            ...acc,
+            [classItem.identifier]: classItem,
+          }),
+          {} as Record<string, Class>
+        );
+
+        draft.entities = { ...state.entities, ...classMap };
+        break;
+      }
       case ClassActionType.GET_LIST_ERROR:
         draft.isLoading = false;
         draft.error = action.payload;

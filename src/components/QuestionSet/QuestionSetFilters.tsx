@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+
 import { SkillType } from '@/models/enums/skillType.enum';
 import FormikInfiniteSelect from '@/shared-resources/FormikSelect/FormikInfiniteSelect';
 import FormikSelect from '@/shared-resources/FormikSelect/FormikSelect';
@@ -57,22 +59,6 @@ const QuestionSetFilters = ({
   const isLoadingClass = useSelector(isLoadingClassesSelector);
   const isLoadingSkill = useSelector(isLoadingSkillsSelector);
 
-  const selectedL1Skill = useSelector(
-    createEntitySelectorFactory('skill', searchFilters.l1_skill_id)
-  );
-  const selectedL2Skill = useSelector(
-    createEntitySelectorFactory('skill', searchFilters.l2_skill_id)
-  );
-  const selectedBoard = useSelector(
-    createEntitySelectorFactory('board', searchFilters.board_id)
-  );
-  const selectedRepository = useSelector(
-    createEntitySelectorFactory('repository', searchFilters.repository_id)
-  );
-  const selectedClass = useSelector(
-    createEntitySelectorFactory('class', searchFilters.class_id)
-  );
-
   return (
     <Formik
       initialValues={{
@@ -84,6 +70,7 @@ const QuestionSetFilters = ({
         repository_id: searchFilters.repository_id ?? '',
         status: searchFilters.status ?? '',
       }}
+      enableReinitialize
       onSubmit={(values) => {
         setSearchFilters({
           ..._.omitBy(values, (v) => !v),
@@ -91,153 +78,170 @@ const QuestionSetFilters = ({
         });
       }}
     >
-      {(formik) => (
-        <form
-          onSubmit={formik.handleSubmit}
-          className='flex flex-col overflow-x-hidden p-3'
-        >
-          <h2 className='mb-3 font-bold uppercase'>Filters</h2>
-          <FormikInput
-            name='search_query'
-            label='Title'
-            placeholder='Search by title or description'
-          />
-          <div className='flex w-full gap-6 items-start'>
-            <FormikInfiniteSelect
-              name='board_id'
-              label='Board'
-              placeholder='Select Board'
-              data={boards}
-              labelKey='name.en'
-              valueKey='identifier'
-              dispatchAction={(payload) =>
-                getListBoardAction({
-                  filters: {
-                    search_query: payload.value,
-                    page_no: payload.page_no,
-                  },
-                })
-              }
-              isLoading={isLoadingBoard}
-              totalCount={boardsCount}
-              preLoadedOptions={[selectedBoard]}
+      {(formik) => {
+        const selectedL1Skill = useSelector(
+          createEntitySelectorFactory('skill', formik.values.l1_skill_id)
+        );
+        const selectedL2Skill = useSelector(
+          createEntitySelectorFactory('skill', formik.values.l2_skill_id)
+        );
+        const selectedBoard = useSelector(
+          createEntitySelectorFactory('board', formik.values.board_id)
+        );
+        const selectedRepository = useSelector(
+          createEntitySelectorFactory('repository', formik.values.repository_id)
+        );
+        const selectedClass = useSelector(
+          createEntitySelectorFactory('class', formik.values.class_id)
+        );
+        return (
+          <form
+            onSubmit={formik.handleSubmit}
+            className='flex flex-col overflow-x-hidden p-3'
+          >
+            <h2 className='mb-3 font-bold uppercase'>Filters</h2>
+            <FormikInput
+              name='search_query'
+              label='Title'
+              placeholder='Search by title or description'
             />
-            <FormikInfiniteSelect
-              name='repository_id'
-              label='Repository'
-              placeholder='Select Repository'
-              data={repositories}
-              labelKey='name.en'
-              valueKey='identifier'
-              dispatchAction={(payload) =>
-                getListRepositoryAction({
-                  filters: {
-                    search_query: payload.value,
-                    page_no: payload.page_no,
-                  },
-                })
-              }
-              isLoading={isLoadingRepository}
-              totalCount={repositoriesCount}
-              preLoadedOptions={[selectedRepository]}
-            />
-          </div>
-          <div className='flex w-full gap-6 items-start'>
-            <FormikInfiniteSelect
-              name='class_id'
-              label='Class'
-              placeholder='Select Class'
-              data={classes}
-              labelKey='name.en'
-              valueKey='identifier'
-              dispatchAction={(payload) =>
-                getListClassAction({
-                  filters: {
-                    search_query: payload.value,
-                    page_no: payload.page_no,
-                  },
-                })
-              }
-              isLoading={isLoadingClass}
-              totalCount={classesCount}
-              preLoadedOptions={[selectedClass]}
-            />
-            <FormikInfiniteSelect
-              name='l1_skill_id'
-              label='L1 Skill'
-              placeholder='Select L1 skill'
-              data={l1Skills}
-              labelKey='name.en'
-              valueKey='identifier'
-              dispatchAction={(payload) =>
-                getListSkillAction({
-                  filters: {
-                    skill_type: SkillType.L1Skill,
-                    search_query: payload.value,
-                    page_no: payload.page_no,
-                  },
-                })
-              }
-              isLoading={isLoadingSkill}
-              totalCount={l1SkillsCount}
-              preLoadedOptions={[selectedL1Skill]}
-            />
-          </div>
-          <div className='flex w-full gap-6 items-start'>
-            <FormikInfiniteSelect
-              name='l2_skill_id'
-              label='L2 Skill'
-              placeholder='Select L2 skills'
-              data={l2Skills}
-              labelKey='name.en'
-              valueKey='identifier'
-              dispatchAction={(payload) =>
-                getListSkillAction({
-                  filters: {
-                    skill_type: SkillType.L2Skill,
-                    search_query: payload.value,
-                    page_no: payload.page_no,
-                  },
-                })
-              }
-              isLoading={isLoadingSkills}
-              totalCount={l2SkillsCount}
-              preLoadedOptions={[selectedL2Skill]}
-            />
-            <FormikSelect
-              name='status'
-              label='Status'
-              placeholder='Select status'
-              options={['LIVE', 'DRAFT'].map((status) => ({
-                value: status.toLowerCase(),
-                label: status,
-              }))}
-            />
-          </div>
-          <div className='flex justify-end'>
-            <div className='w-min flex gap-3'>
-              <PopoverClose asChild>
-                <Button
-                  type='button'
-                  variant='outline'
-                  onClick={() => {
-                    setSearchFilters({
-                      page_no: 1,
-                    });
-                  }}
-                >
-                  Reset
-                </Button>
-              </PopoverClose>
-              <PopoverClose asChild disabled={!formik.dirty}>
-                <Button type='submit' disabled={!formik.dirty}>
-                  Apply
-                </Button>
-              </PopoverClose>
+            <div className='flex w-full gap-6 items-start'>
+              <FormikInfiniteSelect
+                name='board_id'
+                label='Board'
+                placeholder='Select Board'
+                data={boards}
+                labelKey='name.en'
+                valueKey='identifier'
+                dispatchAction={(payload) =>
+                  getListBoardAction({
+                    filters: {
+                      search_query: payload.value,
+                      page_no: payload.page_no,
+                    },
+                  })
+                }
+                isLoading={isLoadingBoard}
+                totalCount={boardsCount}
+                preLoadedOptions={[selectedBoard]}
+              />
+              <FormikInfiniteSelect
+                name='repository_id'
+                label='Repository'
+                placeholder='Select Repository'
+                data={repositories}
+                labelKey='name.en'
+                valueKey='identifier'
+                dispatchAction={(payload) =>
+                  getListRepositoryAction({
+                    filters: {
+                      search_query: payload.value,
+                      page_no: payload.page_no,
+                    },
+                  })
+                }
+                isLoading={isLoadingRepository}
+                totalCount={repositoriesCount}
+                preLoadedOptions={[selectedRepository]}
+              />
             </div>
-          </div>
-        </form>
-      )}
+            <div className='flex w-full gap-6 items-start'>
+              <FormikInfiniteSelect
+                name='class_id'
+                label='Class'
+                placeholder='Select Class'
+                data={classes}
+                labelKey='name.en'
+                valueKey='identifier'
+                dispatchAction={(payload) =>
+                  getListClassAction({
+                    filters: {
+                      search_query: payload.value,
+                      page_no: payload.page_no,
+                    },
+                  })
+                }
+                isLoading={isLoadingClass}
+                totalCount={classesCount}
+                preLoadedOptions={[selectedClass]}
+              />
+              <FormikInfiniteSelect
+                name='l1_skill_id'
+                label='L1 Skill'
+                placeholder='Select L1 skill'
+                data={l1Skills}
+                labelKey='name.en'
+                valueKey='identifier'
+                dispatchAction={(payload) =>
+                  getListSkillAction({
+                    filters: {
+                      skill_type: SkillType.L1Skill,
+                      search_query: payload.value,
+                      page_no: payload.page_no,
+                    },
+                  })
+                }
+                isLoading={isLoadingSkill}
+                totalCount={l1SkillsCount}
+                preLoadedOptions={[selectedL1Skill]}
+              />
+            </div>
+            <div className='flex w-full gap-6 items-start'>
+              <FormikInfiniteSelect
+                name='l2_skill_id'
+                label='L2 Skill'
+                placeholder='Select L2 skills'
+                data={l2Skills}
+                labelKey='name.en'
+                valueKey='identifier'
+                dispatchAction={(payload) =>
+                  getListSkillAction({
+                    filters: {
+                      skill_type: SkillType.L2Skill,
+                      search_query: payload.value,
+                      page_no: payload.page_no,
+                    },
+                  })
+                }
+                isLoading={isLoadingSkills}
+                totalCount={l2SkillsCount}
+                preLoadedOptions={[selectedL2Skill]}
+              />
+              <FormikSelect
+                name='status'
+                label='Status'
+                placeholder='Select status'
+                options={['LIVE', 'DRAFT'].map((status) => ({
+                  value: status.toLowerCase(),
+                  label: status,
+                }))}
+              />
+            </div>
+            <div className='flex justify-end'>
+              <div className='w-min flex gap-3'>
+                <PopoverClose asChild>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    onClick={() => {
+                      setSearchFilters({
+                        page_no: 1,
+                      });
+                    }}
+                  >
+                    Reset
+                  </Button>
+                </PopoverClose>
+                <PopoverClose asChild disabled={!formik.dirty}>
+                  <Button type='submit' disabled={!formik.dirty}>
+                    Apply
+                  </Button>
+                </PopoverClose>
+              </div>
+            </div>
+          </form>
+        );
+      }}
     </Formik>
   );
 };

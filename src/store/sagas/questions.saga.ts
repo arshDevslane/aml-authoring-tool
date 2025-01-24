@@ -74,6 +74,14 @@ function* getListQuestionsSaga(data: QuestionsSagaPayloadType): any {
         totalCount: response.result.meta.total,
         users: response.result.users,
         questionSets: response.result.question_sets,
+        classes: response.result.classes,
+        boards: response.result.boards,
+        repositories: response.result.repositories,
+        skills: [
+          ...response.result.l1_skills,
+          ...response.result.l2_skills,
+          ...response.result.l3_skills,
+        ],
         noCache: data.payload.noCache ?? false,
       })
     );
@@ -121,6 +129,14 @@ function* getQuestionSaga(data: any): any {
       getQuestionCompletedAction({
         question: response.result.question,
         questionSets: response.result.question_sets,
+        classes: [response.result.question.taxonomy.class],
+        boards: [response.result.question.taxonomy.board],
+        repositories: [response.result.question.repository],
+        skills: [
+          response.result.question.taxonomy.l1_skill,
+          ...response.result.question.taxonomy.l2_skill,
+          ...response.result.question.taxonomy.l3_skill,
+        ],
       })
     );
     yield put(getAudioListAction({ questionId: id }));

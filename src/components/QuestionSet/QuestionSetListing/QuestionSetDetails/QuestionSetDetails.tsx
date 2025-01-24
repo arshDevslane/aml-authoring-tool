@@ -1,4 +1,4 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
+/* eslint-disable jsx-a11y/label-has-associated-control, react-hooks/rules-of-hooks */
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { QuestionSetPurposeType } from '@/enums/questionSet.enum';
@@ -48,6 +48,7 @@ import {
 } from '@/store/actions/questionSet.actions';
 import { cn } from '@/lib/utils';
 import { getMultiLangFormikInitialValues } from '@/utils/helpers/helper';
+import { createEntitySelectorFactory } from '@/store/selectors/root.selectors';
 
 type QuestionSetDetailsProps = {
   onClose: () => void;
@@ -196,222 +197,240 @@ const QuestionSetDetails = ({
         }
       }}
     >
-      {(formik) => (
-        <form
-          onSubmit={formik.handleSubmit}
-          className='flex flex-col overflow-x-hidden px-1'
-        >
-          <p className='text-2xl font-bold mb-8'>
-            {questionSetId ? 'Update - Question Set' : 'Create - Question Set'}
-          </p>
-          <div className='flex w-full gap-6 items-start'>
-            <FormikInfiniteSelect
-              name='board_id'
-              label='Board'
-              placeholder='Select Board'
-              data={boards}
-              labelKey='name.en'
-              valueKey='identifier'
-              dispatchAction={(payload) =>
-                getListBoardAction({
-                  filters: {
-                    search_query: payload.value,
-                    page_no: payload.page_no,
-                  },
-                })
-              }
-              isLoading={isLoadingBoard}
-              totalCount={boardsCount}
-              onValueChange={(value) => setSelectedBoard(value)}
-              preLoadedOptions={preSelectedBoards}
-              required
-            />
-            <FormikInfiniteSelect
-              name='repository_id'
-              label='Repository'
-              placeholder='Select Repository'
-              data={repositories}
-              labelKey='name.en'
-              valueKey='identifier'
-              dispatchAction={(payload) =>
-                getListRepositoryAction({
-                  filters: {
-                    search_query: payload.value,
-                    page_no: payload.page_no,
-                  },
-                })
-              }
-              isLoading={isLoadingRepository}
-              totalCount={repositoriesCount}
-              preLoadedOptions={[questionSet?.repository]}
-              required
-            />
-          </div>
-          <div className='flex w-full gap-6 items-start'>
-            <FormikInfiniteSelect
-              name='class_id'
-              label='Class'
-              placeholder='Select Class'
-              data={classes}
-              labelKey='name.en'
-              valueKey='identifier'
-              dispatchAction={(payload) =>
-                getListClassAction({
-                  filters: {
-                    search_query: payload.value,
-                    page_no: payload.page_no,
-                  },
-                })
-              }
-              isLoading={isLoadingClass}
-              totalCount={classesCount}
-              preLoadedOptions={[questionSet?.taxonomy?.class]}
-              required
-            />
-            <FormikInfiniteSelect
-              name='l1_skill_id'
-              label='L1 Skill'
-              placeholder='Select L1 skill'
-              data={l1Skills}
-              labelKey='name.en'
-              valueKey='identifier'
-              dispatchAction={(payload) =>
-                getListSkillAction({
-                  filters: {
-                    skill_type: SkillType.L1Skill,
-                    search_query: payload.value,
-                    page_no: payload.page_no,
-                  },
-                })
-              }
-              isLoading={isLoadingSkill}
-              totalCount={l1SkillsCount}
-              preLoadedOptions={[questionSet?.taxonomy?.l1_skill]}
-              required
-            />
-          </div>
-          <div className='flex w-full gap-6 items-start'>
-            <FormikInfiniteSelect
-              name='l2_skill_ids'
-              label='L2 Skill'
-              placeholder='Select L2 skills'
-              data={l2Skills}
-              labelKey='name.en'
-              valueKey='identifier'
-              dispatchAction={(payload) =>
-                getListSkillAction({
-                  filters: {
-                    skill_type: SkillType.L2Skill,
-                    search_query: payload.value,
-                    page_no: payload.page_no,
-                  },
-                })
-              }
-              isLoading={isLoadingSkill}
-              totalCount={l2SkillsCount}
-              preLoadedOptions={questionSet?.taxonomy?.l2_skill}
-              multiple
-            />
-            <FormikInfiniteSelect
-              name='l3_skill_ids'
-              label='L3 Skill'
-              placeholder='Select L3 skills'
-              data={l3Skills}
-              labelKey='name.en'
-              valueKey='identifier'
-              dispatchAction={(payload) =>
-                getListSkillAction({
-                  filters: {
-                    skill_type: SkillType.L3Skill,
-                    search_query: payload.value,
-                    page_no: payload.page_no,
-                  },
-                })
-              }
-              isLoading={isLoadingSkill}
-              totalCount={l3SkillsCount}
-              preLoadedOptions={questionSet?.taxonomy?.l3_skill}
-              multiple
-            />
-          </div>
-          <div className='flex w-full [&_>_div]:flex-1 gap-6 items-start'>
-            <FormikSelect
-              name='purpose'
-              label='Purpose'
-              placeholder='Select purpose'
-              options={Object.values(QuestionSetPurposeType).map((purpose) => ({
-                value: purpose,
-                label: purpose,
-              }))}
-              required
-            />
-            {questionSetId && (
-              <FormikInput
-                name='sequence'
-                label='Sequence'
-                type='number'
-                placeholder='Sequence'
+      {(formik) => {
+        const selectedBoardObj = useSelector(
+          createEntitySelectorFactory('board', formik.values.board_id)
+        );
+        const selectedL1Skill = useSelector(
+          createEntitySelectorFactory('skill', formik.values.l1_skill_id)
+        );
+        const selectedRepository = useSelector(
+          createEntitySelectorFactory('repository', formik.values.repository_id)
+        );
+        const selectedClass = useSelector(
+          createEntitySelectorFactory('class', formik.values.class_id)
+        );
+        return (
+          <form
+            onSubmit={formik.handleSubmit}
+            className='flex flex-col overflow-x-hidden px-1'
+          >
+            <p className='text-2xl font-bold mb-8'>
+              {questionSetId
+                ? 'Update - Question Set'
+                : 'Create - Question Set'}
+            </p>
+            <div className='flex w-full gap-6 items-start'>
+              <FormikInfiniteSelect
+                name='board_id'
+                label='Board'
+                placeholder='Select Board'
+                data={boards}
+                labelKey='name.en'
+                valueKey='identifier'
+                dispatchAction={(payload) =>
+                  getListBoardAction({
+                    filters: {
+                      search_query: payload.value,
+                      page_no: payload.page_no,
+                    },
+                  })
+                }
+                isLoading={isLoadingBoard}
+                totalCount={boardsCount}
+                onValueChange={(value) => setSelectedBoard(value)}
+                preLoadedOptions={[selectedBoardObj]}
                 required
               />
-            )}
-          </div>
-          <MultiLangFormikInput
-            name='title'
-            label='Title'
-            supportedLanguages={supportedLanguages}
-          />
-
-          <FormikInput
-            name='instruction_text'
-            label='Instruction Text'
-            placeholder='Instruction Text'
-            required
-          />
-          <div className='flex gap-6 items-start my-3'>
-            <label className='font-medium text-sm flex gap-3 items-center'>
-              <Switch
-                checked={
-                  formik.values.purpose !==
-                    QuestionSetPurposeType.MAIN_DIAGNOSTIC &&
-                  formik.values.enable_feedback
+              <FormikInfiniteSelect
+                name='repository_id'
+                label='Repository'
+                placeholder='Select Repository'
+                data={repositories}
+                labelKey='name.en'
+                valueKey='identifier'
+                dispatchAction={(payload) =>
+                  getListRepositoryAction({
+                    filters: {
+                      search_query: payload.value,
+                      page_no: payload.page_no,
+                    },
+                  })
                 }
-                onCheckedChange={(checked) =>
-                  formik.setFieldValue('enable_feedback', checked)
-                }
-                disabled={
-                  !formik.values.purpose ||
-                  formik.values.purpose ===
-                    QuestionSetPurposeType.MAIN_DIAGNOSTIC
-                }
+                isLoading={isLoadingRepository}
+                totalCount={repositoriesCount}
+                preLoadedOptions={[selectedRepository]}
+                required
               />
-              <span
-                className={cn(
-                  (!formik.values.purpose ||
-                    formik.values.purpose ===
-                      QuestionSetPurposeType.MAIN_DIAGNOSTIC) &&
-                    'text-disabled'
+            </div>
+            <div className='flex w-full gap-6 items-start'>
+              <FormikInfiniteSelect
+                name='class_id'
+                label='Class'
+                placeholder='Select Class'
+                data={classes}
+                labelKey='name.en'
+                valueKey='identifier'
+                dispatchAction={(payload) =>
+                  getListClassAction({
+                    filters: {
+                      search_query: payload.value,
+                      page_no: payload.page_no,
+                    },
+                  })
+                }
+                isLoading={isLoadingClass}
+                totalCount={classesCount}
+                preLoadedOptions={[selectedClass]}
+                required
+              />
+              <FormikInfiniteSelect
+                name='l1_skill_id'
+                label='L1 Skill'
+                placeholder='Select L1 skill'
+                data={l1Skills}
+                labelKey='name.en'
+                valueKey='identifier'
+                dispatchAction={(payload) =>
+                  getListSkillAction({
+                    filters: {
+                      skill_type: SkillType.L1Skill,
+                      search_query: payload.value,
+                      page_no: payload.page_no,
+                    },
+                  })
+                }
+                isLoading={isLoadingSkill}
+                totalCount={l1SkillsCount}
+                preLoadedOptions={[selectedL1Skill]}
+                required
+              />
+            </div>
+            <div className='flex w-full gap-6 items-start'>
+              <FormikInfiniteSelect
+                name='l2_skill_ids'
+                label='L2 Skill'
+                placeholder='Select L2 skills'
+                data={l2Skills}
+                labelKey='name.en'
+                valueKey='identifier'
+                dispatchAction={(payload) =>
+                  getListSkillAction({
+                    filters: {
+                      skill_type: SkillType.L2Skill,
+                      search_query: payload.value,
+                      page_no: payload.page_no,
+                    },
+                  })
+                }
+                isLoading={isLoadingSkill}
+                totalCount={l2SkillsCount}
+                preLoadedOptions={questionSet?.taxonomy?.l2_skill}
+                multiple
+              />
+              <FormikInfiniteSelect
+                name='l3_skill_ids'
+                label='L3 Skill'
+                placeholder='Select L3 skills'
+                data={l3Skills}
+                labelKey='name.en'
+                valueKey='identifier'
+                dispatchAction={(payload) =>
+                  getListSkillAction({
+                    filters: {
+                      skill_type: SkillType.L3Skill,
+                      search_query: payload.value,
+                      page_no: payload.page_no,
+                    },
+                  })
+                }
+                isLoading={isLoadingSkill}
+                totalCount={l3SkillsCount}
+                preLoadedOptions={questionSet?.taxonomy?.l3_skill}
+                multiple
+              />
+            </div>
+            <div className='flex w-full [&_>_div]:flex-1 gap-6 items-start'>
+              <FormikSelect
+                name='purpose'
+                label='Purpose'
+                placeholder='Select purpose'
+                options={Object.values(QuestionSetPurposeType).map(
+                  (purpose) => ({
+                    value: purpose,
+                    label: purpose,
+                  })
                 )}
+                required
+              />
+              {questionSetId && (
+                <FormikInput
+                  name='sequence'
+                  label='Sequence'
+                  type='number'
+                  placeholder='Sequence'
+                  required
+                />
+              )}
+            </div>
+            <MultiLangFormikInput
+              name='title'
+              label='Title'
+              supportedLanguages={supportedLanguages}
+            />
+
+            <FormikInput
+              name='instruction_text'
+              label='Instruction Text'
+              placeholder='Instruction Text'
+              required
+            />
+            <div className='flex gap-6 items-start my-3'>
+              <label className='font-medium text-sm flex gap-3 items-center'>
+                <Switch
+                  checked={
+                    formik.values.purpose !==
+                      QuestionSetPurposeType.MAIN_DIAGNOSTIC &&
+                    formik.values.enable_feedback
+                  }
+                  onCheckedChange={(checked) =>
+                    formik.setFieldValue('enable_feedback', checked)
+                  }
+                  disabled={
+                    !formik.values.purpose ||
+                    formik.values.purpose ===
+                      QuestionSetPurposeType.MAIN_DIAGNOSTIC
+                  }
+                />
+                <span
+                  className={cn(
+                    (!formik.values.purpose ||
+                      formik.values.purpose ===
+                        QuestionSetPurposeType.MAIN_DIAGNOSTIC) &&
+                      'text-disabled'
+                  )}
+                >
+                  Enable Feedback
+                </span>
+              </label>
+            </div>
+            <div className='flex gap-5 mt-5 flex-row-reverse'>
+              <Button type='submit' size='lg' disabled={!formik.dirty}>
+                {questionSetId ? 'Update' : 'Create'}
+              </Button>
+              <Button
+                variant='outline'
+                onClick={onClose}
+                size='lg'
+                type='button'
+                disabled={isFormSubmitted}
               >
-                Enable Feedback
-              </span>
-            </label>
-          </div>
-          <div className='flex gap-5 mt-5 flex-row-reverse'>
-            <Button type='submit' size='lg' disabled={!formik.dirty}>
-              {questionSetId ? 'Update' : 'Create'}
-            </Button>
-            <Button
-              variant='outline'
-              onClick={onClose}
-              size='lg'
-              type='button'
-              disabled={isFormSubmitted}
-            >
-              Cancel
-            </Button>
-          </div>
-        </form>
-      )}
+                Cancel
+              </Button>
+            </div>
+          </form>
+        );
+      }}
     </Formik>
   );
 };

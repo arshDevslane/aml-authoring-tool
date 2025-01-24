@@ -2,6 +2,10 @@ import { Question } from '@/models/entities/Question';
 import { QuestionType } from '@/models/enums/QuestionType.enum';
 import { User } from '@/models/entities/User';
 import { QuestionSet } from '@/models/entities/QuestionSet';
+import { Class } from '@/models/entities/Class';
+import { Board } from '@/models/entities/Board';
+import { Repository } from '@/models/entities/Repository';
+import { Skill } from '@/models/entities/Skill';
 import { QuestionsActionType } from './actions.constants';
 
 export type QuestionsActionPayloadType = {
@@ -23,6 +27,10 @@ export type QuestionsResponseType = {
   questions: Question[];
   totalCount: number;
   users?: User[];
+  classes?: Class[];
+  boards?: Board[];
+  repositories?: Repository[];
+  skills?: Skill[];
   questionSets?: QuestionSet[];
   noCache?: boolean;
 };
@@ -66,6 +74,10 @@ export const getQuestionAction = (payload: { id: string }) => ({
 export const getQuestionCompletedAction = (payload: {
   question: Question;
   questionSets: QuestionSet[];
+  classes?: Class[];
+  boards?: Board[];
+  repositories?: Repository[];
+  skills?: Skill[];
 }) => ({
   type: QuestionsActionType.GET_QUESTION_COMPLETED,
   payload,

@@ -80,6 +80,15 @@ function* getListQuestionSetSaga(data: QuestionSetSagaPayloadType): any {
       getListQuestionSetCompletedAction({
         questionSets: response.result.question_sets,
         totalCount: response.result.meta.total,
+        boards: response.result.boards,
+        noCache: true,
+        classes: response.result.classes,
+        repositories: response.result.repositories,
+        skills: [
+          ...response.result.l1_skills,
+          ...response.result.l2_skills,
+          ...response.result.l3_skills,
+        ],
       })
     );
     yield put(

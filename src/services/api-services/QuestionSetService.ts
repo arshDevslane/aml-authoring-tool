@@ -1,6 +1,9 @@
 import { QuestionSet } from '@/models/entities/QuestionSet';
 import { QuestionSetCreateUpdatePayload } from '@/components/QuestionSet/QuestionSetListing/QuestionSetDetails/QuestionSetDetails';
 import { Board } from '@/models/entities/Board';
+import { Class } from '@/models/entities/Class';
+import { Repository } from '@/models/entities/Repository';
+import { Skill } from '@/models/entities/Skill';
 import { baseApiService } from './BaseApiService';
 
 class QuestionSetService {
@@ -26,6 +29,12 @@ class QuestionSetService {
     result: {
       boards: Board[];
       question_sets: QuestionSet[];
+      classes: Class[];
+
+      repositories: Repository[];
+      l1_skills: Skill[];
+      l2_skills: Skill[];
+      l3_skills: Skill[];
       meta: {
         offset: number;
         limit: number;

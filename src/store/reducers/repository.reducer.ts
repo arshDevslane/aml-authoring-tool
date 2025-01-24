@@ -2,7 +2,11 @@
 import produce from 'immer';
 import { Repository } from '@/models/entities/Repository';
 import { CacheAPIResponse } from '@/lib/utils';
-import { RepositoryActionType } from '../actions/actions.constants';
+import {
+  QuestionsActionType,
+  QuestionSetActionType,
+  RepositoryActionType,
+} from '../actions/actions.constants';
 import { RepositoryActionPayloadType } from '../actions/repository.action';
 
 export type RepositoryState = RepositoryActionPayloadType & {
@@ -41,23 +45,36 @@ export const repositoryReducer = (
         draft.isLoading = false;
 
         const filterKey = JSON.stringify(state.filters);
-        const repositoryMap = action.payload.repositories.reduce(
+        const repositoryMap = action.payload?.repositories?.reduce(
           (acc: any, repository: Repository) => ({
             ...acc,
             [repository.identifier]: repository,
           }),
           {} as Record<string, Repository>
         );
-
         draft.entities = { ...state.entities, ...repositoryMap };
         draft.cachedData[filterKey] = {
-          result: action.payload.repositories.map(
+          result: action.payload?.repositories?.map(
             (repository: Repository) => repository.identifier
           ),
           totalCount: action.payload.totalCount,
         };
         draft.latestCount = action.payload.totalCount;
         break;
+      case QuestionsActionType.GET_LIST_COMPLETED:
+      case QuestionSetActionType.GET_LIST_COMPLETED:
+      case QuestionsActionType.GET_QUESTION_COMPLETED: {
+        draft.isLoading = false;
+        const repositoryMap = action.payload?.repositories?.reduce(
+          (acc: any, repository: Repository) => ({
+            ...acc,
+            [repository.identifier]: repository,
+          }),
+          {} as Record<string, Repository>
+        );
+        draft.entities = { ...state.entities, ...repositoryMap };
+        break;
+      }
       case RepositoryActionType.GET_LIST_ERROR:
         draft.isLoading = false;
         draft.error = action.payload;
