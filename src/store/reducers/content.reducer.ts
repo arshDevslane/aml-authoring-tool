@@ -12,6 +12,7 @@ export type ContentState = ContentActionPayloadType & {
   actionInProgress: boolean;
   latestCount: number;
   error?: string;
+  isUpdating: boolean;
 };
 
 const initialState: ContentState = {
@@ -24,6 +25,7 @@ const initialState: ContentState = {
   cachedData: {},
   entities: {},
   actionInProgress: false,
+  isUpdating: false,
 };
 
 export const contentReducer = (
@@ -79,14 +81,33 @@ export const contentReducer = (
         draft.error = action.payload;
         break;
 
-      case ContentActionType.CREATE:
+      case ContentActionType.CREATE_CONTENT:
+      case ContentActionType.UPDATE_CONTENT:
         draft.actionInProgress = true;
         break;
-      case ContentActionType.CREATE_COMPLETED:
+      case ContentActionType.DELETE_CONTENT_COMPLETED:
+      case ContentActionType.CREATE_CONTENT_COMPLETED:
         draft.actionInProgress = false;
         draft.cachedData = {};
         draft.entities = {};
         break;
+
+      case ContentActionType.UPDATE_CONTENT_COMPLETED:
+        draft.actionInProgress = false;
+        draft.entities = {
+          ...state.entities,
+          [action.payload.result.content.identifier]:
+            action.payload.result.content,
+        };
+        break;
+      case ContentActionType.CREATE_CONTENT_ERROR:
+      case ContentActionType.UPDATE_CONTENT_ERROR: {
+        draft.isLoading = false;
+        draft.isUpdating = false;
+        draft.error = action.payload;
+        break;
+      }
+
       default:
         break;
     }

@@ -1,6 +1,12 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/interactive-supports-focus */
 import React from 'react';
-import { ChevronUp, FileText, Layers, User2 } from 'lucide-react';
+import {
+  ChevronUp,
+  FileText,
+  Layers,
+  TableOfContents,
+  User2,
+} from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { AuthContext } from '@/context/AuthContext';
@@ -35,6 +41,11 @@ const items = [
     title: 'Question Sets',
     url: '/app/question-sets',
     icon: Layers,
+  },
+  {
+    title: 'Content',
+    url: '/app/content',
+    icon: TableOfContents,
   },
 ];
 

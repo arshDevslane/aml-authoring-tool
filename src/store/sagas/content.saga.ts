@@ -3,20 +3,39 @@ import { all, call, put, select, takeLatest } from 'redux-saga/effects';
 import { contentService } from '@/services/api-services/ContentService';
 import { PaginationLimit } from '@/enums/tableEnums';
 import { toastService } from '@/services/ToastService';
+import { ContentCreateUpdatePayload } from '@/components/QuestionSetContentUploadForm/QuestionSetContentUploadForm';
 import {
   ContentActionPayloadType,
   createContentCompletedAction,
+  createContentErrorAction,
+  deleteContentCompletedAction,
   getContentByIdCompletedAction,
   getContentByIdErrorAction,
   getListContentAction,
   getListContentCompletedAction,
   getListContentErrorAction,
+  updateContentCompletedAction,
+  updateContentErrorAction,
 } from '../actions/content.actions';
 import { ContentActionType } from '../actions/actions.constants';
 import { AppState } from '../reducers';
 
 interface ContentSagaPayloadType extends SagaPayloadType {
   payload: ContentActionPayloadType;
+}
+
+interface CreateContentPayloadType extends SagaPayloadType {
+  payload: ContentCreateUpdatePayload;
+}
+interface UpdateContentPayloadType extends SagaPayloadType {
+  payload: {
+    contentId: string;
+    data: Partial<ContentCreateUpdatePayload>;
+  };
+}
+
+interface DeleteContentSagaPayloadType extends SagaPayloadType {
+  payload: { contentId: string };
 }
 
 function* getListContentSaga(data: ContentSagaPayloadType): any {
@@ -42,7 +61,7 @@ function* getListContentSaga(data: ContentSagaPayloadType): any {
 
     const response: Awaited<ReturnType<typeof contentService.getList>> =
       yield call(contentService.getList, {
-        ...filters,
+        filters,
         limit: PaginationLimit.PAGE_SIZE,
         offset: (pageNo - 1) * PaginationLimit.PAGE_SIZE,
       });
@@ -64,7 +83,6 @@ function* getListContentSaga(data: ContentSagaPayloadType): any {
 function* getContentByIdSaga(data: any): any {
   try {
     const { id } = data.payload;
-
     const response: Awaited<ReturnType<typeof contentService.getById>> =
       yield call(contentService.getById, id);
     yield put(getContentByIdCompletedAction(response));
@@ -77,12 +95,56 @@ function* getContentByIdSaga(data: any): any {
   }
 }
 
-function* createContentSaga(data: any): any {
+function* createContentSaga(data: CreateContentPayloadType): any {
   try {
-    const response: Awaited<ReturnType<typeof contentService.create>> =
-      yield call(contentService.create, data.payload);
+    const filters: ContentActionPayloadType['filters'] = yield select(
+      (state: AppState) => state.content.filters
+    );
+    const response = yield call(contentService.create, data.payload);
     yield put(createContentCompletedAction(response));
-    yield put(getListContentAction({ filters: { page_no: 1 } }));
+    toastService.showSuccess('Content created successfully');
+    yield put(getListContentAction({ filters }));
+  } catch (e: any) {
+    yield put(
+      createContentErrorAction(
+        (e?.errors && e.errors[0]?.message) || e?.message
+      )
+    );
+    toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
+  }
+}
+
+function* updateContentSaga(data: UpdateContentPayloadType): any {
+  try {
+    const response = yield call(contentService.update, data.payload);
+    yield put(updateContentCompletedAction(response));
+
+    toastService.showSuccess('Content updated successfully');
+  } catch (e: any) {
+    yield put(
+      updateContentErrorAction(
+        (e?.errors && e.errors[0]?.message) || e?.message
+      )
+    );
+    toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
+  }
+}
+
+function* deleteContentSaga(data: DeleteContentSagaPayloadType): any {
+  const { contentId } = data.payload;
+  try {
+    const filters: ContentActionPayloadType['filters'] = yield select(
+      (state: AppState) => state.content.filters
+    );
+
+    yield call(contentService.delete, contentId);
+    yield put(deleteContentCompletedAction());
+    toastService.showSuccess('Question Set deleted successfully');
+    yield put(
+      getListContentAction({
+        filters,
+      })
+    );
   } catch (e: any) {
     toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
   }
@@ -92,6 +154,8 @@ export function* contentSaga() {
   yield all([
     takeLatest(ContentActionType.GET_LIST, getListContentSaga),
     takeLatest(ContentActionType.GET_BY_ID, getContentByIdSaga),
-    takeLatest(ContentActionType.CREATE, createContentSaga),
+    takeLatest(ContentActionType.CREATE_CONTENT, createContentSaga),
+    takeLatest(ContentActionType.UPDATE_CONTENT, updateContentSaga),
+    takeLatest(ContentActionType.DELETE_CONTENT, deleteContentSaga),
   ]);
 }
