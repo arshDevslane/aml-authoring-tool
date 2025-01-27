@@ -14,7 +14,7 @@ import {
   isLoadingTranslationsSelector,
   translationSelector,
 } from '@/store/selectors/translation.selector';
-import { useField } from 'formik';
+import { useField, useFormikContext } from 'formik';
 import {
   getTranslationAction,
   removeTranslationAction,
@@ -48,6 +48,8 @@ const InputCompForAudioDesc = ({
   audioHash,
 }: InputCompForAudioDescProps) => {
   const dispatch = useDispatch();
+
+  const { validateField } = useFormikContext();
 
   const isLoadingTranslations = useSelector(isLoadingTranslationsSelector);
   const isLoadingTts = useSelector(isLoadingTtsSelector);
@@ -123,6 +125,13 @@ const InputCompForAudioDesc = ({
     setTranslatedClicked(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTranslatedClicked, setValue, translations[lang]]);
+
+  useEffect(() => {
+    if (!isLoadingTts) {
+      validateField(fieldName);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoadingTts]);
 
   return (
     <div key={lang} className='flex w-full flex-1 gap-2 items-top'>
