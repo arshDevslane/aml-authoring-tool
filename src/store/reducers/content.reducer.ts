@@ -18,7 +18,6 @@ export type ContentState = ContentActionPayloadType & {
 const initialState: ContentState = {
   isLoading: false,
   filters: {
-    search_query: '',
     page_no: 1,
   },
   latestCount: 0,
@@ -52,12 +51,15 @@ export const contentReducer = (
         );
 
         draft.entities = { ...state.entities, ...contentMap };
-        draft.cachedData[filterKey] = {
-          result: action.payload.contents.map(
-            (content: Content) => content.identifier
-          ),
-          totalCount: action.payload.totalCount,
-        };
+        if (action.payload.noCache) {
+          draft.cachedData[filterKey] = {
+            result: action.payload.contents.map(
+              (content: Content) => content.identifier
+            ),
+            totalCount: action.payload.totalCount,
+          };
+        }
+
         draft.latestCount = action.payload.totalCount;
         break;
       case ContentActionType.GET_LIST_ERROR:

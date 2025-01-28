@@ -1,4 +1,8 @@
 import { Content } from '@/models/entities/Content';
+import { Class } from '@/models/entities/Class';
+import { Board } from '@/models/entities/Board';
+import { Repository } from '@/models/entities/Repository';
+import { Skill } from '@/models/entities/Skill';
 import { ContentActionType } from './actions.constants';
 
 export type ContentActionPayloadType = {
@@ -10,12 +14,17 @@ export type ContentActionPayloadType = {
     l1_skill_id: string;
     l2_skill_id: string;
     l3_skill_id: string;
-  }> & { page_no: number };
+  }> & { page_no: number; sortOrder?: string; orderBy?: string };
 };
 
 export type ContentResponseType = {
   contents: Content[];
   totalCount: number;
+  classes?: Class[];
+  boards?: Board[];
+  repositories?: Repository[];
+  skills?: Skill[];
+  noCache?: boolean;
 };
 
 export const getListContentAction = (payload: ContentActionPayloadType) => ({

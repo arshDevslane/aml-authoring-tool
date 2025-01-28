@@ -6,6 +6,7 @@ import AmlListingFilterPopup from '@/shared-resources/AmlListingFilterPopup/AmlL
 import AmlTooltip from '@/shared-resources/AmlTooltip/AmlTooltip';
 import TableComponent from '@/shared-resources/TableComponent/TableComponent';
 import {
+  ContentActionPayloadType,
   deleteContentAction,
   getListContentAction,
 } from '@/store/actions/content.actions';
@@ -19,6 +20,7 @@ import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Circle, Pencil, Plus, Trash } from 'lucide-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { createSearchParams, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '../ui/button';
 import ContentFilters from './ContentFilters';
 import ContentListDetail from './ContentListDetail';
@@ -48,11 +50,27 @@ enum DialogTypes {
 }
 
 const ContentListing = () => {
+  const { pathname, search } = useLocation();
+  const params = new URLSearchParams(search);
+  const dispatch = useDispatch();
+  const navigateTo = useNavigate();
   const filters = useSelector(filtersContentSelector);
   const isContentLoading = useSelector(isLoadingContentSelector);
   const { result: content, totalCount } = useSelector(contentSelector);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  const [searchFilters, setSearchFilters] = useState(filters);
+  const [searchFilters, setSearchFilters] = useState<
+    Record<string, any> & { page_no: number }
+  >(() => {
+    const initialFilters: Record<string, any> & { page_no: number } = {
+      ...filters,
+      page_no: 1,
+    };
+    params.forEach((value, key) => {
+      initialFilters[key] = key === 'page_no' ? +value : value;
+    });
+    return initialFilters;
+  });
   const [openDialog, setOpenDialog] = useState<{
     dialog: DialogTypes | null;
     open: boolean;
@@ -63,16 +81,45 @@ const ContentListing = () => {
     contentId: null,
   });
 
-  const dispatch = useDispatch();
+  const updateURL = (updatedFilters: Record<string, any>) => {
+    navigateTo({
+      pathname,
+      search: `?${createSearchParams(
+        Object.entries(updatedFilters)?.map(([key, value]) => [
+          key,
+          value.toString(),
+        ]) as any
+      )}`,
+    });
+  };
 
   useEffect(() => {
-    dispatch(
-      getListContentAction({
-        filters: searchFilters,
-      })
-    );
+    if (!isInitialized) {
+      const urlFilters: Record<string, any> = {};
+      params.forEach((value, key) => {
+        urlFilters[key] = key === 'page_no' ? +value : value;
+      });
+
+      setSearchFilters((prevFilters) => ({
+        ...prevFilters,
+        ...urlFilters,
+      }));
+      setIsInitialized(true);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }
+  }, [search]);
+
+  useEffect(() => {
+    if (isInitialized) {
+      dispatch(
+        getListContentAction({
+          filters: searchFilters as ContentActionPayloadType['filters'],
+        })
+      );
+    }
+    updateURL(searchFilters);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchFilters]);
+  }, [searchFilters, isInitialized]);
 
   const columns: ColumnDef<Content>[] = useMemo(
     () => [

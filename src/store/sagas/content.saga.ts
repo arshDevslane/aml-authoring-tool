@@ -40,7 +40,12 @@ interface DeleteContentSagaPayloadType extends SagaPayloadType {
 
 function* getListContentSaga(data: ContentSagaPayloadType): any {
   try {
-    const { page_no: pageNo = 1, ...filters } = data.payload.filters;
+    const {
+      page_no: pageNo = 1,
+      sortOrder,
+      orderBy,
+      ...filters
+    } = data.payload.filters;
     const cachedData: AppState['content']['cachedData'][string] = yield select(
       (state: AppState) =>
         state.content.cachedData[JSON.stringify(data.payload.filters)]
@@ -62,6 +67,7 @@ function* getListContentSaga(data: ContentSagaPayloadType): any {
     const response: Awaited<ReturnType<typeof contentService.getList>> =
       yield call(contentService.getList, {
         filters,
+        ...(sortOrder && orderBy && { sort_by: [[orderBy, sortOrder]] }),
         limit: PaginationLimit.PAGE_SIZE,
         offset: (pageNo - 1) * PaginationLimit.PAGE_SIZE,
       });
@@ -69,6 +75,15 @@ function* getListContentSaga(data: ContentSagaPayloadType): any {
       getListContentCompletedAction({
         contents: response.result.contents,
         totalCount: response.result.meta.total,
+        boards: response.result.boards,
+        noCache: true,
+        classes: response.result.classes,
+        repositories: response.result.repositories,
+        skills: [
+          ...response.result.l1_skills,
+          ...response.result.l2_skills,
+          ...response.result.l3_skills,
+        ],
       })
     );
   } catch (e: any) {
