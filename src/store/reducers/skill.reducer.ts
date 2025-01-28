@@ -3,6 +3,7 @@ import produce from 'immer';
 import { CacheAPIResponse } from '@/lib/utils';
 import { Skill } from '@/models/entities/Skill';
 import {
+  ContentActionType,
   QuestionsActionType,
   QuestionSetActionType,
   SkillActionType,
@@ -62,6 +63,7 @@ export const skillReducer = (
         break;
       case QuestionsActionType.GET_LIST_COMPLETED:
       case QuestionSetActionType.GET_LIST_COMPLETED:
+      case ContentActionType.GET_LIST_COMPLETED:
       case QuestionsActionType.GET_QUESTION_COMPLETED: {
         draft.isLoading = false;
         const skillMap = action.payload?.skills?.reduce(

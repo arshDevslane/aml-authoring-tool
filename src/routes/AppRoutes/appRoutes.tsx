@@ -4,11 +4,13 @@ import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import QuestionSetDetailPage from '@/views/login/QuestionSetDetailPage';
 import QuestionsAddEditPage from '@/components/Questions/QuestionsAddEditPage';
+import ContentListing from '@/components/Content/ContentListing';
 
 export enum AppSubRoutes {
   QUESTIONS = 'questions',
   QUESTION_SETS = 'question-sets',
   QUESTION_SET = 'question-sets/:id',
+  CONTENT = 'content',
 }
 
 export enum CommonSubRoutes {
@@ -35,6 +37,7 @@ const AppRoutes: React.FC = () => (
       path={AppSubRoutes.QUESTION_SET}
       element={<QuestionSetDetailPage />}
     />
+    <Route path={AppSubRoutes.CONTENT} element={<ContentListing />} />
   </Routes>
 );
 
