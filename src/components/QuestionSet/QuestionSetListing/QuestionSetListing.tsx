@@ -93,7 +93,7 @@ const QuestionSetListing = () => {
       search: `?${createSearchParams(
         Object.entries(updatedFilters)?.map(([key, value]) => [
           key,
-          value.toString(),
+          value?.toString(),
         ]) as any
       )}`,
     });

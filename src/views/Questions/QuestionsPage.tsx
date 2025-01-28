@@ -26,7 +26,7 @@ const serializeFilters = (
   filters: Record<string, any>
 ): Record<string, string> =>
   Object.entries(filters)?.reduce((acc, [key, value]) => {
-    acc[key] = Array.isArray(value) ? value.join(',') : value.toString();
+    acc[key] = Array.isArray(value) ? value.join(',') : value?.toString();
     return acc;
   }, {} as Record<string, string>);
 
