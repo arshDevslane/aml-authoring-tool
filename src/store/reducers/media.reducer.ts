@@ -5,7 +5,7 @@ export type MediaState = {
   isLoadingSignedUrls: boolean;
   signedUrlsError?: string;
   signedUrls: Record<string, any>;
-
+  uploadProgress: Record<string, any>;
   isUploadingFiles: boolean;
   uploadError?: string;
 };
@@ -13,7 +13,7 @@ export type MediaState = {
 const mediaState: MediaState = {
   isLoadingSignedUrls: false,
   signedUrls: {},
-
+  uploadProgress: {}, // Add this
   isUploadingFiles: false,
 };
 
@@ -46,17 +46,27 @@ export const mediaReducer = (state: MediaState = mediaState, action: any) =>
         break;
       case MediaActionType.UPLOAD_COMPLETED:
         draft.isUploadingFiles = false;
+        draft.uploadProgress = {};
         break;
       case MediaActionType.UPLOAD_ERROR:
         draft.isUploadingFiles = false;
+        draft.uploadProgress = {};
         draft.uploadError = action.payload;
         break;
 
+      case MediaActionType.UPLOAD_PROGRESS: {
+        draft.uploadProgress = {
+          ...state.uploadProgress,
+          [action.payload.fileName]: action.payload.progress,
+        };
+        break;
+      }
       case MediaActionType.RESET_STATE:
         draft.isLoadingSignedUrls = false;
         draft.signedUrls = {};
         draft.signedUrlsError = '';
         draft.isUploadingFiles = false;
+        draft.uploadProgress = {};
         draft.uploadError = '';
         break;
       default:

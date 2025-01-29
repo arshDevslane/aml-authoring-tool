@@ -128,6 +128,7 @@ export enum MediaActionType {
   UPLOAD_ERROR = 'media/upload/error',
 
   RESET_STATE = 'media/resetState',
+  UPLOAD_PROGRESS = 'UPLOAD_PROGRESS',
 }
 
 // translations

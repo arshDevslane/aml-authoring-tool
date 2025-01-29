@@ -11,6 +11,7 @@ import {
   isUploadInProgressSelector,
   presignedUrlsSelector,
   uploadErrorSelector,
+  uploadProgressSelector,
 } from '@/store/selectors/media.selector';
 import FileUpload from '../FileUpload/FileUpload';
 
@@ -36,7 +37,7 @@ const MediaUpload = ({
 
   const isGeneratingPresignedUrls = useSelector(isLoadingPresignedUrlsSelector);
   const isUploadInProgress = useSelector(isUploadInProgressSelector);
-
+  const uploadProgress = useSelector(uploadProgressSelector);
   const presignedUrls = useSelector(presignedUrlsSelector);
   const uploadError = useSelector(uploadErrorSelector);
 
@@ -91,6 +92,7 @@ const MediaUpload = ({
           value={value}
           setValue={setValue}
           acceptedFiles={acceptedFiles}
+          uploadProgress={uploadProgress}
         />
         <Button
           type='button'

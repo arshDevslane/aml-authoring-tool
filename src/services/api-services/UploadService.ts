@@ -9,7 +9,7 @@ class UploadService {
   async uploadFile(data: {
     signedUrl: string;
     file: any;
-    onUploadProgress?: any;
+    onUploadProgress?: (progressEvent: ProgressEvent) => void;
   }) {
     return baseApiService.put(data.signedUrl, data.file, {
       headers: {
@@ -21,7 +21,7 @@ class UploadService {
       } as unknown as AxiosRequestHeaders,
       extras: {
         useAuth: false,
-        requestId: data.file.uid,
+        requestId: data.file.name,
       },
       onUploadProgress: data?.onUploadProgress,
     });
