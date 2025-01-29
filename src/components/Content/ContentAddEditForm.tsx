@@ -39,19 +39,20 @@ import {
 import { getMultiLangFormikInitialValues } from '@/utils/helpers/helper';
 import { Formik } from 'formik';
 import React, { useEffect } from 'react';
-import ReactPlayer from 'react-player';
 import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
+import AMLVideoPlayer from '../AMLVideoPlayer';
 
 type ContentDetailsProps = {
   onClose: () => void;
   contentId: string | null;
 };
 
-const ContentListDetail = ({ onClose, contentId }: ContentDetailsProps) => {
+const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
   const dispatch = useDispatch();
   const allContent = useSelector(allContentSelector);
   const content = allContent[contentId!];
+
   const preSelectedBoards = useSelector(
     getAllBoardsSelector([content?.taxonomy?.board?.identifier])
   );
@@ -299,19 +300,8 @@ const ContentListDetail = ({ onClose, contentId }: ContentDetailsProps) => {
             supportedLanguages={supportedLanguages}
           />
           <div>
-            {content?.media?.length && (
-              <div className='flex flex-col gap-4'>
-                {content?.media?.map((video) => (
-                  <ReactPlayer
-                    key={video.src}
-                    url={video.url}
-                    controls
-                    width='90%'
-                    height='80%'
-                    className='rounded-lg overflow-hidden'
-                  />
-                ))}
-              </div>
+            {!!content?.media?.length && (
+              <AMLVideoPlayer videos={content.media} />
             )}
             <MediaUpload
               onUploadComplete={(data) => {
@@ -353,4 +343,4 @@ const ContentListDetail = ({ onClose, contentId }: ContentDetailsProps) => {
   );
 };
 
-export default ContentListDetail;
+export default ContentAddEditForm;

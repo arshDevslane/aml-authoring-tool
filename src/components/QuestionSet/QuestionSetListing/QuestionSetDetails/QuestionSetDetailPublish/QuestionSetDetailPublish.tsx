@@ -178,6 +178,14 @@ const QuestionSetDetailPublish = ({
         <div className='flex gap-3'>
           <Button
             size='lg'
+            variant='outline'
+            onClick={() => dispatch(navigateTo('/app/question-sets'))}
+            disabled={isActionInProgress}
+          >
+            Cancel
+          </Button>
+          <Button
+            size='lg'
             disabled={
               isActionInProgress ||
               !(
@@ -190,14 +198,6 @@ const QuestionSetDetailPublish = ({
             onClick={handleSaveQuestionSet}
           >
             Save
-          </Button>
-          <Button
-            size='lg'
-            variant='outline'
-            onClick={() => dispatch(navigateTo('/app/question-sets'))}
-            disabled={isActionInProgress}
-          >
-            Cancel
           </Button>
         </div>
         {questionSet?.status === 'draft' && (

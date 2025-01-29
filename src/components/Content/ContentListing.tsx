@@ -17,14 +17,14 @@ import {
 } from '@/store/selectors/content.selector';
 import { convertToDate, toReadableFormat } from '@/utils/helpers/helper';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { Circle, Plus, Trash } from 'lucide-react';
+import { Circle, Pencil, Plus, Trash } from 'lucide-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSearchParams, useLocation, useNavigate } from 'react-router-dom';
 import cx from 'classnames';
 import { Button } from '../ui/button';
 import ContentFilters from './ContentFilters';
-import ContentListDetail from './ContentAddEditForm';
+import ContentAddEditForm from './ContentAddEditForm';
 
 const coloredDot = (info: CellContext<Content, unknown>) => {
   const status = info.getValue();
@@ -181,7 +181,7 @@ const ContentListing = () => {
         // eslint-disable-next-line react/no-unstable-nested-components
         cell: ({ row }) => (
           <div className='flex gap-5 items-center justify-center'>
-            {/* <AmlTooltip tooltip='Edit'>
+            <AmlTooltip tooltip='Edit'>
               <Pencil
                 className='h-5 w-5 hover:fill-slate-400 cursor-pointer'
                 onClick={() =>
@@ -192,7 +192,7 @@ const ContentListing = () => {
                   })
                 }
               />
-            </AmlTooltip> */}
+            </AmlTooltip>
             <AmlTooltip tooltip='Delete'>
               <Trash
                 data-disabled={!row.original.is_active}
@@ -273,7 +273,7 @@ const ContentListing = () => {
           }
         >
           <DialogContent className='max-w-[80%] max-h-[95%] overflow-y-auto'>
-            <ContentListDetail
+            <ContentAddEditForm
               contentId={openDialog.contentId}
               onClose={() =>
                 setOpenDialog({
