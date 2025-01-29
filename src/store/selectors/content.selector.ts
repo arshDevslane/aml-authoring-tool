@@ -29,3 +29,12 @@ export const isContentActionInProgressSelector = createSelector(
   [contentState],
   (state: ContentState) => state.actionInProgress
 );
+export const filtersContentSelector = createSelector(
+  [contentState],
+  (state: ContentState) => state.filters
+);
+
+export const allContentSelector = createSelector(
+  [contentState],
+  (state: ContentState) => state.entities
+);

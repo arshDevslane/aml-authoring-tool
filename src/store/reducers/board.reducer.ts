@@ -4,6 +4,7 @@ import { CacheAPIResponse } from '@/lib/utils';
 import { Board } from '@/models/entities/Board';
 import {
   BoardActionType,
+  ContentActionType,
   QuestionsActionType,
   QuestionSetActionType,
 } from '../actions/actions.constants';
@@ -64,6 +65,7 @@ export const boardReducer = (
         break;
       case QuestionsActionType.GET_LIST_COMPLETED:
       case QuestionSetActionType.GET_LIST_COMPLETED:
+      case ContentActionType.GET_LIST_COMPLETED:
       case QuestionsActionType.GET_QUESTION_COMPLETED: {
         draft.isLoading = false;
 

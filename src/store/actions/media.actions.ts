@@ -38,3 +38,8 @@ export const getPresignedUrlErrorAction = (payload: string) => ({
 export const resetMediaUploadStateAction = () => ({
   type: MediaActionType.RESET_STATE,
 });
+
+export const uploadProgressAction = (fileName: string, progress: number) => ({
+  type: MediaActionType.UPLOAD_PROGRESS,
+  payload: { fileName, progress },
+});

@@ -3,6 +3,7 @@ import produce from 'immer';
 import { Repository } from '@/models/entities/Repository';
 import { CacheAPIResponse } from '@/lib/utils';
 import {
+  ContentActionType,
   QuestionsActionType,
   QuestionSetActionType,
   RepositoryActionType,
@@ -63,6 +64,7 @@ export const repositoryReducer = (
         break;
       case QuestionsActionType.GET_LIST_COMPLETED:
       case QuestionSetActionType.GET_LIST_COMPLETED:
+      case ContentActionType.GET_LIST_COMPLETED:
       case QuestionsActionType.GET_QUESTION_COMPLETED: {
         draft.isLoading = false;
         const repositoryMap = action.payload?.repositories?.reduce(

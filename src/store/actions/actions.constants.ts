@@ -106,8 +106,16 @@ export enum ContentActionType {
   GET_BY_ID_COMPLETED = 'content/getById/completed',
   GET_BY_ID_ERROR = 'content/getById/error',
 
-  CREATE = 'content/create',
-  CREATE_COMPLETED = 'content/create/completed',
+  CREATE_CONTENT = 'create/create',
+  CREATE_CONTENT_COMPLETED = 'create/content/completed',
+  CREATE_CONTENT_ERROR = 'create/content/error',
+
+  UPDATE_CONTENT = 'update/content',
+  UPDATE_CONTENT_COMPLETED = 'update/content/completed',
+  UPDATE_CONTENT_ERROR = 'update/content/error',
+
+  DELETE_CONTENT = 'content/delete',
+  DELETE_CONTENT_COMPLETED = 'content/delete/completed',
 }
 
 export enum MediaActionType {
@@ -120,6 +128,7 @@ export enum MediaActionType {
   UPLOAD_ERROR = 'media/upload/error',
 
   RESET_STATE = 'media/resetState',
+  UPLOAD_PROGRESS = 'UPLOAD_PROGRESS',
 }
 
 // translations

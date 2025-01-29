@@ -968,31 +968,31 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
               />
             </div>
 
-          <MultiLangFormikInput
-            name='name'
-            label='Question text'
-            supportedLanguages={supportedLanguages}
-            required={false}
-          />
-          <MultiLangFormikInput
-            name='description'
-            label='Description'
-            supportedLanguages={supportedLanguages}
-          />
-          <MultiLangFormikInputForAudioDesc
-            name='question_audio_description'
-            label='Text for Audio Description'
-            audioRecords={audioRecords as any}
-          />
-          <div className='flex w-full gap-6 items-start'>
-            <FormikInput
-              name='benchmark_time'
-              label='Benchmark Time (seconds)'
-              type='string'
-              required
+            <MultiLangFormikInput
+              name='name'
+              label='Question text'
+              supportedLanguages={supportedLanguages}
+              required={false}
             />
-            <FormikInput name='gradient' label='Gradient' type='string' />
-          </div>
+            <MultiLangFormikInput
+              name='description'
+              label='Description'
+              supportedLanguages={supportedLanguages}
+            />
+            <MultiLangFormikInputForAudioDesc
+              name='question_audio_description'
+              label='Text for Audio Description'
+              audioRecords={audioRecords as any}
+            />
+            <div className='flex w-full gap-6 items-start'>
+              <FormikInput
+                name='benchmark_time'
+                label='Benchmark Time (seconds)'
+                type='string'
+                required
+              />
+              <FormikInput name='gradient' label='Gradient' type='string' />
+            </div>
 
             {/* Conditionally render the question body */}
             <div className='col-span-2'>

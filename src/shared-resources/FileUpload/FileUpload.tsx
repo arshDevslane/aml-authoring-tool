@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { X } from 'lucide-react';
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
 
@@ -7,6 +8,7 @@ interface FileUploadProps {
   value: File[];
   setValue: (files: File[]) => void;
   acceptedFiles?: any;
+  uploadProgress?: Record<string, number>;
 }
 
 const FileUpload: React.FC<FileUploadProps> = ({
@@ -14,6 +16,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
   value,
   setValue,
   acceptedFiles,
+  uploadProgress = {},
 }) => {
   // Restrict file types to only images and videos
   const acceptedFileTypes = {
@@ -34,6 +37,10 @@ const FileUpload: React.FC<FileUploadProps> = ({
     accept: acceptedFiles ?? acceptedFileTypes,
     multiple,
   });
+
+  const removeFile = (fileName: string) => {
+    setValue(value.filter((file) => file.name !== fileName));
+  };
 
   return (
     <div
@@ -56,10 +63,23 @@ const FileUpload: React.FC<FileUploadProps> = ({
         {value?.length > 0 &&
           value.map((file) => (
             <div
-              className='font-semibold py-1 px-3 rounded-md border-2 my-1 bg-primary/30 border-input'
+              className='flex items-center justify-between font-semibold py-1 px-3 rounded-md border-2 my-1 bg-primary/30 border-input'
               key={file.name}
             >
-              {file.name}
+              <span>{file.name}</span>
+              <div className='flex items-center gap-2'>
+                {uploadProgress[file.name] !== undefined && (
+                  <span className='text-sm'>{uploadProgress[file.name]}%</span>
+                )}
+                <X
+                  type='button'
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent triggering the drop zone
+                    removeFile(file.name);
+                  }}
+                  className='text-red-500 hover:text-red-700'
+                />
+              </div>
             </div>
           ))}
       </div>

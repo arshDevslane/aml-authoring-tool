@@ -23,3 +23,8 @@ export const uploadErrorSelector = createSelector(
   [mediaState],
   (state: MediaState) => state.uploadError
 );
+
+export const uploadProgressSelector = createSelector(
+  [mediaState],
+  (state: MediaState) => state.uploadProgress
+);

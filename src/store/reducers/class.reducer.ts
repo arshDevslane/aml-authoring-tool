@@ -5,6 +5,7 @@ import { Class } from '@/models/entities/Class';
 import { ClassActionPayloadType } from '../actions/class.action';
 import {
   ClassActionType,
+  ContentActionType,
   QuestionsActionType,
   QuestionSetActionType,
 } from '../actions/actions.constants';
@@ -63,6 +64,7 @@ export const classReducer = (
         break;
       case QuestionsActionType.GET_LIST_COMPLETED:
       case QuestionSetActionType.GET_LIST_COMPLETED:
+      case ContentActionType.GET_LIST_COMPLETED:
       case QuestionsActionType.GET_QUESTION_COMPLETED: {
         const classMap = action.payload?.classes?.reduce(
           (acc: any, classItem: Class) => ({

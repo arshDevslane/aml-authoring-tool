@@ -1,3 +1,4 @@
+import AMLVideoPlayer from '@/components/AMLVideoPlayer';
 import { Content } from '@/models/entities/Content';
 import { InfiniteSelect } from '@/shared-resources/InfiniteSelect/InfiniteSelect';
 import {
@@ -9,9 +10,8 @@ import {
   isLoadingContentSelector,
 } from '@/store/selectors/content.selector';
 import { createEntitySelectorFactory } from '@/store/selectors/root.selectors';
-import { ChevronLeft, ChevronRight, Pencil } from 'lucide-react';
+import { Pencil } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import ReactPlayer from 'react-player';
 import { useDispatch, useSelector } from 'react-redux';
 
 type QuestionSetContentComponentPropsProps = {
@@ -45,18 +45,6 @@ const QuestionSetContentComponent = ({
     setSelectedContentId(contentId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contentId, selectedContent?.identifier]);
-
-  const handleNextClick = () => {
-    if (currentVideoIndex < (selectedContent?.media?.length ?? 0) - 1) {
-      setCurrentVideoIndex((prevIndex) => prevIndex + 1);
-    }
-  };
-
-  const handleBackClick = () => {
-    if (currentVideoIndex > 0) {
-      setCurrentVideoIndex((prevIndex) => prevIndex - 1);
-    }
-  };
 
   return (
     <div className='flex flex-col px-1 over'>
@@ -98,42 +86,11 @@ const QuestionSetContentComponent = ({
           />
         </div>
       )}
-      {selectedContent && (
-        <div className='flex flex-col gap-3 mt-5'>
-          <div className='flex gap-3 w-full'>
-            <div className='flex flex-1 justify-center items-center'>
-              <div className='flex items-center justify-between w-full h-full'>
-                <button
-                  className='text-gray-600 hover:text-gray-800 disabled:opacity-50'
-                  onClick={handleBackClick}
-                  disabled={currentVideoIndex === 0}
-                >
-                  <ChevronLeft className='w-10 h-10' />
-                </button>
-                <div className='flex-1 h-full'>
-                  <ReactPlayer
-                    url={selectedContent?.media?.[currentVideoIndex]?.url}
-                    controls
-                    width='100%'
-                    height='100%'
-                    className='rounded-lg overflow-hidden'
-                  />
-                </div>
-
-                <button
-                  className='text-gray-600 hover:text-gray-800 disabled:opacity-50'
-                  onClick={handleNextClick}
-                  disabled={
-                    currentVideoIndex ===
-                    (selectedContent?.media.length ?? 0) - 1
-                  }
-                >
-                  <ChevronRight className='w-10 h-10' />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+      {selectedContent?.media?.length && (
+        <AMLVideoPlayer
+          videos={selectedContent?.media}
+          initialIndex={currentVideoIndex}
+        />
       )}
     </div>
   );
