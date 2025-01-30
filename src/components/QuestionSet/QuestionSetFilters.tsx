@@ -73,6 +73,7 @@ const QuestionSetFilters = ({
       enableReinitialize
       onSubmit={(values) => {
         setSearchFilters({
+          ...searchFilters,
           ..._.omitBy(values, (v) => !v),
           page_no: 1,
         });
@@ -224,9 +225,14 @@ const QuestionSetFilters = ({
                     type='button'
                     variant='outline'
                     onClick={() => {
-                      setSearchFilters({
+                      setSearchFilters((prevFilters: any) => ({
                         page_no: 1,
-                      });
+                        ...(prevFilters.orderBy &&
+                          prevFilters.sortOrder && {
+                            orderBy: prevFilters.orderBy,
+                            sortOrder: prevFilters.sortOrder,
+                          }),
+                      }));
                     }}
                   >
                     Reset

@@ -15,7 +15,12 @@ import {
   filtersContentSelector,
   isLoadingContentSelector,
 } from '@/store/selectors/content.selector';
-import { convertToDate, toReadableFormat } from '@/utils/helpers/helper';
+import {
+  clearQueryParams,
+  convertToDate,
+  removeNullOrUndefinedValues,
+  toReadableFormat,
+} from '@/utils/helpers/helper';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Circle, Pencil, Plus, Trash } from 'lucide-react';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -82,12 +87,7 @@ const ContentListing = () => {
   const updateURL = (updatedFilters: Record<string, any>) => {
     navigateTo({
       pathname,
-      search: `?${createSearchParams(
-        Object.entries(updatedFilters)?.map(([key, value]) => [
-          key,
-          value?.toString(),
-        ]) as any
-      )}`,
+      search: `?${createSearchParams(clearQueryParams(updatedFilters))}`,
     });
   };
 
@@ -111,7 +111,9 @@ const ContentListing = () => {
     if (isInitialized) {
       dispatch(
         getListContentAction({
-          filters: searchFilters as ContentActionPayloadType['filters'],
+          filters: removeNullOrUndefinedValues(
+            searchFilters
+          ) as ContentActionPayloadType['filters'],
         })
       );
     }

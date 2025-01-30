@@ -77,6 +77,7 @@ const ContentFilters = ({
       }}
       onSubmit={(values) => {
         setSearchFilters({
+          ...searchFilters,
           ..._.omitBy(values, (v) => isValueEmpty(v)),
           page_no: 1,
         });
@@ -254,9 +255,14 @@ const ContentFilters = ({
                     type='button'
                     variant='outline'
                     onClick={() => {
-                      setSearchFilters({
+                      setSearchFilters((prevFilters: any) => ({
                         page_no: 1,
-                      });
+                        ...(prevFilters.orderBy &&
+                          prevFilters.sortOrder && {
+                            orderBy: prevFilters.orderBy,
+                            sortOrder: prevFilters.sortOrder,
+                          }),
+                      }));
                     }}
                   >
                     Reset
