@@ -9,15 +9,18 @@ import {
   ContentActionPayloadType,
   deleteContentAction,
   getListContentAction,
+  publishContentAction,
 } from '@/store/actions/content.actions';
 import {
   contentSelector,
   filtersContentSelector,
+  isDeletingContentSelector,
   isLoadingContentSelector,
+  isPublishingContentSelector,
 } from '@/store/selectors/content.selector';
 import { convertToDate, toReadableFormat } from '@/utils/helpers/helper';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { Circle, Pencil, Plus, Trash } from 'lucide-react';
+import { Circle, Loader2, Pencil, Plus, Send, Trash } from 'lucide-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSearchParams, useLocation, useNavigate } from 'react-router-dom';
@@ -53,8 +56,12 @@ const ContentListing = () => {
   const dispatch = useDispatch();
   const navigateTo = useNavigate();
   const filters = useSelector(filtersContentSelector);
+  const isPublishing = useSelector(isPublishingContentSelector);
+  const isDeleting = useSelector(isDeletingContentSelector);
   const isContentLoading = useSelector(isLoadingContentSelector);
   const { result: contents, totalCount } = useSelector(contentSelector);
+  const [publishingId, setPublishingId] = useState<string>();
+  const [deletingId, setDeletingId] = useState<string>();
   const [isInitialized, setIsInitialized] = useState(false);
 
   const [searchFilters, setSearchFilters] = useState<
@@ -79,6 +86,11 @@ const ContentListing = () => {
     contentId: null,
   });
 
+  const publishContent = (id: string) => {
+    setPublishingId(id);
+    dispatch(publishContentAction(id));
+  };
+
   const updateURL = (updatedFilters: Record<string, any>) => {
     navigateTo({
       pathname,
@@ -90,7 +102,6 @@ const ContentListing = () => {
       )}`,
     });
   };
-
   useEffect(() => {
     if (!isInitialized) {
       const urlFilters: Record<string, any> = {};
@@ -123,7 +134,7 @@ const ContentListing = () => {
     () => [
       {
         accessorKey: 'status',
-        header: 'Status',
+        header: 'Live',
         cell: coloredDot,
       },
       {
@@ -181,6 +192,25 @@ const ContentListing = () => {
         // eslint-disable-next-line react/no-unstable-nested-components
         cell: ({ row }) => (
           <div className='flex gap-5 items-center justify-center'>
+            {isPublishing && row.id === publishingId ? (
+              <Loader2 className='animate-spin' />
+            ) : (
+              <span
+                className={cx(
+                  'm-0 p-0 h-5 w-5',
+                  row.original.status !== 'draft'
+                    ? 'invisible pointer-events-none'
+                    : ''
+                )}
+              >
+                <AmlTooltip tooltip='Publish'>
+                  <Send
+                    className='h-5 w-5 hover:fill-slate-400 cursor-pointer'
+                    onClick={() => publishContent(row.id)}
+                  />
+                </AmlTooltip>
+              </span>
+            )}
             <AmlTooltip tooltip='Edit'>
               <Pencil
                 className='h-5 w-5 hover:fill-slate-400 cursor-pointer'
@@ -193,25 +223,30 @@ const ContentListing = () => {
                 }
               />
             </AmlTooltip>
-            <AmlTooltip tooltip='Delete'>
-              <Trash
-                data-disabled={!row.original.is_active}
-                className='h-5 w-5 fill-red-500 hover:text-red-600 text-red-500 cursor-pointer [data-disabled=true]:cursor-not-allowed'
-                onClick={() =>
-                  setOpenDialog({
-                    dialog: DialogTypes.DELETE,
-                    open: true,
-                    contentId: row.id,
-                  })
-                }
-              />
-            </AmlTooltip>
+            {isDeleting && row.id === deletingId ? (
+              <Loader2 className='animate-spin' />
+            ) : (
+              <AmlTooltip tooltip='Delete'>
+                <Trash
+                  data-disabled={!row.original.is_active}
+                  className='h-5 w-5 fill-red-500 hover:text-red-600 text-red-500 cursor-pointer [data-disabled=true]:cursor-not-allowed'
+                  onClick={() => {
+                    setOpenDialog({
+                      dialog: DialogTypes.DELETE,
+                      open: true,
+                      contentId: row.id,
+                    });
+                    setDeletingId(row.id);
+                  }}
+                />
+              </AmlTooltip>
+            )}
           </div>
         ),
         enableSorting: false,
       },
     ],
-    []
+    [isPublishing, isDeleting]
   );
   const tableInstance = useTable({
     columns,
