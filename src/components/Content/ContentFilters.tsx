@@ -76,11 +76,15 @@ const ContentFilters = ({
         status: searchFilters.status ?? '',
       }}
       onSubmit={(values) => {
-        setSearchFilters({
-          ...searchFilters,
+        setSearchFilters((prevFilters: any) => ({
+          ...(prevFilters.orderBy &&
+            prevFilters.sortOrder && {
+              orderBy: prevFilters.orderBy,
+              sortOrder: prevFilters.sortOrder,
+            }),
           ..._.omitBy(values, (v) => isValueEmpty(v)),
           page_no: 1,
-        });
+        }));
       }}
     >
       {(formik) => {

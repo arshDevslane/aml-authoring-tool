@@ -72,11 +72,15 @@ const QuestionSetFilters = ({
       }}
       enableReinitialize
       onSubmit={(values) => {
-        setSearchFilters({
-          ...searchFilters,
+        setSearchFilters((prevFilters: any) => ({
+          ...(prevFilters.orderBy &&
+            prevFilters.sortOrder && {
+              orderBy: prevFilters.orderBy,
+              sortOrder: prevFilters.sortOrder,
+            }),
           ..._.omitBy(values, (v) => !v),
           page_no: 1,
-        });
+        }));
       }}
     >
       {(formik) => {
