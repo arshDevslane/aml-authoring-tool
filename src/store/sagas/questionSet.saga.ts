@@ -99,11 +99,9 @@ function* getListQuestionSetSaga(data: QuestionSetSagaPayloadType): any {
       })
     );
   } catch (e: any) {
-    yield put(
-      getListQuestionSetErrorAction(
-        (e?.errors && e.errors[0]?.message) || e?.message
-      )
-    );
+    const errorMessage = e?.response?.data?.error?.message;
+    toastService.showError(errorMessage);
+    yield put(getListQuestionSetErrorAction(errorMessage));
   }
 }
 
@@ -123,7 +121,7 @@ function* deleteQuestionSetSaga(data: DeleteQuestionSetSagaPayloadType): any {
       })
     );
   } catch (e: any) {
-    toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
+    toastService.showError(e?.response?.data?.error?.message);
   }
 }
 
@@ -139,11 +137,9 @@ function* getQuestionSetSaga(data: any): any {
       })
     );
   } catch (e: any) {
-    yield put(
-      getQuestionSetErrorAction(
-        (e?.errors && e.errors[0]?.message) || e?.message
-      )
-    );
+    const errorMessage = e?.response?.data?.error?.message;
+    toastService.showError(errorMessage);
+    yield put(getQuestionSetErrorAction(e?.response?.data?.error?.message));
   }
 }
 
@@ -162,7 +158,8 @@ function* createQuestionSetSaga(data: CreateQuestionSetPayloadType): any {
       })
     );
   } catch (e: any) {
-    toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
+    const errorMessage = e?.response?.data?.error?.message;
+    toastService.showError(errorMessage);
   }
 }
 
@@ -173,7 +170,8 @@ function* updateQuestionSetSaga(data: UpdateQuestionSetPayloadType): any {
 
     toastService.showSuccess('Question Set updated successfully');
   } catch (e: any) {
-    toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
+    const errorMessage = e?.response?.data?.error?.message;
+    toastService.showError(errorMessage);
   }
 }
 
@@ -187,7 +185,7 @@ function* publishQuestionSetSaga(data: DeleteQuestionSetSagaPayloadType): any {
 
     toastService.showSuccess('Question Set published successfully');
   } catch (e: any) {
-    toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
+    toastService.showError(e?.response?.data?.error?.message);
   }
 }
 

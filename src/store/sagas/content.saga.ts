@@ -90,11 +90,9 @@ function* getListContentSaga(data: ContentSagaPayloadType): any {
       })
     );
   } catch (e: any) {
-    yield put(
-      getListContentErrorAction(
-        (e?.errors && e.errors[0]?.message) || e?.message
-      )
-    );
+    const errorMessage = e?.response?.data?.error?.message;
+    toastService.showError(errorMessage);
+    yield put(getListContentErrorAction(errorMessage));
   }
 }
 
@@ -105,11 +103,9 @@ function* getContentByIdSaga(data: any): any {
       yield call(contentService.getById, id);
     yield put(getContentByIdCompletedAction(response));
   } catch (e: any) {
-    yield put(
-      getContentByIdErrorAction(
-        (e?.errors && e.errors[0]?.message) || e?.message
-      )
-    );
+    const errorMessage = e?.response?.data?.error?.message;
+    toastService.showError(errorMessage);
+    yield put(getContentByIdErrorAction(errorMessage));
   }
 }
 
@@ -123,12 +119,9 @@ function* createContentSaga(data: CreateContentPayloadType): any {
     toastService.showSuccess('Content created successfully');
     yield put(getListContentAction({ filters }));
   } catch (e: any) {
-    yield put(
-      createContentErrorAction(
-        (e?.errors && e.errors[0]?.message) || e?.message
-      )
-    );
-    toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
+    const errorMessage = e?.response?.data?.error?.message;
+    yield put(createContentErrorAction(errorMessage));
+    toastService.showError(errorMessage);
   }
 }
 
@@ -139,12 +132,9 @@ function* updateContentSaga(data: UpdateContentPayloadType): any {
 
     toastService.showSuccess('Content updated successfully');
   } catch (e: any) {
-    yield put(
-      updateContentErrorAction(
-        (e?.errors && e.errors[0]?.message) || e?.message
-      )
-    );
-    toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
+    const errorMessage = e?.response?.data?.error?.message;
+    yield put(updateContentErrorAction(errorMessage));
+    toastService.showError(errorMessage);
   }
 }
 
@@ -164,12 +154,9 @@ function* deleteContentSaga(data: DeleteContentSagaPayloadType): any {
       })
     );
   } catch (e: any) {
-    toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
-    yield put(
-      deleteContentErrorAction(
-        (e?.errors && e.errors[0]?.message) || e?.message
-      )
-    );
+    const errorMessage = e?.response?.data?.error?.message;
+    toastService.showError(errorMessage);
+    yield put(deleteContentErrorAction(errorMessage));
   }
 }
 
@@ -187,12 +174,9 @@ function* publishContentSaga(data: DeleteContentSagaPayloadType): any {
 
     toastService.showSuccess('Content published successfully');
   } catch (e: any) {
-    yield put(
-      publishContentErrorAction(
-        (e?.errors && e.errors[0]?.message) || e?.message
-      )
-    );
-    toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
+    const errorMessage = e?.response?.data?.error?.message;
+    yield put(publishContentErrorAction(errorMessage));
+    toastService.showError(errorMessage);
   }
 }
 

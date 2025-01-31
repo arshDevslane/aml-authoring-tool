@@ -86,12 +86,9 @@ function* getListQuestionsSaga(data: QuestionsSagaPayloadType): any {
       })
     );
   } catch (e: any) {
-    yield put(
-      getListQuestionsErrorAction(
-        (e?.errors && e.errors[0]?.message) || e?.message
-      )
-    );
-    toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
+    const errorMessage = e?.response?.data?.error?.message;
+    yield put(getListQuestionsErrorAction(errorMessage));
+    toastService.showError(errorMessage);
   }
 }
 
@@ -111,12 +108,9 @@ function* deleteQuestionSaga(data: DeleteQuestionSagaPayloadType): any {
       })
     );
   } catch (e: any) {
-    toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
-    yield put(
-      deleteQuestionErrorAction(
-        (e?.errors && e.errors[0]?.message) || e?.message
-      )
-    );
+    const errorMessage = e?.response?.data?.error?.message;
+    toastService.showError(errorMessage);
+    yield put(deleteQuestionErrorAction(errorMessage));
   }
 }
 
@@ -141,10 +135,9 @@ function* getQuestionSaga(data: any): any {
     );
     yield put(getAudioListAction({ questionId: id }));
   } catch (e: any) {
-    yield put(
-      getQuestionErrorAction((e?.errors && e.errors[0]?.message) || e?.message)
-    );
-    toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
+    const errorMessage = e?.response?.data?.error?.message;
+    yield put(getQuestionErrorAction(errorMessage));
+    toastService.showError(errorMessage);
   }
 }
 
@@ -162,12 +155,9 @@ function* createQuestionSaga(data: any): any {
     toastService.showSuccess('Question created successfully');
     yield put(navigateTo('/app/questions'));
   } catch (e: any) {
-    yield put(
-      createQuestionErrorAction(
-        (e?.errors && e.errors[0]?.message) || e?.message
-      )
-    );
-    toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
+    const errorMessage = e?.response?.data?.error?.message;
+    yield put(createQuestionErrorAction(errorMessage));
+    toastService.showError(errorMessage);
   }
 }
 
@@ -188,12 +178,9 @@ function* updateQuestionSaga(data: any): any {
       yield put(navigateTo('/app/questions'));
     }
   } catch (e: any) {
-    yield put(
-      updateQuestionErrorAction(
-        (e?.errors && e.errors[0]?.message) || e?.message
-      )
-    );
-    toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
+    const errorMessage = e?.response?.data?.error?.message;
+    yield put(updateQuestionErrorAction(errorMessage));
+    toastService.showError(errorMessage);
   }
 }
 
@@ -211,12 +198,9 @@ function* publishQuestionSaga(data: DeleteQuestionSagaPayloadType): any {
 
     toastService.showSuccess('Question published successfully');
   } catch (e: any) {
-    yield put(
-      publishQuestionErrorAction(
-        (e?.errors && e.errors[0]?.message) || e?.message
-      )
-    );
-    toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
+    const errorMessage = e?.response?.data?.error?.message;
+    yield put(publishQuestionErrorAction(errorMessage));
+    toastService.showError(errorMessage);
   }
 }
 
