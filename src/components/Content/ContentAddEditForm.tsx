@@ -41,6 +41,7 @@ import { Formik } from 'formik';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
+import FormikInput from '@/shared-resources/FormikInput/FormikInput';
 import AMLVideoPlayer from '../AMLVideoPlayer';
 
 type ContentDetailsProps = {
@@ -87,6 +88,7 @@ const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
     repository_id: yup.string().required().label('Repository'),
     board_id: yup.string().required().label('Board'),
     class_id: yup.string().required().label('Class'),
+    x_id: yup.string().required().label('Content Id'),
     l1_skill_id: yup.string().required().label('L1 Skill'),
     mediaObjects: yup.array().min(1).required(),
   });
@@ -113,6 +115,7 @@ const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
         description: getMultiLangFormikInitialValues(content?.description),
         board_id: content?.taxonomy?.board?.identifier ?? '',
         class_id: content?.taxonomy?.class?.identifier ?? '',
+        x_id: content?.x_id ?? '',
         repository_id: content?.repository?.identifier ?? '',
         l1_skill_id: content?.taxonomy?.l1_skill?.identifier ?? '',
         l2_skill_ids: content?.taxonomy?.l2_skill?.map(
@@ -134,6 +137,7 @@ const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
           board_id: values.board_id,
           repository_id: values.repository_id,
           class_id: values.class_id,
+          x_id: values.x_id,
           l1_skill_id: values.l1_skill_id,
           l2_skill_ids: values.l2_skill_ids,
           l3_skill_ids: values.l3_skill_ids,
@@ -287,6 +291,14 @@ const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
               totalCount={l3SkillsCount}
               preLoadedOptions={content?.taxonomy?.l3_skill}
               multiple
+            />
+          </div>
+          <div className='flex w-full gap-6 items-start'>
+            <FormikInput
+              name='x_id'
+              label='Content Id'
+              type='string'
+              required
             />
           </div>
           <MultiLangFormikInput

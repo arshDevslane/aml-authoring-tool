@@ -16,6 +16,7 @@ export type Content = {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  x_id: string;
 };
 
 export type Media = {
