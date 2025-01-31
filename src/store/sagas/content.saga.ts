@@ -135,7 +135,7 @@ function* createContentSaga(data: CreateContentPayloadType): any {
 function* updateContentSaga(data: UpdateContentPayloadType): any {
   try {
     const response = yield call(contentService.update, data.payload);
-    yield put(updateContentCompletedAction(response));
+    yield put(updateContentCompletedAction(response.result));
 
     toastService.showSuccess('Content updated successfully');
   } catch (e: any) {
