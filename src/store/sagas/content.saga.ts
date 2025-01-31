@@ -9,11 +9,14 @@ import {
   createContentCompletedAction,
   createContentErrorAction,
   deleteContentCompletedAction,
+  deleteContentErrorAction,
   getContentByIdCompletedAction,
   getContentByIdErrorAction,
   getListContentAction,
   getListContentCompletedAction,
   getListContentErrorAction,
+  publishContentCompletedAction,
+  publishContentErrorAction,
   updateContentCompletedAction,
   updateContentErrorAction,
 } from '../actions/content.actions';
@@ -154,13 +157,41 @@ function* deleteContentSaga(data: DeleteContentSagaPayloadType): any {
 
     yield call(contentService.delete, contentId);
     yield put(deleteContentCompletedAction());
-    toastService.showSuccess('Question Set deleted successfully');
+    toastService.showSuccess(' Content deleted successfully');
     yield put(
       getListContentAction({
         filters,
       })
     );
   } catch (e: any) {
+    toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
+    yield put(
+      deleteContentErrorAction(
+        (e?.errors && e.errors[0]?.message) || e?.message
+      )
+    );
+  }
+}
+
+function* publishContentSaga(data: DeleteContentSagaPayloadType): any {
+  try {
+    const response = yield call(
+      contentService.publish,
+      data.payload?.contentId
+    );
+    yield put(
+      publishContentCompletedAction({
+        content: response.result.content,
+      })
+    );
+
+    toastService.showSuccess('Content published successfully');
+  } catch (e: any) {
+    yield put(
+      publishContentErrorAction(
+        (e?.errors && e.errors[0]?.message) || e?.message
+      )
+    );
     toastService.showError((e?.errors && e.errors[0]?.message) || e?.message);
   }
 }
@@ -172,5 +203,6 @@ export function* contentSaga() {
     takeLatest(ContentActionType.CREATE_CONTENT, createContentSaga),
     takeLatest(ContentActionType.UPDATE_CONTENT, updateContentSaga),
     takeLatest(ContentActionType.DELETE_CONTENT, deleteContentSaga),
+    takeLatest(ContentActionType.PUBLISH_CONTENT, publishContentSaga),
   ]);
 }

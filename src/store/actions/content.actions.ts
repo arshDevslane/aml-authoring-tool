@@ -101,3 +101,23 @@ export const deleteContentCompletedAction = () => ({
   type: ContentActionType.DELETE_CONTENT_COMPLETED,
   payload: {},
 });
+
+export const deleteContentErrorAction = (message: string) => ({
+  type: ContentActionType.DELETE_CONTENT_ERROR,
+  payload: message,
+});
+
+export const publishContentAction = (contentId: string) => ({
+  type: ContentActionType.PUBLISH_CONTENT,
+  payload: { contentId },
+});
+
+export const publishContentCompletedAction = (payload: any) => ({
+  type: ContentActionType.PUBLISH_CONTENT_COMPLETED,
+  payload,
+});
+
+export const publishContentErrorAction = (message: string) => ({
+  type: ContentActionType.PUBLISH_CONTENT_ERROR,
+  payload: message,
+});

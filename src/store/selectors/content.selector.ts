@@ -38,3 +38,12 @@ export const allContentSelector = createSelector(
   [contentState],
   (state: ContentState) => state.entities
 );
+export const isPublishingContentSelector = createSelector(
+  [contentState],
+  (state: ContentState) => state.isPublishing
+);
+
+export const isDeletingContentSelector = createSelector(
+  [contentState],
+  (state: ContentState) => state.isDeleting
+);

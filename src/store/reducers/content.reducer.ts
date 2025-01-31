@@ -13,6 +13,8 @@ export type ContentState = ContentActionPayloadType & {
   latestCount: number;
   error?: string;
   isUpdating: boolean;
+  isPublishing: boolean;
+  isDeleting: boolean;
 };
 
 const initialState: ContentState = {
@@ -25,6 +27,8 @@ const initialState: ContentState = {
   entities: {},
   actionInProgress: false,
   isUpdating: false,
+  isPublishing: false,
+  isDeleting: false,
 };
 
 export const contentReducer = (
@@ -85,26 +89,41 @@ export const contentReducer = (
 
       case ContentActionType.CREATE_CONTENT:
       case ContentActionType.UPDATE_CONTENT:
+      case ContentActionType.DELETE_CONTENT:
         draft.actionInProgress = true;
+        draft.isDeleting = true;
         break;
       case ContentActionType.DELETE_CONTENT_COMPLETED:
       case ContentActionType.CREATE_CONTENT_COMPLETED:
         draft.actionInProgress = false;
+        draft.isDeleting = false;
         draft.cachedData = {};
         draft.entities = {};
         break;
-
-      case ContentActionType.UPDATE_CONTENT_COMPLETED:
+      case ContentActionType.PUBLISH_CONTENT: {
+        draft.isPublishing = true;
+        break;
+      }
+      case ContentActionType.PUBLISH_CONTENT_COMPLETED:
+      case ContentActionType.UPDATE_CONTENT_COMPLETED: {
+        draft.isPublishing = false;
+        draft.isUpdating = false;
         draft.actionInProgress = false;
+        const { content } = action.payload;
         draft.entities = {
           ...state.entities,
-          [action.payload.result.content.identifier]:
-            action.payload.result.content,
+          [content?.identifier]: content,
         };
+
         break;
+      }
       case ContentActionType.CREATE_CONTENT_ERROR:
-      case ContentActionType.UPDATE_CONTENT_ERROR: {
+      case ContentActionType.UPDATE_CONTENT_ERROR:
+      case ContentActionType.DELETE_CONTENT_ERROR:
+      case ContentActionType.PUBLISH_CONTENT_ERROR: {
         draft.isLoading = false;
+        draft.isPublishing = false;
+        draft.isDeleting = false;
         draft.isUpdating = false;
         draft.error = action.payload;
         break;

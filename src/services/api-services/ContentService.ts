@@ -80,6 +80,13 @@ class ContentService {
       { id }
     );
   }
+
+  async publish(contentId: string) {
+    return baseApiService.post(
+      `/api/v1/content/publish/${contentId}`,
+      'api.content.publish'
+    );
+  }
 }
 
 export const contentService = ContentService.getInstance();

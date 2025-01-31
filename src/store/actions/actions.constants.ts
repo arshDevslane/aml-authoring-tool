@@ -116,6 +116,11 @@ export enum ContentActionType {
 
   DELETE_CONTENT = 'content/delete',
   DELETE_CONTENT_COMPLETED = 'content/delete/completed',
+  DELETE_CONTENT_ERROR = 'content/delete/error',
+
+  PUBLISH_CONTENT = 'content/publish',
+  PUBLISH_CONTENT_COMPLETED = 'content/publish/completed',
+  PUBLISH_CONTENT_ERROR = 'content/publish/error',
 }
 
 export enum MediaActionType {
