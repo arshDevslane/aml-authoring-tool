@@ -107,6 +107,7 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
       (skill) => skill.identifier
     ),
     question_set_ids: question?.question_set_ids,
+    x_id: question?.x_id,
     operation: question?.operation ?? '',
     question_type: question?.question_type ?? '',
     benchmark_time: question?.benchmark_time ?? '',
@@ -231,6 +232,7 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
     repository_id: Yup.string().required('Required'),
     board_id: Yup.string().required('Required'),
     class_id: Yup.string().required('Required'),
+    x_id: Yup.string().required('Required'),
     l1_skill_id: Yup.string().required('Required'),
     question_body: Yup.object().shape({
       numbers: Yup.object().shape({
@@ -967,7 +969,14 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
                 preLoadedOptions={questionSetOptions}
               />
             </div>
-
+            <div className='flex w-full gap-6 items-start'>
+              <FormikInput
+                name='x_id'
+                label='Question Id'
+                type='string'
+                required
+              />
+            </div>
             <MultiLangFormikInput
               name='name'
               label='Question text'

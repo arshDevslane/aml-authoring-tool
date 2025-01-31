@@ -62,6 +62,7 @@ export type QuestionSetCreateUpdatePayload = {
   sequence?: number;
   board_id: string;
   class_id: string;
+  x_id: string;
   l1_skill_id: string;
   l2_skill_ids?: string[];
   l3_skill_ids?: string[];
@@ -119,6 +120,7 @@ const QuestionSetDetails = ({
     repository_id: yup.string().required().label('Repository'),
     board_id: yup.string().required().label('Board'),
     class_id: yup.string().required().label('Class'),
+    x_id: yup.string().required().label(' Question Set Id'),
     l1_skill_id: yup.string().required().label('L1 Skill'),
     sequence: questionSetId
       ? yup.number().required().label('Sequence')
@@ -144,6 +146,7 @@ const QuestionSetDetails = ({
         repository_id: questionSet?.repository?.identifier ?? '',
         board_id: questionSet?.taxonomy?.board?.identifier ?? '',
         class_id: questionSet?.taxonomy?.class?.identifier ?? '',
+        x_id: questionSet?.x_id ?? '',
         l1_skill_id: questionSet?.taxonomy?.l1_skill?.identifier ?? '',
         l2_skill_ids: questionSet?.taxonomy?.l2_skill?.map(
           (skill) => skill.identifier
@@ -174,6 +177,7 @@ const QuestionSetDetails = ({
           repository_id: values.repository_id,
           board_id: values.board_id,
           class_id: values.class_id,
+          x_id: values.x_id,
           l1_skill_id: values.l1_skill_id,
           l2_skill_ids: values.l2_skill_ids,
           l3_skill_ids: values.l3_skill_ids,
@@ -372,6 +376,14 @@ const QuestionSetDetails = ({
                   required
                 />
               )}
+            </div>
+            <div className='flex w-full gap-6 items-start'>
+              <FormikInput
+                name='x_id'
+                label='Question Set Id'
+                type='string'
+                required
+              />
             </div>
             <MultiLangFormikInput
               name='title'
