@@ -26,6 +26,10 @@ import {
   useNavigate,
 } from 'react-router-dom';
 import AmlListingFilterPopup from '@/shared-resources/AmlListingFilterPopup/AmlListingFilterPopup';
+import {
+  clearQueryParams,
+  removeNullOrUndefinedValues,
+} from '@/utils/helpers/helper';
 import QuestionSetDetails from './QuestionSetDetails/QuestionSetDetails';
 import QuestionSetFilters from '../QuestionSetFilters';
 
@@ -87,18 +91,13 @@ const QuestionSetListing = () => {
     open: false,
     questionSetId: null,
   });
+
   const updateURL = (updatedFilters: Record<string, any>) => {
     navigateTo({
       pathname,
-      search: `?${createSearchParams(
-        Object.entries(updatedFilters)?.map(([key, value]) => [
-          key,
-          value?.toString(),
-        ]) as any
-      )}`,
+      search: `?${createSearchParams(clearQueryParams(updatedFilters))}`,
     });
   };
-
   useEffect(() => {
     if (!isInitialized) {
       const urlFilters: Record<string, any> = {};
@@ -119,7 +118,9 @@ const QuestionSetListing = () => {
     if (isInitialized) {
       dispatch(
         getListQuestionSetAction({
-          filters: searchFilters as QuestionSetActionPayloadType['filters'],
+          filters: removeNullOrUndefinedValues(
+            searchFilters
+          ) as QuestionSetActionPayloadType['filters'],
         })
       );
       updateURL(searchFilters);

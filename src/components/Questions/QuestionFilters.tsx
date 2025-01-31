@@ -83,10 +83,15 @@ const QuestionFilters = ({
       }}
       enableReinitialize
       onSubmit={(values) => {
-        setSearchFilters({
+        setSearchFilters((prevFilters: any) => ({
+          ...(prevFilters.orderBy &&
+            prevFilters.sortOrder && {
+              orderBy: prevFilters.orderBy,
+              sortOrder: prevFilters.sortOrder,
+            }),
           ..._.omitBy(values, (v) => isValueEmpty(v)),
           page_no: 1,
-        });
+        }));
       }}
     >
       {(formik) => {
@@ -272,9 +277,14 @@ const QuestionFilters = ({
                     type='button'
                     variant='outline'
                     onClick={() => {
-                      setSearchFilters({
+                      setSearchFilters((prevFilters: any) => ({
                         page_no: 1,
-                      });
+                        ...(prevFilters.orderBy &&
+                          prevFilters.sortOrder && {
+                            orderBy: prevFilters.orderBy,
+                            sortOrder: prevFilters.sortOrder,
+                          }),
+                      }));
                     }}
                   >
                     Reset

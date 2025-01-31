@@ -149,3 +149,17 @@ export const getMultiLangFormikInitialValues = (data?: Description) => {
   });
   return res;
 };
+
+export const removeNullOrUndefinedValues = (obj: Record<string, any>) =>
+  Object.fromEntries(Object.entries(obj).filter(([_, value]) => value != null));
+
+export const clearQueryParams = (
+  obj: Record<string, any>,
+  keys: string[] = ['sortOrder', 'orderBy']
+) =>
+  Object.entries(obj).filter(([key, value]) => {
+    if (keys.includes(key)) {
+      return value != null;
+    }
+    return true;
+  });

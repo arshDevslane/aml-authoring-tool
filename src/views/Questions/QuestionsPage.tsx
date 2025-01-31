@@ -10,6 +10,10 @@ import {
   QuestionsActionPayloadType,
 } from '@/store/actions/question.action';
 import { filtersQuestionsSelector } from '@/store/selectors/questions.selector';
+import {
+  clearQueryParams,
+  removeNullOrUndefinedValues,
+} from '@/utils/helpers/helper';
 
 const transformFilterValue = (key: string, value: string): any => {
   switch (key) {
@@ -48,7 +52,10 @@ const QuestionsPage: React.FC = () => {
   const [isInitialized, setIsInitialized] = useState(false);
 
   const updateURL = (updatedFilters: Record<string, any>) => {
-    const serializedFilters = serializeFilters(updatedFilters);
+    const filteredFilters = clearQueryParams(updatedFilters);
+    const serializedFilters = serializeFilters(
+      Object.fromEntries(filteredFilters)
+    );
     navigateTo({
       pathname,
       search: `?${createSearchParams(serializedFilters)}`,
@@ -76,7 +83,9 @@ const QuestionsPage: React.FC = () => {
     if (isInitialized) {
       dispatch(
         getListQuestionsAction({
-          filters: searchFilters as QuestionsActionPayloadType['filters'],
+          filters: removeNullOrUndefinedValues(
+            searchFilters
+          ) as QuestionsActionPayloadType['filters'],
         })
       );
       updateURL(searchFilters);

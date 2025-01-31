@@ -17,7 +17,15 @@ const QuestionViewPage: React.FC<QuestionViewPageProps> = ({ question }) => {
   }
 
   return (
-    <QuestionViewContainer headerText={question.description?.en || ''}>
+    <QuestionViewContainer
+      headerText={
+        question.questionType === QuestionType.GRID_2
+          ? `${question.description?.en}: ${Object.values(
+              question?.numbers
+            )?.join('+')}`
+          : question.description?.en || ''
+      }
+    >
       <div className='flex flex-col space-y-4 items-start'>
         {question.questionType === QuestionType.MCQ && (
           <MCQQuestionView question={question} />
