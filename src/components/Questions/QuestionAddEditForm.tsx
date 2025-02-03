@@ -959,7 +959,7 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
                 name='question_set_ids'
                 label='Question Sets'
                 placeholder='Select question sets'
-                data={questionSets}
+                data={questionSets?.filter((set) => set?.status === 'live')}
                 labelKey='title.en'
                 valueKey='identifier'
                 dispatchAction={(payload) =>

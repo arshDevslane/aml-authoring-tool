@@ -27,6 +27,7 @@ type InfiniteSelectProps = {
   isLoading: boolean;
   totalCount: number;
   preLoadedOptions?: any[];
+  isClearable?: boolean;
 };
 
 export const InfiniteSelect = ({
@@ -40,6 +41,7 @@ export const InfiniteSelect = ({
   isLoading,
   totalCount,
   preLoadedOptions = [],
+  isClearable = true,
 }: InfiniteSelectProps) => {
   const [open, setOpen] = React.useState(false);
   const [searchFilters, setSearchFilters] = React.useState({
@@ -222,10 +224,12 @@ export const InfiniteSelect = ({
             <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
           </Button>
         </PopoverTrigger>
-        <X
-          className='text-red-400 h-5 w-5 cursor-pointer'
-          onClick={handleReset}
-        />
+        {isClearable && (
+          <X
+            className='text-red-400 h-5 w-5 cursor-pointer'
+            onClick={handleReset}
+          />
+        )}
       </div>
       <PopoverContent
         className='p-0'

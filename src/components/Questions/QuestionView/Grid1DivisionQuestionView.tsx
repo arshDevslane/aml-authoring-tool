@@ -100,7 +100,6 @@ const Grid1DivisionQuestionView = ({
     const finalInterMediateMatrix = createAnswerIntermediateMatrix(
       answers.answerIntermediate
     );
-    console.log(finalInterMediateMatrix);
 
     const answerValue = finalInterMediateMatrix?.[idx]?.[stepIdx] || '';
 
