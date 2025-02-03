@@ -5,6 +5,7 @@ import {
   ArithmaticOperations,
   operationMap,
 } from '@/models/enums/ArithmaticOperations.enum';
+import cx from 'classnames';
 import { DIGIT_PLACES, QuestionViewPropsType } from './QuestionViewUtils';
 import Grid1DivisionQuestionView from './Grid1DivisionQuestionView';
 
@@ -67,7 +68,14 @@ const Grid1QuestionView: React.FC<Grid1QuestionViewProps> = ({ question }) => {
           {char === '#' ? (
             <div className='w-[46px] h-[61px]' /> // Render blank space
           ) : (
-            <div className='w-[46px] h-[61px] flex items-center justify-center text-[36px] font-bold border-2 border-gray-900 rounded-[10px] text-center focus:outline-none focus:border-primary'>
+            <div
+              className={cx(
+                'w-[46px] h-[61px] flex items-center justify-center font-bold border-2 border-gray-900 rounded-[10px] text-center focus:outline-none focus:border-primary',
+                question.operation === ArithmaticOperations.SUBTRACTION
+                  ? 'text-[24px]'
+                  : 'text-[36px]'
+              )}
+            >
               {char === 'B' ? '' : char}
             </div>
           )}
