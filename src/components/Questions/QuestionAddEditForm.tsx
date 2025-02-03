@@ -487,6 +487,68 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
     );
   }
 
+  const imageUploadAndRendering = (formik: any) => (
+    <>
+      {question?.question_body.question_image_url ? (
+        <ImageRenderer
+          imageUrl={question?.question_body.question_image_url || ''}
+          isImageLoading={isImageLoading}
+          isImageReady={isImageReady}
+          imgError={imgError}
+          onImageLoad={handleImageLoad}
+          onImageError={() => setImgError(true)}
+        />
+      ) : (
+        <MediaUpload
+          onUploadComplete={(data) => {
+            formik.setFieldValue('question_body.question_image', data[0]);
+          }}
+          multiple={false}
+          value={files}
+          setValue={(files) => setFiles(files)}
+          category='question'
+          acceptedFiles={{
+            'image/*': [],
+          }}
+        />
+      )}
+    </>
+  );
+  const numberFields = (
+    <>
+      <FormikInput name='question_body.numbers.n1' label='N1' required />
+      <FormikInput name='question_body.numbers.n2' label='N2' required />
+    </>
+  );
+
+  const renderFibTypeForm = (fibType: FibType, formik: any) => {
+    if (
+      fibType === FibType.FIB_STANDARD ||
+      fibType === FibType.FIB_QUOTIENT_REMAINDER
+    ) {
+      return <>{numberFields}</>;
+    }
+    if (fibType === FibType.FIB_STANDARD_WITH_IMAGE) {
+      return (
+        <>
+          {imageUploadAndRendering(formik)}
+          <FormikInput
+            name='question_body.fib_answer'
+            label='Fib answer'
+            required
+          />
+        </>
+      );
+    }
+    return (
+      <div className='w-full text-center'>
+        <p className='text-appPrimary animate-bounce'>
+          *Please select Fib type to create question body*
+        </p>
+      </div>
+    );
+  };
+
   const renderQuestionBody = (
     formik: any,
     operation: ArithmaticOperations | string,
@@ -497,33 +559,6 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
       formik.setFieldValue('question_body', formik.initialValues.question_body);
     }, [operation, questionType]);
 
-    const imageUploadAndRendering = (
-      <>
-        {question?.question_body.question_image_url ? (
-          <ImageRenderer
-            imageUrl={question?.question_body.question_image_url || ''}
-            isImageLoading={isImageLoading}
-            isImageReady={isImageReady}
-            imgError={imgError}
-            onImageLoad={handleImageLoad}
-            onImageError={() => setImgError(true)}
-          />
-        ) : (
-          <MediaUpload
-            onUploadComplete={(data) => {
-              formik.setFieldValue('question_body.question_image', data[0]);
-            }}
-            multiple={false}
-            value={files}
-            setValue={(files) => setFiles(files)}
-            category='question'
-            acceptedFiles={{
-              'image/*': [],
-            }}
-          />
-        )}
-      </>
-    );
     const grid1PreFillsResultInput = (
       <>
         <FormikInput
@@ -549,45 +584,9 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
         {grid1PreFillsResultInput}
       </>
     );
-    const numberFields = (
-      <>
-        <FormikInput name='question_body.numbers.n1' label='N1' required />
-        <FormikInput name='question_body.numbers.n2' label='N2' required />
-      </>
-    );
-
-    const renderFibTypeForm = (fibType: FibType) => {
-      if (
-        fibType === FibType.FIB_STANDARD ||
-        fibType === FibType.FIB_QUOTIENT_REMAINDER
-      ) {
-        return <>{numberFields}</>;
-      }
-      if (fibType === FibType.FIB_STANDARD_WITH_IMAGE) {
-        return (
-          <>
-            {imageUploadAndRendering}
-            <FormikInput
-              name='question_body.fib_answer'
-              label='Fib answer'
-              required
-            />
-          </>
-        );
-      }
-      return null;
-    };
     if (questionType === QuestionType.FIB) {
       return (
-        <>
-          <FormikSelect
-            name='question_body.fib_type'
-            label='Choose fib type'
-            options={enumToSelectOptions(FibType)}
-            required
-          />
-          {renderFibTypeForm(formik.values.question_body.fib_type)}
-        </>
+        <>{renderFibTypeForm(formik.values.question_body.fib_type, formik)}</>
       );
     }
     if (questionType === QuestionType.GRID_2) {
@@ -596,7 +595,7 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
     if (questionType === QuestionType.MCQ) {
       return (
         <>
-          {imageUploadAndRendering}
+          {imageUploadAndRendering(formik)}
           <FieldArray name='question_body.options'>
             {({ push, remove }) => (
               <div className='flex flex-col gap-2'>
@@ -947,6 +946,14 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
                 required
               />
             </div>
+            {formik.values.question_type === QuestionType.FIB && (
+              <FormikSelect
+                name='question_body.fib_type'
+                label='Choose fib type'
+                options={enumToSelectOptions(FibType)}
+                required
+              />
+            )}
             <div className='flex w-full gap-6 items-start'>
               <FormikInfiniteSelect
                 name='question_set_ids'

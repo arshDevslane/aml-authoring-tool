@@ -80,6 +80,15 @@ const Grid1DivisionQuestionView = ({
         })}
     </div>
   );
+  function createAnswerIntermediateMatrix(input: string): string[][] {
+    return input
+      .split('|')
+      .map((segment) =>
+        segment
+          .split('')
+          .map((char) => (char === 'B' || char === '#' ? '' : char))
+      );
+  }
   function getStepValue(
     isEditable: boolean,
     answers: any,
@@ -88,8 +97,13 @@ const Grid1DivisionQuestionView = ({
     step: string
   ) {
     if (!isEditable) return step;
+    const finalInterMediateMatrix = createAnswerIntermediateMatrix(
+      answers.answerIntermediate
+    );
+    console.log(finalInterMediateMatrix);
 
-    const answerValue = answers.answerIntermediate?.[idx]?.[stepIdx];
+    const answerValue = finalInterMediateMatrix?.[idx]?.[stepIdx] || '';
+
     return ['B', '|'].includes(answerValue) ? '' : answerValue;
   }
   const renderDivisionIntermediateSteps = () => {
