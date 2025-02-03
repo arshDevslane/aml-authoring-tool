@@ -11,7 +11,7 @@ const Grid2QuestionView: React.FC<Grid2QuestionViewProps> = ({ question }) => {
   const { operation, numbers } = question;
 
   const maxLength = Math.max(
-    ...Object.values(numbers).map((num) => (num || '').length)
+    ...Object.values(numbers).map((num) => (String(num) || '').length)
   );
 
   return (
@@ -35,9 +35,11 @@ const Grid2QuestionView: React.FC<Grid2QuestionViewProps> = ({ question }) => {
         {Array.from({ length: maxLength }).map((value: any, index: any) => (
           <div
             key={`row-1-${index}`}
-            className='w-[80px] h-[95px] p-4 border border-gray-900 flex items-center justify-center font-bold text-[24px]'
+            className='w-[80px] h-[95px] p-4 border border-gray-900  flex items-center justify-center font-bold text-[24px]'
           >
-            {value === '#' ? '' : value}
+            <div className='w-[46px] h-[61px] flex items-center justify-center text-[36px] font-bold border-2 border-gray-900 rounded-[10px] text-center focus:outline-none focus:border-primary'>
+              {value === '#' ? '' : value}
+            </div>
           </div>
         ))}
       </div>
@@ -52,7 +54,9 @@ const Grid2QuestionView: React.FC<Grid2QuestionViewProps> = ({ question }) => {
             key={`row-2-${index}`}
             className='w-[80px] h-[95px] p-4 border border-gray-900 flex items-center justify-center font-bold text-[24px]'
           >
-            {value === '#' ? '' : value}
+            <div className='w-[46px] h-[61px] flex items-center justify-center text-[36px] font-bold border-2 border-gray-900 rounded-[10px] text-center focus:outline-none focus:border-primary'>
+              {value === '#' ? '' : value}
+            </div>
           </div>
         ))}
       </div>

@@ -301,6 +301,7 @@ const QuestionSetQuestionReorderComponent = ({
               labelKey='x_id'
               preLoadedOptions={questionsOrder}
               multiple
+              isClearable={false}
             />
           </div>
           <div className='flex items-center gap-5'>
