@@ -1,5 +1,6 @@
 import React from 'react';
 import { QuestionType } from '@/models/enums/QuestionType.enum';
+import { operationMap } from '@/models/enums/ArithmaticOperations.enum';
 import MCQQuestionView from './MCQQuestionView';
 import { QuestionViewPropsType } from './QuestionViewUtils';
 import FIBQuestionView from './FIBQuestionView';
@@ -22,7 +23,7 @@ const QuestionViewPage: React.FC<QuestionViewPageProps> = ({ question }) => {
         question.questionType === QuestionType.GRID_2
           ? `${question.description?.en}: ${Object.values(
               question?.numbers
-            )?.join('+')}`
+            )?.join(operationMap[question?.operation])}`
           : question.description?.en || ''
       }
     >
