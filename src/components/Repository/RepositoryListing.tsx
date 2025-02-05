@@ -1,37 +1,37 @@
+import React, { useEffect, useMemo, useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { useTable } from '@/hooks/useTable';
+import { Repository } from '@/models/entities/Repository';
 import AmlDialog from '@/shared-resources/AmlDialog/AmlDialog';
 import AmlListingFilterPopup from '@/shared-resources/AmlListingFilterPopup/AmlListingFilterPopup';
 import AmlTooltip from '@/shared-resources/AmlTooltip/AmlTooltip';
 import TableComponent from '@/shared-resources/TableComponent/TableComponent';
-import { publishContentAction } from '@/store/actions/content.actions';
 import {
-  filtersContentSelector,
-  isDeletingContentSelector,
-  isLoadingContentSelector,
-  isPublishingContentSelector,
-} from '@/store/selectors/content.selector';
+  deleteRepositoryAction,
+  getListRepositoryAction,
+  publishRepositoryAction,
+  RepositoryActionPayloadType,
+} from '@/store/actions/repository.action';
+import {
+  filtersRepositorySelector,
+  isDeletingRepositorySelector,
+  isLoadingRepositoriesSelector,
+  isPublishingRepositorySelector,
+  repositoriesSelector,
+} from '@/store/selectors/repository.selector';
 import {
   clearQueryParams,
   convertToDate,
   removeNullOrUndefinedValues,
 } from '@/utils/helpers/helper';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
+import cx from 'classnames';
 import { Circle, Loader2, Pencil, Plus, Send, Trash } from 'lucide-react';
-import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSearchParams, useLocation, useNavigate } from 'react-router-dom';
-import cx from 'classnames';
-import { repositoriesSelector } from '@/store/selectors/repository.selector';
-import { Repository } from '@/models/entities/Repository';
-import {
-  deleteRepositoryAction,
-  getListRepositoryAction,
-  RepositoryActionPayloadType,
-} from '@/store/actions/repository.action';
-import ContentAddEditForm from '../Content/ContentAddEditForm';
 import { Button } from '../ui/button';
-import RepositoryFilters from './RepositpryFilters';
+import RepositoryAddEditForm from './RepositoryAddEditForm';
+import RepositoryFilters from './RepositoryFilters';
 
 const coloredDot = (info: CellContext<Repository, unknown>) => {
   const status = info.getValue();
@@ -59,10 +59,10 @@ const RepositoryListing = () => {
   const params = new URLSearchParams(search);
   const dispatch = useDispatch();
   const navigateTo = useNavigate();
-  const filters = useSelector(filtersContentSelector);
-  const isPublishing = useSelector(isPublishingContentSelector);
-  const isDeleting = useSelector(isDeletingContentSelector);
-  const isContentLoading = useSelector(isLoadingContentSelector);
+  const filters = useSelector(filtersRepositorySelector);
+  const isPublishing = useSelector(isPublishingRepositorySelector);
+  const isDeleting = useSelector(isDeletingRepositorySelector);
+  const isRepositoryLoading = useSelector(isLoadingRepositoriesSelector);
   const { result: repositories, totalCount } =
     useSelector(repositoriesSelector);
   const [publishingId, setPublishingId] = useState<string>();
@@ -91,9 +91,9 @@ const RepositoryListing = () => {
     repositoryId: null,
   });
 
-  const publishContent = (id: string) => {
+  const publishRepository = (id: string) => {
     setPublishingId(id);
-    dispatch(publishContentAction(id));
+    dispatch(publishRepositoryAction(id));
   };
 
   const updateURL = (updatedFilters: Record<string, any>) => {
@@ -153,6 +153,21 @@ const RepositoryListing = () => {
         cellClassName: 'max-w-80 [&_button]:max-w-full text-left',
       },
       {
+        accessorKey: 'description',
+        header: 'Description',
+        // eslint-disable-next-line react/no-unstable-nested-components
+        cell: (info) => (
+          <AmlTooltip
+            tooltip={(info.getValue() as Repository['description']).en}
+          >
+            <p className='truncate'>
+              {(info.getValue() as Repository['description']).en}
+            </p>
+          </AmlTooltip>
+        ),
+        cellClassName: 'max-w-80 [&_button]:max-w-full text-left',
+      },
+      {
         accessorKey: 'created_at',
         header: 'Created At',
         cell: (info) => {
@@ -190,7 +205,7 @@ const RepositoryListing = () => {
                 <AmlTooltip tooltip='Publish'>
                   <Send
                     className='h-5 w-5 hover:fill-slate-400 cursor-pointer'
-                    onClick={() => publishContent(row.id)}
+                    onClick={() => publishRepository(row.id)}
                   />
                 </AmlTooltip>
               </span>
@@ -237,6 +252,7 @@ const RepositoryListing = () => {
     rows: repositories,
     enableSorting: true,
   });
+  console.log(repositories, 'test');
 
   return (
     <div className='p-4 h-full w-full flex flex-col bg-white shadow rounded-md'>
@@ -266,7 +282,7 @@ const RepositoryListing = () => {
       <div className='flex-1 flex flex-col'>
         <TableComponent
           disableDrag
-          isLoading={isContentLoading}
+          isLoading={isRepositoryLoading}
           tableInstance={tableInstance}
           searchFilters={searchFilters}
           setSearchFilters={setSearchFilters}
@@ -294,8 +310,8 @@ const RepositoryListing = () => {
           }
         >
           <DialogContent className='max-w-[80%] max-h-[95%] overflow-y-auto'>
-            <ContentAddEditForm
-              contentId={openDialog.repositoryId}
+            <RepositoryAddEditForm
+              repositoryId={openDialog.repositoryId}
               onClose={() =>
                 setOpenDialog({
                   dialog: null,

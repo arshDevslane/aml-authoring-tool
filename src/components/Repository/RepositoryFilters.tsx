@@ -46,7 +46,7 @@ const RepositoryFilters = ({
           label='Name'
           placeholder='Search by name'
         />
-        <div className='flex w-1/2 gap-6 items-start'>
+        <div>
           <FormikSelect
             name='status'
             label='Status'

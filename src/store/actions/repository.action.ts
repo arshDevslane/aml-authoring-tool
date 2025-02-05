@@ -6,8 +6,7 @@ export type RepositoryActionPayloadType = {
     search_query: string;
     status: string;
     is_active: boolean | null;
-    page_no: number;
-  }>;
+  }> & { page_no: number };
 };
 
 export const getListRepositoryAction = (
