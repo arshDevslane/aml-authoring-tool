@@ -28,6 +28,14 @@ class RepositoryService {
       data
     );
   }
+
+  async delete(id: string) {
+    return baseApiService.post(
+      `/api/v1/repository/delete/${id}`,
+      'api.repository.delete',
+      { id }
+    );
+  }
 }
 
 export const repositoryService = RepositoryService.getInstance();

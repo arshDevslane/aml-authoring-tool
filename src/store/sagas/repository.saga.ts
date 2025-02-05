@@ -1,12 +1,22 @@
 import { all, call, put, select, takeLatest } from 'redux-saga/effects';
 import { repositoryService } from '@/services/api-services/RepositoryService';
 import { PaginationLimit } from '@/enums/tableEnums';
+import { SagaPayloadType } from '@/types/SagaPayload.type';
+import { toastService } from '@/services/ToastService';
 import { RepositoryActionType } from '../actions/actions.constants';
 import {
+  deleteRepositoryCompletedAction,
+  deleteRepositoryErrorAction,
+  getListRepositoryAction,
   getListRepositoryCompletedAction,
   getListRepositoryErrorAction,
+  RepositoryActionPayloadType,
 } from '../actions/repository.action';
 import { AppState } from '../reducers';
+
+interface DeleteRepositorySagaPayloadType extends SagaPayloadType {
+  payload: { repositoryId: string };
+}
 
 function* getListRepositorySaga(data: any): any {
   try {
@@ -52,8 +62,33 @@ function* getListRepositorySaga(data: any): any {
   }
 }
 
+function* deleteRepositorySaga(data: DeleteRepositorySagaPayloadType): any {
+  const { repositoryId } = data.payload;
+  try {
+    const filters: RepositoryActionPayloadType['filters'] = yield select(
+      (state: AppState) => state.content.filters
+    );
+
+    yield call(repositoryService.delete, repositoryId);
+    yield put(deleteRepositoryCompletedAction());
+    toastService.showSuccess(' Content deleted successfully');
+    yield put(
+      getListRepositoryAction({
+        filters,
+      })
+    );
+  } catch (e: any) {
+    const errorMessage = e?.response?.data?.error?.message;
+    toastService.showError(errorMessage);
+    yield put(deleteRepositoryErrorAction(errorMessage));
+  }
+}
+
 function* repositorySaga() {
-  yield all([takeLatest(RepositoryActionType.GET_LIST, getListRepositorySaga)]);
+  yield all([
+    takeLatest(RepositoryActionType.GET_LIST, getListRepositorySaga),
+    takeLatest(RepositoryActionType.DELETE_REPOSITORY, deleteRepositorySaga),
+  ]);
 }
 
 export default repositorySaga;
