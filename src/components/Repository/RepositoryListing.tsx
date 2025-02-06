@@ -252,7 +252,6 @@ const RepositoryListing = () => {
     rows: repositories,
     enableSorting: true,
   });
-  console.log(repositories, 'test');
 
   return (
     <div className='p-4 h-full w-full flex flex-col bg-white shadow rounded-md'>
