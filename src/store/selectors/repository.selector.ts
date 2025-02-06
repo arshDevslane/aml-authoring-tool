@@ -19,8 +19,27 @@ export const repositoriesSelector = createSelector(
     };
   }
 );
+export const filtersRepositorySelector = createSelector(
+  [repositoryState],
+  (state: RepositoryState) => state.filters
+);
 
 export const isLoadingRepositoriesSelector = createSelector(
   [repositoryState],
   (state: RepositoryState) => state.isLoading
+);
+
+export const allRepositorySelector = createSelector(
+  [repositoryState],
+  (state: RepositoryState) => state.entities
+);
+
+export const isPublishingRepositorySelector = createSelector(
+  [repositoryState],
+  (state: RepositoryState) => state.isPublishing
+);
+
+export const isDeletingRepositorySelector = createSelector(
+  [repositoryState],
+  (state: RepositoryState) => state.isDeleting
 );

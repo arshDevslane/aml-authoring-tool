@@ -66,6 +66,26 @@ export enum RepositoryActionType {
   GET_LIST = 'repository/getList',
   GET_LIST_COMPLETED = 'repository/getList/completed',
   GET_LIST_ERROR = 'repository/getList/error',
+
+  GET_BY_ID = 'repository/getById',
+  GET_BY_ID_COMPLETED = 'repository/getById/completed',
+  GET_BY_ID_ERROR = 'repository/getById/error',
+
+  CREATE_REPOSITORY = 'repository/create',
+  CREATE_REPOSITORY_COMPLETED = 'repository/create/completed',
+  CREATE_REPOSITORY_ERROR = 'repository/create/error',
+
+  UPDATE_REPOSITORY = 'repository/update',
+  UPDATE_REPOSITORY_COMPLETED = 'repository/update/completed',
+  UPDATE_REPOSITORY_ERROR = 'repository/update/error',
+
+  DELETE_REPOSITORY = 'repository/delete',
+  DELETE_REPOSITORY_COMPLETED = 'repository/delete/completed',
+  DELETE_REPOSITORY_ERROR = 'repository/delete/error',
+
+  PUBLISH_REPOSITORY = 'repository/publish',
+  PUBLISH_REPOSITORY_COMPLETED = 'repository/publish/completed',
+  PUBLISH_REPOSITORY_ERROR = 'repository/publish/error',
 }
 
 // boards
@@ -106,7 +126,7 @@ export enum ContentActionType {
   GET_BY_ID_COMPLETED = 'content/getById/completed',
   GET_BY_ID_ERROR = 'content/getById/error',
 
-  CREATE_CONTENT = 'create/create',
+  CREATE_CONTENT = 'create/content',
   CREATE_CONTENT_COMPLETED = 'create/content/completed',
   CREATE_CONTENT_ERROR = 'create/content/error',
 

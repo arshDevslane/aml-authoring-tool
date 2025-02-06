@@ -16,19 +16,22 @@ export type RepositoryState = RepositoryActionPayloadType & {
   isLoading: boolean;
   latestCount: number;
   error?: string;
+  isDeleting: boolean;
+  isUpdating: boolean;
+  isPublishing: boolean;
 };
 
 const initialState: RepositoryState = {
   isLoading: false,
   filters: {
-    search_query: '',
-    status: '',
-    is_active: null,
     page_no: 1,
   },
   latestCount: 0,
   cachedData: {},
   entities: {},
+  isDeleting: false,
+  isUpdating: false,
+  isPublishing: false,
 };
 
 export const repositoryReducer = (
@@ -70,7 +73,10 @@ export const repositoryReducer = (
         const repositoryMap = action.payload?.repositories?.reduce(
           (acc: any, repository: Repository) => ({
             ...acc,
-            [repository.identifier]: repository,
+            [repository.identifier]: {
+              ...draft.entities[repository.identifier],
+              ...repository,
+            },
           }),
           {} as Record<string, Repository>
         );
@@ -81,6 +87,46 @@ export const repositoryReducer = (
         draft.isLoading = false;
         draft.error = action.payload;
         break;
+
+      case RepositoryActionType.CREATE_REPOSITORY:
+      case RepositoryActionType.UPDATE_REPOSITORY:
+      case RepositoryActionType.DELETE_REPOSITORY:
+        draft.isDeleting = true;
+        break;
+      case RepositoryActionType.PUBLISH_REPOSITORY: {
+        draft.isPublishing = true;
+        break;
+      }
+      case RepositoryActionType.DELETE_REPOSITORY_COMPLETED:
+      case RepositoryActionType.CREATE_REPOSITORY_COMPLETED:
+        draft.isDeleting = false;
+        draft.cachedData = {};
+        draft.entities = {};
+        break;
+      case RepositoryActionType.PUBLISH_REPOSITORY_COMPLETED:
+      case RepositoryActionType.UPDATE_REPOSITORY_COMPLETED: {
+        draft.isUpdating = false;
+        draft.isPublishing = false;
+        const { repository } = action.payload;
+        draft.entities = {
+          ...state.entities,
+          [repository?.identifier]: repository,
+        };
+
+        break;
+      }
+
+      case RepositoryActionType.CREATE_REPOSITORY_ERROR:
+      case RepositoryActionType.UPDATE_REPOSITORY_ERROR:
+      case RepositoryActionType.PUBLISH_REPOSITORY_ERROR:
+      case RepositoryActionType.DELETE_REPOSITORY_ERROR: {
+        draft.isLoading = false;
+        draft.isDeleting = false;
+        draft.isPublishing = false;
+        draft.isUpdating = false;
+        draft.error = action.payload;
+        break;
+      }
       default:
         break;
     }

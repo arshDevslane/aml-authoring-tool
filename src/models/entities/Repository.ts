@@ -8,6 +8,6 @@ export type Repository = {
   name: Description;
   updated_at: string;
   updated_by: string | null;
-  is_active: true;
+  is_active: boolean;
   status: string;
 };
