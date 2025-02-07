@@ -36,7 +36,7 @@ const FIBQuestionView: React.FC<FIBQuestionViewProps> = ({ question }) => {
       return (
         <p className='text-4xl font-semibold text-gray-700 pt-[23px] pb-[22px] px-[7px]'>
           {Object.values(question?.numbers || {}).join(
-            operationMap[question.operation]
+            ` ${operationMap[question.operation]} `
           )}{' '}
           =
         </p>

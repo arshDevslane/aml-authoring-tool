@@ -23,7 +23,7 @@ const QuestionViewPage: React.FC<QuestionViewPageProps> = ({ question }) => {
         question.questionType === QuestionType.GRID_2
           ? `${question.description?.en}: ${Object.values(
               question?.numbers
-            )?.join(operationMap[question?.operation])}`
+            )?.join(` ${operationMap[question?.operation]} `)}`
           : question.description?.en || ''
       }
     >
