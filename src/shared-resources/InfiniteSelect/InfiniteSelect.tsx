@@ -28,6 +28,7 @@ type InfiniteSelectProps = {
   totalCount: number;
   preLoadedOptions?: any[];
   isClearable?: boolean;
+  disabled?: boolean;
 };
 
 export const InfiniteSelect = ({
@@ -40,6 +41,7 @@ export const InfiniteSelect = ({
   valueKey,
   isLoading,
   totalCount,
+  disabled,
   preLoadedOptions = [],
   isClearable = true,
 }: InfiniteSelectProps) => {
@@ -213,6 +215,7 @@ export const InfiniteSelect = ({
             role='combobox'
             aria-expanded={open}
             className='border-input flex justify-between flex-1 overflow-hidden'
+            disabled={disabled}
           >
             <p className='truncate max-w-full'>
               {multiple

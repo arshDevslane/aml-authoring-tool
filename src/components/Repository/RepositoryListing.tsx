@@ -26,9 +26,14 @@ import {
 } from '@/utils/helpers/helper';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import cx from 'classnames';
-import { Circle, Loader2, Pencil, Plus, Send, Trash } from 'lucide-react';
+import { Circle, Info, Loader2, Pencil, Plus, Send, Trash } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createSearchParams, useLocation, useNavigate } from 'react-router-dom';
+import {
+  createSearchParams,
+  NavLink,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom';
 import { Button } from '../ui/button';
 import RepositoryAddEditForm from './RepositoryAddEditForm';
 import RepositoryFilters from './RepositoryFilters';
@@ -210,6 +215,11 @@ const RepositoryListing = () => {
                 </AmlTooltip>
               </span>
             )}
+            <NavLink to={`${location.pathname}/${row.id}`}>
+              <AmlTooltip tooltip='Details'>
+                <Info className='h-5 w-5 hover:fill-slate-400 cursor-pointer' />
+              </AmlTooltip>
+            </NavLink>
             <AmlTooltip tooltip='Edit'>
               <Pencil
                 className='h-5 w-5 hover:fill-slate-400 cursor-pointer'

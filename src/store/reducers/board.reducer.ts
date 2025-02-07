@@ -7,6 +7,7 @@ import {
   ContentActionType,
   QuestionsActionType,
   QuestionSetActionType,
+  RepositoryAssociationActionType,
 } from '../actions/actions.constants';
 import { BoardActionPayloadType } from '../actions/board.action';
 
@@ -66,7 +67,8 @@ export const boardReducer = (
       case QuestionsActionType.GET_LIST_COMPLETED:
       case QuestionSetActionType.GET_LIST_COMPLETED:
       case ContentActionType.GET_LIST_COMPLETED:
-      case QuestionsActionType.GET_QUESTION_COMPLETED: {
+      case QuestionsActionType.GET_QUESTION_COMPLETED:
+      case RepositoryAssociationActionType.GET_BY_ID_COMPLETED: {
         draft.isLoading = false;
 
         const boardMap = action.payload?.boards?.reduce(

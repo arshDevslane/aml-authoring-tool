@@ -15,6 +15,9 @@ import { mediaReducer } from './media.reducer';
 import { translationReducer } from './translation.reducer';
 import { ttsReducer } from './tts.reducer';
 import { audioReducer } from './audio.reducer';
+import { repositoryAssociationReducer } from './repositoryAssociation.reducer';
+import { tenantReducer } from './tenant.reducer';
+import { learnerReducer } from './learner.reducer';
 
 const appReducer = combineReducers({
   auth: authReducer,
@@ -22,7 +25,10 @@ const appReducer = combineReducers({
   questionSet: questionSetReducer,
   questions: questionsReducer,
   repository: repositoryReducer,
+  repositoryAssociation: repositoryAssociationReducer,
   board: boardReducer,
+  tenant: tenantReducer,
+  learner: learnerReducer,
   class: classReducer,
   skill: skillReducer,
   subSkill: subSkillReducer,
