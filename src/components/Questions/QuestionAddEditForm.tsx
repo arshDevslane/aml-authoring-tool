@@ -123,8 +123,12 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
     // Question body
     question_body: {
       numbers: question?.question_body?.numbers || { n1: '', n2: '' },
-      grid1_show_carry: question?.question_body?.grid1_show_carry ?? false,
-      grid1_show_regroup: question?.question_body?.grid1_show_regroup ?? false,
+      grid1_show_carry: ['true', 'yes', true].includes(
+        String(question?.question_body?.grid1_show_carry)?.toLowerCase()
+      ),
+      grid1_show_regroup: ['true', 'yes', true].includes(
+        String(question?.question_body?.grid1_show_regroup)?.toLowerCase()
+      ),
       grid1_pre_fills_top: question?.question_body?.grid1_pre_fills_top ?? '',
       grid1_pre_fills_result:
         question?.question_body?.grid1_pre_fills_result ?? '',
