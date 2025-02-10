@@ -28,6 +28,7 @@ type InfiniteSelectProps = {
   totalCount: number;
   preLoadedOptions?: any[];
   isClearable?: boolean;
+  disabled?: boolean;
 };
 
 export const InfiniteSelect = ({
@@ -40,6 +41,7 @@ export const InfiniteSelect = ({
   valueKey,
   isLoading,
   totalCount,
+  disabled,
   preLoadedOptions = [],
   isClearable = true,
 }: InfiniteSelectProps) => {
@@ -54,7 +56,7 @@ export const InfiniteSelect = ({
 
   const selectedValues = React.useMemo(() => {
     if (!multiple) return _.get(values, valueKey ?? '');
-    return values.map((item: any) => _.get(item, valueKey ?? ''));
+    return values?.map((item: any) => _.get(item, valueKey ?? ''));
   }, [multiple, values, valueKey]);
   React.useEffect(() => {
     if (preLoadedOptions.length === 0) return; // Avoiding infinite loop when empty
@@ -213,6 +215,7 @@ export const InfiniteSelect = ({
             role='combobox'
             aria-expanded={open}
             className='border-input flex justify-between flex-1 overflow-hidden'
+            disabled={disabled}
           >
             <p className='truncate max-w-full'>
               {multiple

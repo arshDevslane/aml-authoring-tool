@@ -12,6 +12,9 @@ import { mediaSaga } from './media.saga';
 import translationSaga from './translation.saga';
 import { ttsSaga } from './tts.saga';
 import { audioSaga } from './audio.saga';
+import repositoryAssociationSaga from './repositoryAssociation.saga';
+import { tenantSaga } from './tenant.saga';
+import { learnerSaga } from './learner.saga';
 
 export default function* rootSaga() {
   yield all([
@@ -19,6 +22,9 @@ export default function* rootSaga() {
     fork(questionSetSaga),
     fork(questionsSaga),
     fork(repositorySaga),
+    fork(repositoryAssociationSaga),
+    fork(tenantSaga),
+    fork(learnerSaga),
     fork(boardSaga),
     fork(classSaga),
     fork(skillSaga),
