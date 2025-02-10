@@ -3,6 +3,7 @@ import React from 'react';
 import {
   ChevronUp,
   FileText,
+  FolderGit2,
   Layers,
   TableOfContents,
   User2,
@@ -47,11 +48,11 @@ const items = [
     url: '/app/content',
     icon: TableOfContents,
   },
-  // {
-  //   title: 'Repository',
-  //   url: '/app/repository',
-  //   icon: FolderGit2,
-  // },
+  {
+    title: 'Repository',
+    url: '/app/repository',
+    icon: FolderGit2,
+  },
 ];
 
 export const AppSidebar = () => {
