@@ -31,6 +31,8 @@ import FormikInput from '@/shared-resources/FormikInput/FormikInput';
 import { PopoverClose } from '@radix-ui/react-popover';
 import * as _ from 'lodash';
 import { createEntitySelectorFactory } from '@/store/selectors/root.selectors';
+import { enumToSelectOptions } from '@/utils/helpers/helper';
+import { QuestionSetPurposeType } from '@/enums/questionSet.enum';
 import { Button } from '../ui/button';
 
 type QuestionSetFiltersProps = {
@@ -69,6 +71,7 @@ const QuestionSetFilters = ({
         l2_skill_id: searchFilters.l2_skill_id ?? '',
         repository_id: searchFilters.repository_id ?? '',
         status: searchFilters.status ?? '',
+        purpose: searchFilters.purpose ?? '',
       }}
       enableReinitialize
       onSubmit={(values) => {
@@ -220,6 +223,14 @@ const QuestionSetFilters = ({
                   value: status.toLowerCase(),
                   label: status,
                 }))}
+              />
+            </div>
+            <div className='flex w-full gap-6 items-start'>
+              <FormikSelect
+                name='purpose'
+                label='Purpose'
+                placeholder='Select purpose'
+                options={enumToSelectOptions(QuestionSetPurposeType)}
               />
             </div>
             <div className='flex justify-end'>
