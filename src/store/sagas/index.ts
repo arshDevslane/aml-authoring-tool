@@ -14,6 +14,7 @@ import { ttsSaga } from './tts.saga';
 import { audioSaga } from './audio.saga';
 import repositoryAssociationSaga from './repositoryAssociation.saga';
 import { tenantSaga } from './tenant.saga';
+import { learnerSaga } from './learner.saga';
 
 export default function* rootSaga() {
   yield all([
@@ -23,6 +24,7 @@ export default function* rootSaga() {
     fork(repositorySaga),
     fork(repositoryAssociationSaga),
     fork(tenantSaga),
+    fork(learnerSaga),
     fork(boardSaga),
     fork(classSaga),
     fork(skillSaga),

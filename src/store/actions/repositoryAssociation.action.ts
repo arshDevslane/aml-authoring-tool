@@ -30,16 +30,19 @@ export const createRepositoryAssociationErrorAction = (message: string) => ({
   payload: message,
 });
 
-export const deleteRepositoryAssociationAction = (
-  repositoryAssociationId: string
-) => ({
+export const deleteRepositoryAssociationAction = (payload: {
+  repositoryAssociationId: string;
+  repositoryId: string;
+}) => ({
   type: RepositoryAssociationActionType.DELETE_REPOSITORY_ASSOCIATION,
-  payload: { repositoryAssociationId },
+  payload: payload,
 });
 
-export const deleteRepositoryAssociationCompletedAction = () => ({
+export const deleteRepositoryAssociationCompletedAction = (
+  repositoryAssociationId: string
+) => ({
   type: RepositoryAssociationActionType.DELETE_REPOSITORY_ASSOCIATION_COMPLETED,
-  payload: {},
+  payload: repositoryAssociationId,
 });
 
 export const deleteRepositoryAssociationErrorAction = (message: string) => ({

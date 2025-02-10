@@ -14,7 +14,7 @@ import { RepositoryAssociationCreatePayload } from '@/components/Repository/Repo
 import { repositoryAssociationService } from '@/services/api-services/RepositoryAssociationService';
 
 interface DeleteRepositoryAssociationSagaPayloadType extends SagaPayloadType {
-  payload: { repositoryAssociationId: string };
+  payload: { repositoryAssociationId: string; repositoryId: string };
 }
 interface CreateRepositoryAssociatePayloadType extends SagaPayloadType {
   payload: RepositoryAssociationCreatePayload;
@@ -31,6 +31,7 @@ function* getRepositoryAssociationByIdSaga(data: any): any {
         repository_associations: response.result.repository_associations,
         boards: response.result.boards,
         learners: response.result.learners,
+        repositories: response.result.repositories,
         tenants: response.result.tenants,
         id: id,
       })
@@ -66,11 +67,10 @@ function* deleteRepositoryAssociationSaga(
   const { repositoryAssociationId } = data.payload;
   try {
     yield call(repositoryAssociationService.delete, repositoryAssociationId);
-    yield put(deleteRepositoryAssociationCompletedAction());
+    yield put(
+      deleteRepositoryAssociationCompletedAction(repositoryAssociationId)
+    );
     toastService.showSuccess(' Repository Association deleted successfully');
-    // yield put(
-    //   getListRepositoryAssociationAction(data.payload.repositoryAssociationId)
-    // );
   } catch (e: any) {
     const errorMessage = e?.response?.data?.error?.message;
     toastService.showError(errorMessage);

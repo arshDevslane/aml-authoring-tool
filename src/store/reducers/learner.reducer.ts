@@ -19,6 +19,7 @@ export type LearnerState = LearnerActionPayloadType & {
 const initialState: LearnerState = {
   isLoading: false,
   filters: {
+    search_query: '',
     page_no: 1,
   },
   latestCount: 0,
@@ -38,6 +39,28 @@ export const learnerReducer = (
         draft.filters = action.payload.filters;
         break;
       case LearnerActionType.GET_LIST_COMPLETED:
+        draft.isLoading = false;
+
+        const filterKey = JSON.stringify(state.filters);
+        const learnerMap = action.payload?.learners?.reduce(
+          (acc: any, learner: Learner) => ({
+            ...acc,
+            [learner.identifier]: learner,
+          }),
+          {} as Record<string, Learner>
+        );
+
+        draft.entities = { ...state.entities, ...learnerMap };
+        if (!action.payload.noCache) {
+          draft.cachedData[filterKey] = {
+            result: action.payload.learners?.map(
+              (learner: Learner) => learner.identifier
+            ),
+            totalCount: action.payload.totalCount,
+          };
+        }
+        draft.latestCount = action.payload.totalCount;
+        break;
       case RepositoryAssociationActionType.GET_BY_ID_COMPLETED: {
         draft.isLoading = false;
 

@@ -7,6 +7,7 @@ import {
   QuestionsActionType,
   QuestionSetActionType,
   RepositoryActionType,
+  RepositoryAssociationActionType,
 } from '../actions/actions.constants';
 import { RepositoryActionPayloadType } from '../actions/repository.action';
 
@@ -68,6 +69,8 @@ export const repositoryReducer = (
       case QuestionsActionType.GET_LIST_COMPLETED:
       case QuestionSetActionType.GET_LIST_COMPLETED:
       case ContentActionType.GET_LIST_COMPLETED:
+      case RepositoryAssociationActionType.GET_BY_ID_COMPLETED:
+      case RepositoryAssociationActionType.CREATE_REPOSITORY_ASSOCIATTION_COMPLETED:
       case QuestionsActionType.GET_QUESTION_COMPLETED: {
         draft.isLoading = false;
         const repositoryMap = action.payload?.repositories?.reduce(

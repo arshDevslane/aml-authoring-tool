@@ -19,6 +19,7 @@ export type TenantState = TenantActionPayloadType & {
 const initialState: TenantState = {
   isLoading: false,
   filters: {
+    search_query: '',
     page_no: 1,
   },
   latestCount: 0,
@@ -38,7 +39,29 @@ export const tenantReducer = (
         draft.filters = action.payload.filters;
         break;
       case TenantActionType.GET_LIST_COMPLETED:
-      case RepositoryAssociationActionType.GET_BY_ID_COMPLETED:
+        draft.isLoading = false;
+
+        const filterKey = JSON.stringify(state.filters);
+        const tenantMap = action.payload?.tenants?.reduce(
+          (acc: any, tenant: Tenants) => ({
+            ...acc,
+            [tenant.identifier]: tenant,
+          }),
+          {} as Record<string, Tenants>
+        );
+
+        draft.entities = { ...state.entities, ...tenantMap };
+        if (!action.payload.noCache) {
+          draft.cachedData[filterKey] = {
+            result: action.payload.tenants?.map(
+              (tenant: Tenants) => tenant.identifier
+            ),
+            totalCount: action.payload.totalCount,
+          };
+        }
+        draft.latestCount = action.payload.totalCount;
+        break;
+      case RepositoryAssociationActionType.GET_BY_ID_COMPLETED: {
         draft.isLoading = false;
 
         const tenantMap = action.payload?.tenants?.reduce(
@@ -51,11 +74,12 @@ export const tenantReducer = (
 
         draft.entities = { ...state.entities, ...tenantMap };
         break;
-
+      }
       case TenantActionType.GET_LIST_ERROR:
         draft.isLoading = false;
         draft.error = action.payload;
         break;
+
       default:
         break;
     }

@@ -2,6 +2,7 @@ import { LearnerActionType } from './actions.constants';
 
 export type LearnerActionPayloadType = {
   filters: Partial<{
+    search_query: string;
     page_no: number;
   }>;
 };

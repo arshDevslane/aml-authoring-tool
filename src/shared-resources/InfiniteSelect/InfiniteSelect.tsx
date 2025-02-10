@@ -56,7 +56,7 @@ export const InfiniteSelect = ({
 
   const selectedValues = React.useMemo(() => {
     if (!multiple) return _.get(values, valueKey ?? '');
-    return values.map((item: any) => _.get(item, valueKey ?? ''));
+    return values?.map((item: any) => _.get(item, valueKey ?? ''));
   }, [multiple, values, valueKey]);
   React.useEffect(() => {
     if (preLoadedOptions.length === 0) return; // Avoiding infinite loop when empty

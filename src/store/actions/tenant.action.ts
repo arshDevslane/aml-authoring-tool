@@ -2,6 +2,7 @@ import { TenantActionType } from './actions.constants';
 
 export type TenantActionPayloadType = {
   filters: Partial<{
+    search_query: string;
     page_no: number;
   }>;
 };

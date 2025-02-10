@@ -35,7 +35,7 @@ export const repositoryAssociationReducer = (
       case RepositoryAssociationActionType.GET_BY_ID:
         draft.isLoading = true;
         break;
-
+      case RepositoryAssociationActionType.CREATE_REPOSITORY_ASSOCIATTION_COMPLETED:
       case RepositoryAssociationActionType.GET_BY_ID_COMPLETED: {
         draft.isLoading = false;
         const { repository_associations } = action.payload;
@@ -64,13 +64,10 @@ export const repositoryAssociationReducer = (
         draft.isDeleting = true;
         break;
 
-      case RepositoryAssociationActionType.DELETE_REPOSITORY_ASSOCIATION_COMPLETED:
-      case RepositoryAssociationActionType.CREATE_REPOSITORY_ASSOCIATTION_COMPLETED: {
+      case RepositoryAssociationActionType.DELETE_REPOSITORY_ASSOCIATION_COMPLETED: {
         draft.isDeleting = false;
-        draft.cachedData = {};
-        const { repositoryAssociation, repositoryId } = action.payload;
-        draft.entities[repositoryId] = repositoryAssociation;
-
+        const repositoryAssociationId = action.payload;
+        delete draft.entities[repositoryAssociationId];
         break;
       }
 

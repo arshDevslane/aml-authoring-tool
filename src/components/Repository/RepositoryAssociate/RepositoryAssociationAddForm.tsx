@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
 import FormikInfiniteSelect from '@/shared-resources/FormikSelect/FormikInfiniteSelect';
@@ -6,7 +6,6 @@ import { getListBoardAction } from '@/store/actions/board.action';
 import { createRepositoryAssociationAction } from '@/store/actions/repositoryAssociation.action';
 import { getListTenantAction } from '@/store/actions/tenant.action';
 import {
-  boardEntitiesSelector,
   boardSelector,
   isLoadingBoardsSelector,
 } from '@/store/selectors/board.selector';
@@ -16,6 +15,12 @@ import {
 } from '@/store/selectors/tenant.selector';
 import { Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
+import {
+  isLoadingLearnersSelector,
+  learnerSelector,
+} from '@/store/selectors/learner.selector';
+import { getListLearnerAction } from '@/store/actions/learner.action';
+import _ from 'lodash';
 
 export type RepositoryAssociationCreatePayload = {
   repository_id: string;
@@ -25,7 +30,7 @@ export type RepositoryAssociationCreatePayload = {
 };
 
 type RepositoryAssociateDetailProps = {
-  repositoryId: string;
+  repositoryId: string | null;
   onClose: () => void;
   open: boolean;
 };
@@ -37,25 +42,29 @@ const RepositoryAssociationAddForm = ({
 }: RepositoryAssociateDetailProps) => {
   const dispatch = useDispatch();
 
-  const [selectedField, setSelectedField] = useState<
-    'board_ids' | 'learner_ids' | 'tenant_ids' | null
-  >(null);
-
   const initialValues = {
     board_ids: [],
     learner_ids: [],
     tenant_ids: [],
   };
 
-  const boardEntities = useSelector(boardEntitiesSelector);
-
   const { result: boards, totalCount: boardsCount } =
     useSelector(boardSelector);
-
+  const { result: learners, totalCount: learnersCount } =
+    useSelector(learnerSelector);
   const { result: tenants, totalCount: tenantsCount } =
     useSelector(tenantSelector);
   const isLoadingBoard = useSelector(isLoadingBoardsSelector);
   const isLoadingTenant = useSelector(isLoadingTenantsSelector);
+  const isLoadingLearner = useSelector(isLoadingLearnersSelector);
+  const [isFormSubmitted, setIsFormSubmitted] = React.useState(false);
+
+  useEffect(() => {
+    if (isFormSubmitted) {
+      setIsFormSubmitted(false);
+      onClose();
+    }
+  }, [isFormSubmitted, onClose]);
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -64,20 +73,23 @@ const RepositoryAssociationAddForm = ({
         <Formik
           initialValues={initialValues}
           onSubmit={(values) => {
-            const normalizeArray = (value: string | string[] | undefined) => {
-              // Ensure value is an array, remove falsy values, and return undefined if empty
-              const arr = Array.isArray(value) ? value : value ? [value] : [];
-              return arr.length > 0 ? arr.filter(Boolean) : undefined;
-            };
+            setIsFormSubmitted(true);
 
             const data = {
               repository_id: repositoryId,
-              board_ids: normalizeArray(values.board_ids),
-              learner_ids: normalizeArray(values.learner_ids),
-              tenant_ids: normalizeArray(values.tenant_ids),
+              board_ids: values.board_ids,
+              learner_ids: values.learner_ids,
+              tenant_ids: values.tenant_ids,
             };
 
-            dispatch(createRepositoryAssociationAction(data));
+            dispatch(
+              createRepositoryAssociationAction(
+                _.omitBy(
+                  data,
+                  (value) => Array.isArray(value) && value.length === 0
+                )
+              )
+            );
           }}
         >
           {(formik) => (
@@ -101,35 +113,35 @@ const RepositoryAssociationAddForm = ({
                     }
                     isLoading={isLoadingBoard}
                     totalCount={boardsCount}
-                    onValueChange={() => setSelectedField('board_ids')}
-                    preLoadedOptions={[boardEntities?.boards]}
-                    // disabled={
-                    //   !!formik.values.learner_ids || !!formik.values.tenant_ids
-                    // }
+                    disabled={
+                      !!formik.values.tenant_ids?.length ||
+                      !!formik.values.learner_ids.length
+                    }
+                    multiple
                   />
-                  {/* <FormikInfiniteSelect
+                  <FormikInfiniteSelect
                     name='learner_ids'
                     label='Learners'
                     placeholder='Select Learner'
-                    data={boards}
-                    labelKey='name.en'
+                    data={learners}
+                    labelKey='name'
                     valueKey='identifier'
                     dispatchAction={(payload) =>
-                      getListBoardAction({
+                      getListLearnerAction({
                         filters: {
                           search_query: payload.value,
                           page_no: payload.page_no,
                         },
                       })
                     }
-                    isLoading={isLoadingBoard}
-                    totalCount={boardsCount}
-                    onValueChange={() => setSelectedField('learner_ids')}
-                    // disabled={
-                    //   !!formik.values.board_ids || !!formik.values.tenant_ids
-                    // }
-                    preLoadedOptions={[question?.taxonomy?.class]}
-                  /> */}
+                    isLoading={isLoadingLearner}
+                    totalCount={learnersCount}
+                    disabled={
+                      !!formik.values.board_ids?.length ||
+                      !!formik.values.tenant_ids.length
+                    }
+                    multiple
+                  />
                   <FormikInfiniteSelect
                     name='tenant_ids'
                     label='Tenants'
@@ -140,21 +152,25 @@ const RepositoryAssociationAddForm = ({
                     dispatchAction={(payload) =>
                       getListTenantAction({
                         filters: {
+                          search_query: payload.value,
                           page_no: payload.page_no,
                         },
                       })
                     }
                     isLoading={isLoadingTenant}
                     totalCount={tenantsCount}
-                    onValueChange={() => setSelectedField('tenant_ids')}
-                    preLoadedOptions={[boardEntities?.tenants]}
-                    // disabled={
-                    //   !!formik.values.board_ids || !!formik.values.learner_ids
-                    // }
+                    disabled={
+                      !!formik.values.board_ids?.length ||
+                      !!formik.values.learner_ids.length
+                    }
                     multiple
                   />
                   <div className='mt-8'>
-                    <Button size='lg' disabled={!selectedField} type='submit'>
+                    <Button
+                      size='lg'
+                      disabled={!formik.dirty || !formik.isValid}
+                      type='submit'
+                    >
                       Save
                     </Button>
                   </div>
