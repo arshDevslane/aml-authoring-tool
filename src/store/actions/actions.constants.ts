@@ -88,11 +88,40 @@ export enum RepositoryActionType {
   PUBLISH_REPOSITORY_ERROR = 'repository/publish/error',
 }
 
+// repository association
+export enum RepositoryAssociationActionType {
+  GET_BY_ID = 'repository/association/getById',
+  GET_BY_ID_COMPLETED = 'repository/association/getById/completed',
+  GET_BY_ID_ERROR = 'repository/association/getById/error',
+
+  CREATE_REPOSITORY_ASSOCIATION = 'repository/association/create',
+  CREATE_REPOSITORY_ASSOCIATTION_COMPLETED = 'repository/association/create/completed',
+  CREATE_REPOSITORY_ASSOCIATTION_ERROR = 'repository/association/create/error',
+
+  DELETE_REPOSITORY_ASSOCIATION = 'repository/association/delete',
+  DELETE_REPOSITORY_ASSOCIATION_COMPLETED = 'repository/association/delete/completed',
+  DELETE_REPOSITORY_ASSOCIATION_ERROR = 'repository/association/delete/error',
+}
+
 // boards
 export enum BoardActionType {
   GET_LIST = 'board/getList',
   GET_LIST_COMPLETED = 'board/getList/completed',
   GET_LIST_ERROR = 'board/getList/error',
+}
+
+// tenant
+export enum TenantActionType {
+  GET_LIST = 'tenant/getList',
+  GET_LIST_COMPLETED = 'tenant/getList/completed',
+  GET_LIST_ERROR = 'tenant/getList/error',
+}
+
+// learner
+export enum LearnerActionType {
+  GET_LIST = 'learner/getList',
+  GET_LIST_COMPLETED = 'learner/getList/completed',
+  GET_LIST_ERROR = 'learner/getList/error',
 }
 
 // classes

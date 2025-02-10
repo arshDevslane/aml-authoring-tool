@@ -25,6 +25,11 @@ export const isLoadingBoardsSelector = createSelector(
   (state: BoardState) => state.isLoading
 );
 
+export const boardEntitiesSelector = createSelector(
+  [boardState],
+  (state: BoardState) => state.entities
+);
+
 export const getAllBoardsSelector = (ids: string[]) =>
   createSelector([boardState], (state: BoardState) => {
     const result: BoardState['entities'][string][] = [];

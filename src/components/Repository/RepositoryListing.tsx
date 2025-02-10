@@ -26,7 +26,7 @@ import {
 } from '@/utils/helpers/helper';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import cx from 'classnames';
-import { Circle, Loader2, Pencil, Plus, Send, Trash } from 'lucide-react';
+import { Circle, Info, Loader2, Pencil, Plus, Send, Trash } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSearchParams, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '../ui/button';
@@ -210,6 +210,13 @@ const RepositoryListing = () => {
                 </AmlTooltip>
               </span>
             )}
+            <AmlTooltip tooltip='Details'>
+              <Info
+                type='button'
+                onClick={() => navigateTo(`${row.id}`)}
+                className='h-5 w-5 hover:fill-slate-400 cursor-pointer'
+              />
+            </AmlTooltip>
             <AmlTooltip tooltip='Edit'>
               <Pencil
                 className='h-5 w-5 hover:fill-slate-400 cursor-pointer'

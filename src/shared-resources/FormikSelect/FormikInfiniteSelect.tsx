@@ -13,10 +13,11 @@ interface FormikInfiniteSelectProps
   label?: string;
   required?: boolean;
   onValueChange?: (value: any) => void;
+  disabled?: boolean;
 }
 
 const FormikInfiniteSelect: React.FC<FormikInfiniteSelectProps> = (props) => {
-  const { label, name, required, onValueChange, valueKey } = props;
+  const { label, name, required, onValueChange, valueKey, disabled } = props;
   const [, meta, helpers] = useField(name);
 
   const { touched, error } = meta;
@@ -43,6 +44,7 @@ const FormikInfiniteSelect: React.FC<FormikInfiniteSelectProps> = (props) => {
           );
           onValueChange?.(v);
         }}
+        disabled={disabled}
         {...props}
       />
       <ErrorMessage

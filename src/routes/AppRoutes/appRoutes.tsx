@@ -6,6 +6,7 @@ import QuestionSetDetailPage from '@/views/login/QuestionSetDetailPage';
 import QuestionsAddEditPage from '@/components/Questions/QuestionsAddEditPage';
 import ContentListing from '@/components/Content/ContentListing';
 import RepositoryListing from '@/components/Repository/RepositoryListing';
+import RepositoryAssociatePage from '@/views/RepositoryAssociate/RepositoryAssociatePage';
 
 export enum AppSubRoutes {
   QUESTIONS = 'questions',
@@ -13,6 +14,7 @@ export enum AppSubRoutes {
   QUESTION_SET = 'question-sets/:id',
   CONTENT = 'content',
   REPOSITORY = 'repository',
+  REPOSITORY_ASSOCIATE = 'repository/:id',
 }
 
 export enum CommonSubRoutes {
@@ -41,6 +43,10 @@ const AppRoutes: React.FC = () => (
     />
     <Route path={AppSubRoutes.CONTENT} element={<ContentListing />} />
     <Route path={AppSubRoutes.REPOSITORY} element={<RepositoryListing />} />
+    <Route
+      path={AppSubRoutes.REPOSITORY_ASSOCIATE}
+      element={<RepositoryAssociatePage />}
+    />
   </Routes>
 );
 
