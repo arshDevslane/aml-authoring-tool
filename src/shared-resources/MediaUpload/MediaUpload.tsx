@@ -101,7 +101,9 @@ const MediaUpload = ({
             isGeneratingPresignedUrls ||
             isUploadInProgress ||
             Boolean(uploadError) ||
-            Object.keys(presignedUrls).length === value?.length
+            value.length === 0 ||
+            (uploadClicked &&
+              Object.keys(presignedUrls).length === value.length)
           }
         >
           Upload
