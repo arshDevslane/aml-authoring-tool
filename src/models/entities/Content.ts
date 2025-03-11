@@ -1,3 +1,4 @@
+import { SupportedLanguagesLabel } from '../enums/SupportedLanguages.enum';
 import { Description, SubSkill, Taxonomy, Repository } from './Question';
 
 export type Content = {
@@ -25,4 +26,5 @@ export type Media = {
   mediaType: string;
   mimeType: string;
   url: string;
+  language: SupportedLanguagesLabel;
 };

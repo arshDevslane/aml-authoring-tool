@@ -5,7 +5,9 @@ export enum SupportedLanguages {
 }
 
 export enum SupportedLanguagesLabel {
-  en = 'English',
   kn = 'Kannada',
+  en = 'English',
   hi = 'Hindi',
+  ta = 'Tamil',
+  te = 'Telugu',
 }

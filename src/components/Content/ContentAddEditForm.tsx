@@ -36,18 +36,28 @@ import {
   l2SkillSelector,
   l3SkillSelector,
 } from '@/store/selectors/skill.selector';
-import { getMultiLangFormikInitialValues } from '@/utils/helpers/helper';
+import {
+  enumToSelectOptions,
+  getMultiLangFormikInitialValues,
+} from '@/utils/helpers/helper';
 import { Formik } from 'formik';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
 import FormikInput from '@/shared-resources/FormikInput/FormikInput';
+import FormikSelect from '@/shared-resources/FormikSelect/FormikSelect';
+import { SupportedLanguagesLabel } from '@/models/enums/SupportedLanguages.enum';
 import AMLVideoPlayer from '../AMLVideoPlayer';
 
 type ContentDetailsProps = {
   onClose: () => void;
   contentId: string | null;
 };
+
+enum FileUploadTypeEnum {
+  CREATE = 'CREATE',
+  UPDATE = 'UPDATE',
+}
 
 const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
   const dispatch = useDispatch();
@@ -81,6 +91,8 @@ const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
   const isLoadingRepository = useSelector(isLoadingRepositoriesSelector);
   const isLoadingSkill = useSelector(isLoadingSkillsSelector);
   const [isFormSubmitted, setIsFormSubmitted] = React.useState(false);
+  const [fileUploadType, setFileUploadType] =
+    React.useState<FileUploadTypeEnum | null>(null);
 
   const validationSchema = yup.object().shape({
     name: yup.object().shape(multiLanguageSchemaObject('name')),
@@ -125,7 +137,11 @@ const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
           (skill) => skill.identifier
         ),
         files: [],
-        mediaObjects: content?.media ?? [],
+        mediaObjects:
+          content?.media?.map((media) => ({
+            ...media,
+            language: media.language || '',
+          })) ?? [],
       }}
       validationSchema={validationSchema}
       onSubmit={(values) => {
@@ -141,7 +157,10 @@ const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
           l1_skill_id: values.l1_skill_id,
           l2_skill_ids: values.l2_skill_ids,
           l3_skill_ids: values.l3_skill_ids,
-          media: values.mediaObjects.map(({ url, ...rest }) => rest),
+          media: values.mediaObjects.map(({ url, language, ...rest }) => ({
+            ...rest,
+            language: language || '',
+          })),
         };
         if (content) {
           dispatch(
@@ -311,25 +330,95 @@ const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
             label='Description'
             supportedLanguages={supportedLanguages}
           />
+
           <div>
-            {!!content?.media?.length && (
-              <AMLVideoPlayer videos={content.media} />
-            )}
             <MediaUpload
-              onUploadComplete={(data) => {
+              onUploadComplete={(uploadedMedia) => {
+                setFileUploadType(
+                  content
+                    ? FileUploadTypeEnum.UPDATE
+                    : FileUploadTypeEnum.CREATE
+                );
+
                 formik.setFieldValue('mediaObjects', [
                   ...formik.values.mediaObjects,
-                  ...data,
+                  ...uploadedMedia.map((media) => ({
+                    ...media,
+                    language: '',
+                  })),
                 ]);
               }}
               multiple
               value={formik.values.files}
-              setValue={(files) => formik.setFieldValue('files', files)}
+              setValue={(files) => {
+                formik.setFieldValue('files', files);
+                formik.setFieldValue(
+                  'mediaObjects',
+                  formik.values.mediaObjects.filter(
+                    (media) =>
+                      files.some((file) => file.name === media.fileName) ||
+                      media.url
+                  )
+                );
+              }}
               category='content'
               acceptedFiles={{
                 'video/*': [],
               }}
             />
+
+            {formik.values?.mediaObjects?.length > 0 &&
+              (fileUploadType === FileUploadTypeEnum.CREATE ||
+                (fileUploadType === FileUploadTypeEnum.UPDATE && content)) && (
+                <div className='mt-4'>
+                  <div
+                    className={`grid ${
+                      fileUploadType === FileUploadTypeEnum.CREATE
+                        ? 'grid-cols-2'
+                        : ''
+                    } gap-4`}
+                  >
+                    {formik.values.mediaObjects.map((file, index) => (
+                      <div
+                        key={file.src || index}
+                        className='flex flex-col gap-2'
+                      >
+                        {!file.url && (
+                          <>
+                            <p className='text-sm font-semibold'>
+                              {index + 1}. {file.fileName}
+                            </p>
+                            <FormikSelect
+                              name={`mediaObjects[${index}].language`}
+                              label='Language'
+                              options={enumToSelectOptions(
+                                SupportedLanguagesLabel
+                              )}
+                              required
+                            />
+                          </>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+            {!!content?.media?.length &&
+              content.media.map((video, index) => {
+                const key = `${video.src || video.url || 'video'}-${index}`;
+                return (
+                  <div key={key} className='mt-4'>
+                    <FormikSelect
+                      name={`mediaObjects[${index}].language`}
+                      label='Language'
+                      options={enumToSelectOptions(SupportedLanguagesLabel)}
+                      required
+                    />
+                    <AMLVideoPlayer videos={[video]} />
+                  </div>
+                );
+              })}
           </div>
           <div className='flex gap-5 mt-5 flex-row-reverse'>
             <Button
