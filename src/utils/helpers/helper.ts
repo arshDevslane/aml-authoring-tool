@@ -37,6 +37,18 @@ export function enumToSelectOptions<T extends object>(
   label: string;
   value: string;
 }[] {
+  return Object.entries(enumObj).map(([_, value]) => ({
+    label: value as string, // Enum value as label
+    value, // Enum key as value
+  }));
+}
+
+export function enumToKeySelectOptions<T extends object>(
+  enumObj: T
+): {
+  label: string;
+  value: string;
+}[] {
   return Object.entries(enumObj).map(([key, value]) => ({
     label: value as string, // Enum value as label
     value: key, // Enum key as value

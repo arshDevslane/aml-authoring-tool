@@ -37,7 +37,7 @@ import {
   l3SkillSelector,
 } from '@/store/selectors/skill.selector';
 import {
-  enumToSelectOptions,
+  enumToKeySelectOptions,
   getMultiLangFormikInitialValues,
 } from '@/utils/helpers/helper';
 import { Formik } from 'formik';
@@ -391,7 +391,7 @@ const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
                             <FormikSelect
                               name={`mediaObjects[${index}].language`}
                               label='Language'
-                              options={enumToSelectOptions(
+                              options={enumToKeySelectOptions(
                                 SupportedLanguagesLabel
                               )}
                               required
@@ -412,7 +412,7 @@ const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
                     <FormikSelect
                       name={`mediaObjects[${index}].language`}
                       label='Language'
-                      options={enumToSelectOptions(SupportedLanguagesLabel)}
+                      options={enumToKeySelectOptions(SupportedLanguagesLabel)}
                       required
                     />
                     <AMLVideoPlayer videos={[video]} />

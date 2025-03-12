@@ -6,6 +6,8 @@ export interface Description {
   en: string;
   kn?: string;
   hi?: string;
+  te?: string;
+  ta?: string;
 }
 export interface Repository {
   identifier: string;
