@@ -89,7 +89,8 @@ export const cleanQuestionBody = (
   } else if (
     questionType === QuestionType.FIB &&
     (questionBody?.fib_type === FibType.FIB_STANDARD ||
-      questionBody.fib_type === FibType.FIB_QUOTIENT_REMAINDER)
+      questionBody.fib_type === FibType.FIB_QUOTIENT_REMAINDER ||
+      questionBody?.fib_type === FibType.FIB_FACT_FLUENCY)
   ) {
     cleanedQuestionBody = {
       fib_type: cleanedQuestionBody.fib_type,

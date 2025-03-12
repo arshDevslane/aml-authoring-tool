@@ -250,9 +250,11 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
               ([QuestionType.GRID_1, QuestionType.GRID_2].includes(
                 question_type
               ) ||
-                [FibType.FIB_STANDARD, FibType.FIB_QUOTIENT_REMAINDER].includes(
-                  fib_type
-                )) &&
+                [
+                  FibType.FIB_STANDARD,
+                  FibType.FIB_FACT_FLUENCY,
+                  FibType.FIB_QUOTIENT_REMAINDER,
+                ].includes(fib_type)) &&
               !fieldVal
             );
           }),
@@ -266,9 +268,11 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
               ([QuestionType.GRID_1, QuestionType.GRID_2].includes(
                 question_type
               ) ||
-                [FibType.FIB_STANDARD, FibType.FIB_QUOTIENT_REMAINDER].includes(
-                  fib_type
-                )) &&
+                [
+                  FibType.FIB_STANDARD,
+                  FibType.FIB_FACT_FLUENCY,
+                  FibType.FIB_QUOTIENT_REMAINDER,
+                ].includes(fib_type)) &&
               !fieldVal
             );
           }),
@@ -528,7 +532,8 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
   const renderFibTypeForm = (fibType: FibType, formik: any) => {
     if (
       fibType === FibType.FIB_STANDARD ||
-      fibType === FibType.FIB_QUOTIENT_REMAINDER
+      fibType === FibType.FIB_QUOTIENT_REMAINDER ||
+      fibType === FibType.FIB_FACT_FLUENCY
     ) {
       return <>{numberFields}</>;
     }
@@ -590,7 +595,10 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
     );
     if (questionType === QuestionType.FIB) {
       return (
-        <>{renderFibTypeForm(formik.values.question_body.fib_type, formik)}</>
+        <>
+          {console.log('HERE', questionType)}
+          {renderFibTypeForm(formik.values.question_body.fib_type, formik)}
+        </>
       );
     }
     if (questionType === QuestionType.GRID_2) {
