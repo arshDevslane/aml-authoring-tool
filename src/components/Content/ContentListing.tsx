@@ -30,6 +30,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSearchParams, useLocation, useNavigate } from 'react-router-dom';
 import cx from 'classnames';
+import { resetMediaUploadStateAction } from '@/store/actions/media.actions';
 import { Button } from '../ui/button';
 import ContentFilters from './ContentFilters';
 import ContentAddEditForm from './ContentAddEditForm';
@@ -312,13 +313,14 @@ const ContentListing = () => {
           <DialogContent className='max-w-[80%] max-h-[95%] overflow-y-auto'>
             <ContentAddEditForm
               contentId={openDialog.contentId}
-              onClose={() =>
+              onClose={() => {
                 setOpenDialog({
                   dialog: null,
                   open: false,
                   contentId: null,
-                })
-              }
+                });
+                dispatch(resetMediaUploadStateAction());
+              }}
             />
           </DialogContent>
         </Dialog>

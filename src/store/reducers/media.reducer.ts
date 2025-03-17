@@ -61,7 +61,7 @@ export const mediaReducer = (state: MediaState = mediaState, action: any) =>
         };
         break;
       }
-      case MediaActionType.RESET_STATE:
+      case MediaActionType.RESET_STATE: {
         draft.isLoadingSignedUrls = false;
         draft.signedUrls = {};
         draft.signedUrlsError = '';
@@ -69,6 +69,7 @@ export const mediaReducer = (state: MediaState = mediaState, action: any) =>
         draft.uploadProgress = {};
         draft.uploadError = '';
         break;
+      }
       default:
         break;
     }
