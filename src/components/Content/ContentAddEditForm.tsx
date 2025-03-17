@@ -102,7 +102,16 @@ const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
     class_id: yup.string().required().label('Class'),
     x_id: yup.string().required().label('Content Id'),
     l1_skill_id: yup.string().required().label('L1 Skill'),
-    mediaObjects: yup.array().min(1).required(),
+    mediaObjects: yup
+      .array()
+      .min(1)
+      .required()
+      .of(
+        yup.object().shape({
+          language: yup.string().required().label('Language'),
+          // ... other media object fields
+        })
+      ),
   });
 
   React.useEffect(() => {
