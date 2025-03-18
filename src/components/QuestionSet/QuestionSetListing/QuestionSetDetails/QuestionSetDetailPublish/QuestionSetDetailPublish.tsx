@@ -190,8 +190,7 @@ const QuestionSetDetailPublish = ({
               isActionInProgress ||
               !(
                 isOrderUpdated ||
-                Boolean(questionSet.content_ids?.[0]) !==
-                  Boolean(selectedContentId)
+                questionSet.content_ids?.[0] !== selectedContentId
               ) ||
               isFormSubmitted
             }
