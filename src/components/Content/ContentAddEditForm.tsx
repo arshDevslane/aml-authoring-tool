@@ -47,6 +47,7 @@ import * as yup from 'yup';
 import FormikInput from '@/shared-resources/FormikInput/FormikInput';
 import FormikSelect from '@/shared-resources/FormikSelect/FormikSelect';
 import { SupportedLanguagesLabel } from '@/models/enums/SupportedLanguages.enum';
+import { Trash2 } from 'lucide-react';
 import AMLVideoPlayer from '../AMLVideoPlayer';
 
 type ContentDetailsProps = {
@@ -63,6 +64,9 @@ const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
   const dispatch = useDispatch();
   const allContent = useSelector(allContentSelector);
   const content = allContent[contentId!];
+  const [deletedVideos, setDeletedVideos] = React.useState<
+    Array<{ src: string; fileName: string }>
+  >([]);
 
   const preSelectedBoards = useSelector(
     getAllBoardsSelector([content?.taxonomy?.board?.identifier])
@@ -150,6 +154,7 @@ const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
           content?.media?.map((media) => ({
             ...media,
             language: media.language || '',
+            key: `${media.src || media.url}-${media.fileName}`,
           })) ?? [],
       }}
       validationSchema={validationSchema}
@@ -166,11 +171,13 @@ const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
           l1_skill_id: values.l1_skill_id,
           l2_skill_ids: values.l2_skill_ids,
           l3_skill_ids: values.l3_skill_ids,
-          media: values.mediaObjects.map(({ url, language, ...rest }) => ({
+          media: values.mediaObjects.map(({ url, language, key, ...rest }) => ({
             ...rest,
             language: language || '',
           })),
+          ...(deletedVideos.length > 0 && { removed_videos: deletedVideos }),
         };
+
         if (content) {
           dispatch(
             updateContentAction({
@@ -183,202 +190,223 @@ const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
         }
       }}
     >
-      {(formik) => (
-        <form
-          onSubmit={formik.handleSubmit}
-          className='flex flex-col overflow-x-hidden px-1'
-        >
-          <p className='text-2xl font-bold mb-8'>
-            {content ? 'Update - Content' : 'Create - Content'}
-          </p>
-          <div className='flex w-full gap-6 items-start'>
-            <FormikInfiniteSelect
-              name='board_id'
-              label='Board'
-              placeholder='Select Board'
-              data={boards}
-              labelKey='name.en'
-              valueKey='identifier'
-              dispatchAction={(payload) =>
-                getListBoardAction({
-                  filters: {
-                    search_query: payload.value,
-                    page_no: payload.page_no,
-                  },
-                })
-              }
-              isLoading={isLoadingBoard}
-              totalCount={boardsCount}
-              onValueChange={(value) => setSelectedBoard(value)}
-              preLoadedOptions={[content?.taxonomy?.board]}
-              required
-            />
-            <FormikInfiniteSelect
-              name='class_id'
-              label='Class'
-              placeholder='Select Class'
-              data={classes}
-              labelKey='name.en'
-              valueKey='identifier'
-              dispatchAction={(payload) =>
-                getListClassAction({
-                  filters: {
-                    search_query: payload.value,
-                    page_no: payload.page_no,
-                  },
-                })
-              }
-              isLoading={isLoadingClass}
-              totalCount={classesCount}
-              preLoadedOptions={[content?.taxonomy?.class]}
-              required
-            />
-          </div>
-          <div className='flex w-full gap-6 items-start'>
-            <FormikInfiniteSelect
-              name='repository_id'
-              label='Repository'
-              placeholder='Select Repository'
-              data={repositories}
-              labelKey='name.en'
-              valueKey='identifier'
-              dispatchAction={(payload) =>
-                getListRepositoryAction({
-                  filters: {
-                    search_query: payload.value,
-                    page_no: payload.page_no,
-                  },
-                })
-              }
-              isLoading={isLoadingRepository}
-              totalCount={repositoriesCount}
-              preLoadedOptions={[content?.repository]}
-              required
-            />
-            <FormikInfiniteSelect
-              name='l1_skill_id'
-              label='L1 Skill'
-              placeholder='Select L1 skill'
-              data={l1Skills}
-              labelKey='name.en'
-              valueKey='identifier'
-              dispatchAction={(payload) =>
-                getListSkillAction({
-                  filters: {
-                    skill_type: SkillType.L1Skill,
-                    search_query: payload.value,
-                    page_no: payload.page_no,
-                  },
-                })
-              }
-              isLoading={isLoadingSkill}
-              totalCount={l1SkillsCount}
-              preLoadedOptions={[content?.taxonomy?.l1_skill]}
-              required
-            />
-          </div>
-          <div className='flex w-full gap-6 items-start'>
-            <FormikInfiniteSelect
-              name='l2_skill_ids'
-              label='L2 Skill'
-              placeholder='Select L2 skills'
-              data={l2Skills}
-              labelKey='name.en'
-              valueKey='identifier'
-              dispatchAction={(payload) =>
-                getListSkillAction({
-                  filters: {
-                    skill_type: SkillType.L2Skill,
-                    search_query: payload.value,
-                    page_no: payload.page_no,
-                  },
-                })
-              }
-              isLoading={isLoadingSkill}
-              totalCount={l2SkillsCount}
-              preLoadedOptions={content?.taxonomy?.l2_skill}
-              multiple
-            />
-            <FormikInfiniteSelect
-              name='l3_skill_ids'
-              label='L3 Skill'
-              placeholder='Select L3 skills'
-              data={l3Skills}
-              labelKey='name.en'
-              valueKey='identifier'
-              dispatchAction={(payload) =>
-                getListSkillAction({
-                  filters: {
-                    skill_type: SkillType.L3Skill,
-                    search_query: payload.value,
-                    page_no: payload.page_no,
-                  },
-                })
-              }
-              isLoading={isLoadingSkill}
-              totalCount={l3SkillsCount}
-              preLoadedOptions={content?.taxonomy?.l3_skill}
-              multiple
-            />
-          </div>
-          <div className='flex w-full gap-6 items-start'>
-            <FormikInput
-              name='x_id'
-              label='Content Id'
-              type='string'
-              required
-            />
-          </div>
-          <MultiLangFormikInput
-            name='name'
-            label='Name'
-            supportedLanguages={supportedLanguages}
-          />
-          <MultiLangFormikInput
-            name='description'
-            label='Description'
-            supportedLanguages={supportedLanguages}
-          />
+      {(formik) => {
+        const handleDeleteVideo = (video: {
+          src?: string;
+          url?: string;
+          fileName: string;
+        }) => {
+          const videoKey = `${video.src || video.url}-${video.fileName}`;
 
-          <div>
-            <MediaUpload
-              onUploadComplete={(uploadedMedia) => {
-                setFileUploadType(
-                  content
-                    ? FileUploadTypeEnum.UPDATE
-                    : FileUploadTypeEnum.CREATE
-                );
+          // Add to deleted videos array
+          setDeletedVideos((prev) => [
+            ...prev,
+            { src: video.src || video.url || '', fileName: video.fileName },
+          ]);
 
-                formik.setFieldValue('mediaObjects', [
-                  ...formik.values.mediaObjects,
-                  ...uploadedMedia.map((media) => ({
-                    ...media,
-                    language: '',
-                  })),
-                ]);
-              }}
-              multiple
-              value={formik.values.files}
-              setValue={(files) => {
-                formik.setFieldValue('files', files);
-                formik.setFieldValue(
-                  'mediaObjects',
-                  formik.values.mediaObjects.filter(
-                    (media) =>
-                      files.some((file) => file.name === media.fileName) ||
-                      media.url
-                  )
-                );
-              }}
-              category='content'
-              acceptedFiles={{
-                'video/*': [],
-              }}
+          // Remove from mediaObjects while preserving the order
+          const updatedMediaObjects = formik.values.mediaObjects.filter(
+            (media) => media.key !== videoKey
+          );
+
+          // Update Formik state
+          formik.setFieldValue('mediaObjects', updatedMediaObjects);
+        };
+
+        return (
+          <form
+            onSubmit={formik.handleSubmit}
+            className='flex flex-col overflow-x-hidden px-1'
+          >
+            <p className='text-2xl font-bold mb-8'>
+              {content ? 'Update - Content' : 'Create - Content'}
+            </p>
+            <div className='flex w-full gap-6 items-start'>
+              <FormikInfiniteSelect
+                name='board_id'
+                label='Board'
+                placeholder='Select Board'
+                data={boards}
+                labelKey='name.en'
+                valueKey='identifier'
+                dispatchAction={(payload) =>
+                  getListBoardAction({
+                    filters: {
+                      search_query: payload.value,
+                      page_no: payload.page_no,
+                    },
+                  })
+                }
+                isLoading={isLoadingBoard}
+                totalCount={boardsCount}
+                onValueChange={(value) => setSelectedBoard(value)}
+                preLoadedOptions={[content?.taxonomy?.board]}
+                required
+              />
+              <FormikInfiniteSelect
+                name='class_id'
+                label='Class'
+                placeholder='Select Class'
+                data={classes}
+                labelKey='name.en'
+                valueKey='identifier'
+                dispatchAction={(payload) =>
+                  getListClassAction({
+                    filters: {
+                      search_query: payload.value,
+                      page_no: payload.page_no,
+                    },
+                  })
+                }
+                isLoading={isLoadingClass}
+                totalCount={classesCount}
+                preLoadedOptions={[content?.taxonomy?.class]}
+                required
+              />
+            </div>
+            <div className='flex w-full gap-6 items-start'>
+              <FormikInfiniteSelect
+                name='repository_id'
+                label='Repository'
+                placeholder='Select Repository'
+                data={repositories}
+                labelKey='name.en'
+                valueKey='identifier'
+                dispatchAction={(payload) =>
+                  getListRepositoryAction({
+                    filters: {
+                      search_query: payload.value,
+                      page_no: payload.page_no,
+                    },
+                  })
+                }
+                isLoading={isLoadingRepository}
+                totalCount={repositoriesCount}
+                preLoadedOptions={[content?.repository]}
+                required
+              />
+              <FormikInfiniteSelect
+                name='l1_skill_id'
+                label='L1 Skill'
+                placeholder='Select L1 skill'
+                data={l1Skills}
+                labelKey='name.en'
+                valueKey='identifier'
+                dispatchAction={(payload) =>
+                  getListSkillAction({
+                    filters: {
+                      skill_type: SkillType.L1Skill,
+                      search_query: payload.value,
+                      page_no: payload.page_no,
+                    },
+                  })
+                }
+                isLoading={isLoadingSkill}
+                totalCount={l1SkillsCount}
+                preLoadedOptions={[content?.taxonomy?.l1_skill]}
+                required
+              />
+            </div>
+            <div className='flex w-full gap-6 items-start'>
+              <FormikInfiniteSelect
+                name='l2_skill_ids'
+                label='L2 Skill'
+                placeholder='Select L2 skills'
+                data={l2Skills}
+                labelKey='name.en'
+                valueKey='identifier'
+                dispatchAction={(payload) =>
+                  getListSkillAction({
+                    filters: {
+                      skill_type: SkillType.L2Skill,
+                      search_query: payload.value,
+                      page_no: payload.page_no,
+                    },
+                  })
+                }
+                isLoading={isLoadingSkill}
+                totalCount={l2SkillsCount}
+                preLoadedOptions={content?.taxonomy?.l2_skill}
+                multiple
+              />
+              <FormikInfiniteSelect
+                name='l3_skill_ids'
+                label='L3 Skill'
+                placeholder='Select L3 skills'
+                data={l3Skills}
+                labelKey='name.en'
+                valueKey='identifier'
+                dispatchAction={(payload) =>
+                  getListSkillAction({
+                    filters: {
+                      skill_type: SkillType.L3Skill,
+                      search_query: payload.value,
+                      page_no: payload.page_no,
+                    },
+                  })
+                }
+                isLoading={isLoadingSkill}
+                totalCount={l3SkillsCount}
+                preLoadedOptions={content?.taxonomy?.l3_skill}
+                multiple
+              />
+            </div>
+            <div className='flex w-full gap-6 items-start'>
+              <FormikInput
+                name='x_id'
+                label='Content Id'
+                type='string'
+                required
+              />
+            </div>
+            <MultiLangFormikInput
+              name='name'
+              label='Name'
+              supportedLanguages={supportedLanguages}
+            />
+            <MultiLangFormikInput
+              name='description'
+              label='Description'
+              supportedLanguages={supportedLanguages}
             />
 
-            {formik.values?.mediaObjects?.length > 0 &&
-              (fileUploadType === FileUploadTypeEnum.CREATE ||
-                (fileUploadType === FileUploadTypeEnum.UPDATE && content)) && (
+            <div>
+              <MediaUpload
+                onUploadComplete={(uploadedMedia) => {
+                  setFileUploadType(
+                    content
+                      ? FileUploadTypeEnum.UPDATE
+                      : FileUploadTypeEnum.CREATE
+                  );
+
+                  formik.setFieldValue('mediaObjects', [
+                    ...formik.values.mediaObjects,
+                    ...uploadedMedia.map((media) => ({
+                      ...media,
+                      language: '',
+                    })),
+                  ]);
+                }}
+                multiple
+                value={formik.values.files}
+                setValue={(files) => {
+                  formik.setFieldValue('files', files);
+                  formik.setFieldValue(
+                    'mediaObjects',
+                    formik.values.mediaObjects.filter(
+                      (media) =>
+                        files.some((file) => file.name === media.fileName) ||
+                        media.url
+                    )
+                  );
+                }}
+                category='content'
+                acceptedFiles={{
+                  'video/*': [],
+                }}
+              />
+
+              {formik.values?.mediaObjects?.length > 0 && (
                 <div className='mt-4'>
                   <div
                     className={`grid ${
@@ -387,68 +415,87 @@ const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
                         : ''
                     } gap-4`}
                   >
-                    {formik.values.mediaObjects.map((file, index) => (
-                      <div
-                        key={file.src || index}
-                        className='flex flex-col gap-2'
-                      >
-                        {!file.url && (
-                          <>
-                            <p className='text-sm font-semibold'>
-                              {index + 1}. {file.fileName}
-                            </p>
-                            <FormikSelect
-                              name={`mediaObjects[${index}].language`}
-                              label='Language'
-                              options={enumToKeySelectOptions(
-                                SupportedLanguagesLabel
-                              )}
-                              required
-                            />
-                          </>
-                        )}
-                      </div>
-                    ))}
+                    {formik.values.mediaObjects
+                      .sort((a, b) => {
+                        // Sort videos without URL (newly uploaded) to the top
+                        if (!a.url && b.url) return -1;
+                        if (a.url && !b.url) return 1;
+                        return 0;
+                      })
+                      .map((video, index) => {
+                        const videoKey = `${video.src || video.url}-${
+                          video.fileName
+                        }`;
+
+                        return (
+                          <div key={videoKey} className='flex flex-col gap-2'>
+                            {!video.url && (
+                              <>
+                                <p className='text-sm font-semibold'>
+                                  {video.fileName}
+                                </p>
+                                <FormikSelect
+                                  name={`mediaObjects[${index}].language`}
+                                  label='Language'
+                                  options={enumToKeySelectOptions(
+                                    SupportedLanguagesLabel
+                                  )}
+                                  required
+                                />
+                              </>
+                            )}
+                            {video.url && (
+                              <>
+                                <div className='flex items-center gap-2'>
+                                  <FormikSelect
+                                    name={`mediaObjects[${index}].language`}
+                                    label='Language'
+                                    options={enumToKeySelectOptions(
+                                      SupportedLanguagesLabel
+                                    )}
+                                    required
+                                  />
+                                  <Button
+                                    type='button'
+                                    variant='ghost'
+                                    size='icon'
+                                    className='mt-4'
+                                    onClick={() => handleDeleteVideo(video)}
+                                  >
+                                    <Trash2 className='h-4 w-4' />
+                                  </Button>
+                                </div>
+                                <AMLVideoPlayer videos={[video]} />
+                              </>
+                            )}
+                          </div>
+                        );
+                      })}
                   </div>
                 </div>
               )}
-
-            {!!content?.media?.length &&
-              content.media.map((video, index) => {
-                const key = `${video.src || video.url || 'video'}-${index}`;
-                return (
-                  <div key={key} className='mt-4'>
-                    <FormikSelect
-                      name={`mediaObjects[${index}].language`}
-                      label='Language'
-                      options={enumToKeySelectOptions(SupportedLanguagesLabel)}
-                      required
-                    />
-                    <AMLVideoPlayer videos={[video]} />
-                  </div>
-                );
-              })}
-          </div>
-          <div className='flex gap-5 mt-5 flex-row-reverse'>
-            <Button
-              type='submit'
-              size='lg'
-              disabled={!formik.dirty || !formik.isValid}
-            >
-              Save
-            </Button>
-            <Button
-              variant='outline'
-              onClick={onClose}
-              size='lg'
-              type='button'
-              disabled={isFormSubmitted}
-            >
-              Cancel
-            </Button>
-          </div>
-        </form>
-      )}
+            </div>
+            <div className='flex gap-5 mt-5 flex-row-reverse'>
+              <Button
+                type='submit'
+                size='lg'
+                disabled={!formik.dirty || !formik.isValid}
+              >
+                Save
+              </Button>
+              <Button
+                variant='outline'
+                onClick={onClose}
+                size='lg'
+                type='button'
+                disabled={isFormSubmitted}
+              >
+                Cancel
+              </Button>
+            </div>
+          </form>
+        );
+      }}
     </Formik>
   );
 };
