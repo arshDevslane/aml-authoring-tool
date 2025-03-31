@@ -144,7 +144,7 @@ const QuestionAddEditForm: React.FC<QuestionAddEditFormProps> = ({
       options: question?.question_body?.options ?? [''],
       correct_option: question?.question_body?.correct_option ?? '',
       fib_type: question?.question_body?.answers?.fib_type ?? '',
-      fib_answer: question?.question_body?.fib_answer ?? '',
+      fib_answer: question?.question_body?.answers?.result ?? '',
       question_image: question?.question_body?.question_image ?? {},
     },
   };
