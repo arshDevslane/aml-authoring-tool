@@ -46,43 +46,47 @@ const FileUpload: React.FC<FileUploadProps> = ({
     <div
       {...getRootProps()}
       className={cn(
-        'flex-1 border-[1px] rounded-md border-dashed border-primary/50 p-5 text-center',
+        'relative flex-1 border-[1px] rounded-md border-dashed border-primary/50 p-5 text-center',
         isDragActive ? 'bg-primary/10' : 'bg-white'
       )}
     >
       <input {...getInputProps()} />
-      {isDragActive ? (
-        <p className='text-primary'>Drop the files here...</p>
-      ) : (
-        <p className='text-primary'>
-          Drag & drop your {multiple ? 'files' : 'file'} here, or click to
-          select
-        </p>
-      )}
-      <div className='mt-2'>
-        {value?.length > 0 &&
-          value.map((file) => (
-            <div
-              className='flex items-center justify-between font-semibold py-1 px-3 rounded-md border-2 my-1 bg-primary/30 border-input'
-              key={file.name}
-            >
-              <span>{file.name}</span>
-              <div className='flex items-center gap-2'>
-                {uploadProgress[file.name] !== undefined && (
-                  <span className='text-sm'>{uploadProgress[file.name]}%</span>
-                )}
+      <p className='text-primary'>
+        {isDragActive
+          ? 'Drop the files here...'
+          : `Drag & drop your ${
+              multiple ? 'files' : 'file'
+            } here, or click to select`}
+      </p>
+
+      {value.length > 0 && (
+        <div className='mt-4 border-[1px] border-dashed border-primary/50 rounded-md p-3 bg-primary/10'>
+          {Object.keys(uploadProgress).length > 0 && (
+            <div className='mb-2 text-sm font-semibold text-primary'>
+              Upload Progress: {uploadProgress[value[0].name] ?? 0}%
+            </div>
+          )}
+
+          <div>
+            {value.map((file) => (
+              <div
+                className='flex items-center justify-between font-semibold py-1 px-3 rounded-md border-2 my-1 bg-white border-input'
+                key={file.name}
+              >
+                <span>{file.name}</span>
                 <X
                   type='button'
                   onClick={(e) => {
                     e.stopPropagation(); // Prevent triggering the drop zone
                     removeFile(file.name);
                   }}
-                  className='text-red-500 hover:text-red-700'
+                  className='text-red-500 hover:text-red-700 cursor-pointer'
                 />
               </div>
-            </div>
-          ))}
-      </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

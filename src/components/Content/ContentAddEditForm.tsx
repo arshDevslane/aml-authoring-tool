@@ -54,12 +54,6 @@ type ContentDetailsProps = {
   onClose: () => void;
   contentId: string | null;
 };
-
-enum FileUploadTypeEnum {
-  CREATE = 'CREATE',
-  UPDATE = 'UPDATE',
-}
-
 const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
   const dispatch = useDispatch();
   const allContent = useSelector(allContentSelector);
@@ -95,9 +89,6 @@ const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
   const isLoadingRepository = useSelector(isLoadingRepositoriesSelector);
   const isLoadingSkill = useSelector(isLoadingSkillsSelector);
   const [isFormSubmitted, setIsFormSubmitted] = React.useState(false);
-  const [fileUploadType, setFileUploadType] =
-    React.useState<FileUploadTypeEnum | null>(null);
-
   const validationSchema = yup.object().shape({
     name: yup.object().shape(multiLanguageSchemaObject('name')),
     description: yup.object().shape(multiLanguageSchemaObject('description')),
@@ -160,7 +151,6 @@ const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
       validationSchema={validationSchema}
       onSubmit={(values) => {
         setIsFormSubmitted(true);
-
         const payload = {
           name: values.name,
           description: values.description,
@@ -177,7 +167,6 @@ const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
           })),
           ...(deletedVideos.length > 0 && { removed_videos: deletedVideos }),
         };
-
         if (content) {
           dispatch(
             updateContentAction({
@@ -212,7 +201,6 @@ const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
           // Update Formik state
           formik.setFieldValue('mediaObjects', updatedMediaObjects);
         };
-
         return (
           <form
             onSubmit={formik.handleSubmit}
@@ -373,12 +361,6 @@ const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
             <div>
               <MediaUpload
                 onUploadComplete={(uploadedMedia) => {
-                  setFileUploadType(
-                    content
-                      ? FileUploadTypeEnum.UPDATE
-                      : FileUploadTypeEnum.CREATE
-                  );
-
                   formik.setFieldValue('mediaObjects', [
                     ...formik.values.mediaObjects,
                     ...uploadedMedia.map((media) => ({
@@ -408,13 +390,7 @@ const ContentAddEditForm = ({ onClose, contentId }: ContentDetailsProps) => {
 
               {formik.values?.mediaObjects?.length > 0 && (
                 <div className='mt-4'>
-                  <div
-                    className={`grid ${
-                      fileUploadType === FileUploadTypeEnum.CREATE
-                        ? 'grid-cols-2'
-                        : ''
-                    } gap-4`}
-                  >
+                  <div className='grid gap-4'>
                     {formik.values.mediaObjects
                       .sort((a, b) => {
                         // Sort videos without URL (newly uploaded) to the top

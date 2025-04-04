@@ -2,17 +2,17 @@ import { Media } from '@/models/entities/Content';
 import React, { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  getPresignedUrlAction,
-  uploadAction,
-} from '@/store/actions/media.actions';
+
 import {
   isLoadingPresignedUrlsSelector,
   isUploadInProgressSelector,
   presignedUrlsSelector,
+  uploadedMediaLoadingSelector,
+  uploadedMediaSelector,
   uploadErrorSelector,
   uploadProgressSelector,
 } from '@/store/selectors/media.selector';
+import { uploadFileAction } from '@/store/actions/media.actions';
 import FileUpload from '../FileUpload/FileUpload';
 
 type MediaUploadProps = {
@@ -40,7 +40,8 @@ const MediaUpload = ({
   const uploadProgress = useSelector(uploadProgressSelector);
   const presignedUrls = useSelector(presignedUrlsSelector);
   const uploadError = useSelector(uploadErrorSelector);
-
+  const uploadedMediaLoading = useSelector(uploadedMediaLoadingSelector);
+  const uploadedMedia = useSelector(uploadedMediaSelector);
   useEffect(() => {
     if (!uploadClicked || uploadError) return;
 
@@ -51,14 +52,6 @@ const MediaUpload = ({
     )
       return;
 
-    const uploadMap = Object.keys(presignedUrls)
-      .map((fileName) => ({
-        signedUrl: presignedUrls[fileName].url,
-        file: value.find((file) => file.name === fileName)!,
-      }))
-      .filter((item) => Boolean(item.file));
-
-    dispatch(uploadAction(uploadMap));
     setUploadClicked(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isGeneratingPresignedUrls, isUploadInProgress]);
@@ -66,20 +59,21 @@ const MediaUpload = ({
   useEffect(() => {
     if (isUploadInProgress || uploadError || value?.length === 0) return;
 
-    setUploadClicked(false);
-    onUploadComplete(
-      Object.values(presignedUrls).map((data: any) => data.media)
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isUploadInProgress]);
+    if (!uploadedMediaLoading) {
+      setUploadClicked(false);
 
+      onUploadComplete(uploadedMedia || []);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [uploadedMediaLoading]);
   const onUploadClick = () => {
     setUploadClicked(true);
     dispatch(
-      getPresignedUrlAction(
+      uploadFileAction(
         value.map((file) => ({
           fileName: file.name,
           category,
+          file,
         }))
       )
     );
@@ -101,7 +95,6 @@ const MediaUpload = ({
             isGeneratingPresignedUrls ||
             isUploadInProgress ||
             Boolean(uploadError) ||
-            Object.keys(presignedUrls).length === value?.length ||
             !value?.length
           }
         >

@@ -173,13 +173,9 @@ export enum ContentActionType {
 }
 
 export enum MediaActionType {
-  GET_PRESIGNED_URL = 'media/getPresignedUrl',
-  GET_PRESIGNED_URL_COMPLETED = 'media/getPresignedUrl/completed',
-  GET_PRESIGNED_URL_ERROR = 'media/getPresignedUrl/error',
-
-  UPLOAD = 'media/upload',
-  UPLOAD_COMPLETED = 'media/upload/completed',
-  UPLOAD_ERROR = 'media/upload/error',
+  UPLOAD_FILE = 'media/upload',
+  UPLOAD_FILE_COMPLETED = 'media/upload/completed',
+  UPLOAD_FILE_ERROR = 'media/upload/error',
 
   RESET_STATE = 'media/resetState',
   UPLOAD_PROGRESS = 'UPLOAD_PROGRESS',

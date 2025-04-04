@@ -5,16 +5,23 @@ class MediaService {
     return new MediaService();
   }
 
-  async getPresignedUrls(
-    data: {
-      fileName: string;
-      category: string;
-    }[]
+  async uploadFile(
+    data: { fileName: string; category: string; file: File }[],
+    onUploadProgress?: (progressEvent: ProgressEvent) => void
   ) {
+    const formData = new FormData();
+
+    data.forEach((item) => {
+      formData.append('files', item.file);
+    });
+
+    formData.append('category', data[0].category);
+
     return baseApiService.post(
-      '/api/v1/media/upload/presigned-url',
-      'api.media.upload',
-      data
+      '/api/v1/media/v2/upload',
+      'api.media.v2.upload',
+      formData,
+      { onUploadProgress }
     );
   }
 }

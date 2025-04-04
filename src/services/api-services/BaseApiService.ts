@@ -80,9 +80,10 @@ export class BaseApiService {
 
   public post<T = any>(
     url: string,
-    id: string,
+    id: string | FormData,
     data?: any,
     opts?: {
+      onUploadProgress?: any;
       headers?: AxiosRequestHeaders;
       params?: QueryParams;
       extras?: {
@@ -91,15 +92,20 @@ export class BaseApiService {
       };
     }
   ) {
-    const payload = {
-      id,
-      ver: '1.0',
-      ts: new Date(),
-      params: {
-        msgid: uuid.v4(),
-      },
-      request: data,
-    };
+    const isFormData = data instanceof FormData;
+
+    const payload = isFormData
+      ? data
+      : {
+          id,
+          ver: '1.0',
+          ts: new Date(),
+          params: {
+            msgid: uuid.v4(),
+          },
+          request: data,
+        };
+
     return this.request<T>(
       {
         method: 'POST',
@@ -108,6 +114,7 @@ export class BaseApiService {
         headers: opts?.headers,
         params: opts?.params,
         requestId: opts?.extras?.requestId,
+        onUploadProgress: opts?.onUploadProgress,
       },
       opts?.extras?.useAuth
     );

@@ -28,3 +28,13 @@ export const uploadProgressSelector = createSelector(
   [mediaState],
   (state: MediaState) => state.uploadProgress
 );
+
+export const uploadedMediaSelector = createSelector(
+  [mediaState],
+  (state: MediaState) => state.uploadedMedia
+);
+
+export const uploadedMediaLoadingSelector = createSelector(
+  [mediaState],
+  (state: MediaState) => state.uploadedMediaLoading
+);
