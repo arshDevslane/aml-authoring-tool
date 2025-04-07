@@ -1,4 +1,5 @@
 import React from 'react';
+import { getMediaUrl } from '@/utils/helpers/helper';
 import Loader from './Loader/Loader';
 
 interface ImageRendererProps {
@@ -27,7 +28,7 @@ export const ImageRenderer: React.FC<ImageRendererProps> = ({
     {isImageReady ? (
       <img
         className='w-auto min-w-[30%] max-w-full h-auto max-h-[80vh] !mb-6 object-contain'
-        src={imageUrl}
+        src={getMediaUrl(imageUrl)}
         onLoad={onImageLoad}
         onError={onImageError}
         alt='Img'

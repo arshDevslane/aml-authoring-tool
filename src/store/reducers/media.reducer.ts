@@ -33,7 +33,6 @@ export const mediaReducer = (state: MediaState = mediaState, action: any) =>
         break;
       case MediaActionType.UPLOAD_FILE_COMPLETED:
         draft.uploadedMedia = action.payload;
-        console.log(draft.uploadedMedia, 'media');
         draft.isLoadingSignedUrls = false;
         draft.isUploadingFiles = false;
         draft.uploadProgress = {};

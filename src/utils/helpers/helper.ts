@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
+import ENV_CONFIG from '@/constant/env.config';
 import { Description } from '@/models/entities/Question';
 import { ArithmaticOperations } from '@/models/enums/ArithmaticOperations.enum';
 import { FibType, QuestionType } from '@/models/enums/QuestionType.enum';
 import { SupportedLanguages } from '@/models/enums/SupportedLanguages.enum';
 
+const BASE_URL = ENV_CONFIG.BACKEND_URL as string;
 export function convertToDate(isoString: string) {
   const date = new Date(isoString);
   return date.toISOString().split('T')[0]; // Extract the date part in YYYY-MM-DD format
@@ -175,3 +177,10 @@ export const clearQueryParams = (
     }
     return true;
   });
+
+type Media = {
+  url: string;
+  storage: 'local' | 's3';
+};
+export const getMediaUrl = (url: string): string =>
+  url.startsWith('/uploads') ? `${BASE_URL}${url}` : url;

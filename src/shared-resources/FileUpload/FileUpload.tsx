@@ -59,9 +59,9 @@ const FileUpload: React.FC<FileUploadProps> = ({
             } here, or click to select`}
       </p>
 
-      {value.length > 0 && (
+      {value?.length > 0 && (
         <div className='mt-4 border-[1px] border-dashed border-primary/50 rounded-md p-3 bg-primary/10'>
-          {Object.keys(uploadProgress).length > 0 && (
+          {Object.keys(uploadProgress)?.length > 0 && (
             <div className='mb-2 text-sm font-semibold text-primary'>
               Upload Progress: {uploadProgress[value[0].name] ?? 0}%
             </div>
