@@ -183,4 +183,4 @@ type Media = {
   storage: 'local' | 's3';
 };
 export const getMediaUrl = (url: string): string =>
-  url.startsWith('/uploads') ? `${BASE_URL}${url}` : url;
+  url?.startsWith('/uploads') ? `${BASE_URL}${url}` : url;

@@ -24,6 +24,7 @@ import { getTtsAction } from '@/store/actions/tts.action';
 import { isLoadingAudioSelector } from '@/store/selectors/audio.selector';
 import { removeAudioRecordAction } from '@/store/actions/audio.action';
 import Loader from '@/components/Loader/Loader';
+import { getMediaUrl } from '@/utils/helpers/helper';
 import FormikInput from '../FormikInput/FormikInput';
 
 type Props = {
@@ -212,7 +213,6 @@ const MultiLangFormikInputForAudioDesc = ({
   audioRecords,
 }: Props) => {
   const isLoadingAudio = useSelector(isLoadingAudioSelector);
-
   if (isLoadingAudio) {
     return (
       <>
@@ -233,7 +233,7 @@ const MultiLangFormikInputForAudioDesc = ({
           name={name}
           lang={lang}
           label={label}
-          audioURL={audioRecords[lang]?.audio_url}
+          audioURL={getMediaUrl(audioRecords[lang]?.audio_url)}
           audioHash={audioRecords[lang]?.description_hash}
         />
       ))}
