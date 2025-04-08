@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactPlayer from 'react-player';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { getMediaUrl } from '@/utils/helpers/helper';
 
 type VideoPlayerProps = {
   videos: { url: string }[];
@@ -48,7 +47,7 @@ const AMLVideoPlayer: React.FC<VideoPlayerProps> = ({
             )}
             <div className='flex-1 h-full'>
               <ReactPlayer
-                url={getMediaUrl(videos[currentVideoIndex].url)}
+                url={videos[currentVideoIndex].url}
                 controls
                 width='100%'
                 height='100%'
